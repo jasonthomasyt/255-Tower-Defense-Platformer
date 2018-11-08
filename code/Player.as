@@ -42,11 +42,14 @@
 		/** Detects the ground in the game. */
 		var ground: Number = 350;
 		
+		/** The collider for the player. */
+		public var collider:AABB;
+		
 		/**
 		 * The Player constructor class
 		 */
 		public function Player() {
-			// constructor code
+			collider = new AABB(width / 2, height / 2);
 		} // ends Player
 		
 		/**
@@ -62,6 +65,8 @@
 			doPhysics();
 
 			detectGround();
+			
+			collider.calcEdges(x, y);
 			
 			if (y < ground){
 				isGrounded = false; // this allows us to walk off edges and only be allowed one air jump.
@@ -148,6 +153,28 @@
 			}
 		} // ends detectGround
 		
+		/**
+		 * Applies the overlap fix detected by the collider.
+		 * Adjusts the player position according to the fix.
+		 */
+		public function applyFix(fix: Point):void {
+			if (fix.x != 0){
+				x += fix.x;
+				velocity.x = 0;
+			}
+			
+			if (fix.y != 0) {
+				y += fix.y;
+				velocity.y = 0;
+			}
+			
+			if (fix.y < 0) { // we moved the player up, so they are on the ground.
+				isGrounded = true;
+				airJumpsLeft = airJumpsMax;
+			}
+			
+			collider.calcEdges(x, y);
+		} // ends applyFix
 		
 	} // ends class
 } // ends package
