@@ -40,7 +40,10 @@
 		private var jumpVelocity:Number = 400;
 		
 		/** Detects the ground in the game. */
-		var ground: Number = 350;
+		var ground: Number = 300;
+		
+		/** The angle that the gun is pointed. */
+		public var angle: Number = 0;
 		
 		/** The collider for the player. */
 		public var collider:AABB;
@@ -66,6 +69,8 @@
 
 			detectGround();
 			
+			handleAiming();
+			
 			collider.calcEdges(x, y);
 			
 			if (y < ground){
@@ -73,6 +78,23 @@
 			}
 			
 		} // ends update
+		
+		/**
+		 * Changes the gun's rotation based on where the mouse is pointing.
+		 */
+		private function handleAiming(): void {
+			var tx: Number = parent.mouseX - x;
+			var ty: Number = parent.mouseY - y;
+			
+			angle = Math.atan2(ty, tx);
+			angle *= 180 / Math.PI;
+			gun.rotation = angle + 90;
+			
+			if (gun.rotation > -45 && gun.rotation < 0) gun.rotation = 45;
+			if (gun.rotation < 45 && gun.rotation > 0) gun.rotation = -45;
+			if (gun.rotation < -135 && gun.rotation > -170) gun.rotation = 135;
+			if (gun.rotation > 135 && gun.rotation < 170) gun.rotation = -135;
+		} // end handleAiming
 		
 		/**
 		 * Handles the jumping action for the player.
