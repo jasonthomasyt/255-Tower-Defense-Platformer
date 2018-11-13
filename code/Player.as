@@ -100,7 +100,7 @@
 		 * Handles the jumping action for the player.
 		 */
 		private function handleJumping(): void {
-			if (KeyboardInput.OnKeyDown(Keyboard.SPACE)) {
+			if (KeyboardInput.onKeyDown(Keyboard.SPACE)) {
 				if (isGrounded) { // we are on the ground...
 					isGrounded = false; // not on ground
 					velocity.y = -jumpVelocity; // apply an impulse up
@@ -114,7 +114,7 @@
 				}
 			}
 			
-			if (!KeyboardInput.IsKeyDown(Keyboard.SPACE)) isJumping = false;
+			if (!KeyboardInput.isKeyDown(Keyboard.SPACE)) isJumping = false;
 			if (velocity.y > 0) isJumping = false;
 		} // ends handleJumping
 		
@@ -123,10 +123,10 @@
 		 * left or right.  As a result, this function changes the player's velocity.
 		 */
 		private function handleWalking(): void {
-			if (KeyboardInput.IsKeyDown(Keyboard.A)) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
-			if (KeyboardInput.IsKeyDown(Keyboard.D)) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
+			if (KeyboardInput.isKeyDown(Keyboard.A)) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+			if (KeyboardInput.isKeyDown(Keyboard.D)) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
 
-			if (!KeyboardInput.IsKeyDown(Keyboard.A) && !KeyboardInput.IsKeyDown(Keyboard.D)) { // left and right not being pressed...
+			if (!KeyboardInput.isKeyDown(Keyboard.A) && !KeyboardInput.isKeyDown(Keyboard.D)) { // left and right not being pressed...
 				if (velocity.x < 0) { // moving left
 					velocity.x += HORIZONTAL_DECELERATION * Time.dt; // accelerate right
 					if (velocity.x > 0) velocity.x = 0; // clamp at 0

@@ -10,6 +10,10 @@
 			// constructor code
 		}
 		override public function update(previousScene:GameScene=null):GameScene {
+			if (KeyboardInput.onKeyDown(Keyboard.ESCAPE)) {
+				//trace("if is true");
+				return new SceneTitle();
+			}
 			return null
 		}
 	}

@@ -24,6 +24,12 @@
 			player.update();
 			
 			updateBullets();
+			
+			if (KeyboardInput.onKeyDown(Keyboard.R)) {
+				//trace("if is true");
+				return new SceneLose();
+			}
+			
 			return null
 		}
 		/**

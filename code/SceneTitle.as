@@ -10,11 +10,13 @@
 			// constructor code
 		}
 		override public function update(previousScene:GameScene=null):GameScene {
-			if (KeyboardInput.OnKeyDown(Keyboard.SPACE)) {
+			//trace("title tick");
+			if (KeyboardInput.onKeyDown(Keyboard.ENTER)) {
+				//trace("if is true");
 				return new ScenePlay();
 			}
 			return null
-		}
+		} 
 	}
 	
 }
