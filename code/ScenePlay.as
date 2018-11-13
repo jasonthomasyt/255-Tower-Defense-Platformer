@@ -9,10 +9,13 @@
 
 		/** This is our array of Bullet Objects. */
 		private var bullets: Array = new Array();
-		private var level: MovieClip;
+		//private var level: MovieClip;
+		/** */
 		private var shakeTimer: Number = 0;
 		/** This is our array of Platform Objects. */
 		static public var platforms: Array = new Array();
+		/** */
+		public var player: Player;
 		
 		/**
 		 *
@@ -51,7 +54,7 @@
 			player.update();
 			doCameraMove();
 			updateBullets();
-			
+			updatePlatforms();
 			doCollisionDetection();
 			
 			if (KeyboardInput.onKeyDown(Keyboard.R)) {
@@ -83,13 +86,21 @@
 			spawnBullet();
 
 		} // ends handleClick
+		/**
+		 * 
+		 */
+		private function updatePlatforms(): void {
+			for (var i: int = platforms.length - 1; i >= 0; i--) {
+				platforms[i].update();
+			}
+		}
 		/** 
 		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
 		 */
 		private function spawnBullet(): void {
 
 			var b: Bullet = new Bullet(player);
-			addChild(b);
+			level.addChild(b);
 			bullets.push(b);
 
 		} // ends spawnBullet
@@ -97,9 +108,9 @@
 		 * this loads the level
 		 */
 		private function loadLevel(): void {
-			level = new Level01();
+			//level = new Level01();
 			addChild(level);
-			if (level.player) {
+			if (!player && level.player) {
 				player = level.player;
 			}
 		}
@@ -117,7 +128,7 @@
 					// remove it!!
 
 					// 1. remove the object from the scene-graph
-					removeChild(bullets[i]);
+					level.removeChild(bullets[i]);
 
 					// 2. nullify any variables pointing to it
 					// if the variable is an array,

@@ -40,7 +40,7 @@
 		private var jumpVelocity:Number = 400;
 		
 		/** Detects the ground in the game. */
-		var ground: Number = 300;
+		var ground: Number = 700;
 		
 		/** The angle that the gun is pointed. */
 		public var angle: Number = 0;
@@ -71,12 +71,12 @@
 			
 			handleAiming();
 			
-			collider.calcEdges(base.x, base.y);
+			collider.calcEdges(x, y);
 			
 			if (y < ground){
 				isGrounded = false; // this allows us to walk off edges and only be allowed one air jump.
 			}
-			
+			trace(y);
 		} // ends update
 		
 		/**
@@ -181,12 +181,12 @@
 		 */
 		public function applyFix(fix: Point):void {
 			if (fix.x != 0){
-				base.x += fix.x;
+				x += fix.x;
 				velocity.x = 0;
 			}
 			
 			if (fix.y != 0) {
-				base.y += fix.y;
+				y += fix.y;
 				velocity.y = 0;
 			}
 			

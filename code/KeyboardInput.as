@@ -49,7 +49,7 @@
 		 * @param e The keyboard input event.
 		 */
 		static private function handleKeyDown(e: KeyboardEvent): void {
-			trace(e.keyCode)
+			//trace(e.keyCode)
 			updateKey(e.keyCode, true);
 
 		} // ends handleKeyDown
@@ -71,7 +71,7 @@
 		static public function isKeyDown(keyCode: int): Boolean {
 			if (keyCode < 0) return false;
 			if (keyCode >= keysState.length) return false;
-			trace("is " + keyCode + " down?");
+			//trace("is " + keyCode + " down?");
 			return keysState[keyCode];
 		} // ends IsKeyDown
 		

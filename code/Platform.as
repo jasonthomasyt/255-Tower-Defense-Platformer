@@ -21,5 +21,11 @@
 			// add to platforms array...
 			ScenePlay.platforms.push(this);
 		} // end constructor
+		/**
+		 * 
+		 */
+		public function update(): void {
+			collider.calcEdges(x, y);
+		}
 	} // end class Platform
 } // end package code
