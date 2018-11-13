@@ -3,11 +3,14 @@
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
+	import flash.geom.Point;
 	
 	public class ScenePlay extends GameScene {
 		
 		/** This is our array of Bullet Objects. */
 		private var bullets: Array = new Array();
+		/** This is our array of Platform Objects. */
+		static public var platforms: Array = new Array();
 		
 		/**
 		 * 
@@ -24,6 +27,8 @@
 			player.update();
 			
 			updateBullets();
+			
+			doCollisionDetection();
 			
 			if (KeyboardInput.onKeyDown(Keyboard.R)) {
 				//trace("if is true");
@@ -87,6 +92,26 @@
 				}
 			} // ends for loop updating bullets
 		} // ends updateBullets
+		/**
+		 * This is where we do all of our AABB collision decetction. It loops through all of our walls and checks if
+		 * the player is colliding with any of them.
+		 */
+		private function doCollisionDetection(): void {
+
+			for (var i: int = 0; i < platforms.length; i++) {
+				if (player.collider.checkOverlap(platforms[i].collider)) { // if we are overlapping
+					// find the fix:
+					var fix: Point = player.collider.findOverlapFix(platforms[i].collider);
+
+					// apply the fix:
+					player.applyFix(fix);
+
+				}
+			} // ends for
+
+
+
+		} // ends doCollisionDetection()
 	}
 	
 }
