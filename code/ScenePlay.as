@@ -149,10 +149,4 @@
 	}
 
 }
-	import flash.geom.Point;
-	
-		private var level: MovieClip;
-		private var shakeTimer: Number = 0;
-		/** This is our array of Platform Objects. */
-		static public var platforms: Array = new Array();
 		
