@@ -11,18 +11,19 @@
 		/* The constructor for the game class */
 		public function Game() {
 			addEventListener(Event.ENTER_FRAME, gameLoop); //Runs gameLoop on startup
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, spawnBullets); //adds event listener for mouse clicks
+			stage.addEventListener(MouseEvent.MOUSE_DOWN, spawnBullets); //adds mouse event listener for shooting
+			buildSpot.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, spawnTower);//adds mouse event listener for build spot
 		}
 		/* The function for the game loop */
 		public function gameLoop(e:Event):void {
-			turret.update();
+			//turret.update();
 			updateBullets(); //updates the bullets
 		}
 		/* The function handling the spawning of bullets */
 		private function spawnBullets(e:MouseEvent):void {
 			var b:Bullet = new Bullet(); //instantiate bullet
 			addChild(b);
-			b.setVelocity(turret); //set its speed with the setVelocity function
+			//b.setVelocity(turret); //set its speed with the setVelocity function
 			bullets.push(b);
 		}
 		/* The function handling the updating of bullets */
@@ -34,6 +35,9 @@
 					bullets.splice(i, 1);
 				}
 			}
+		}
+		private function spawnTower(e:MouseEvent):void {
+			trace("yay");
 		}
 	}
 }
