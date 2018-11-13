@@ -52,7 +52,7 @@
 		 * The Player constructor class
 		 */
 		public function Player() {
-			collider = new AABB(width / 2, height / 2);
+			collider = new AABB(base.width / 2, base.height / 2);
 		} // ends Player
 		
 		/**
@@ -71,7 +71,7 @@
 			
 			handleAiming();
 			
-			collider.calcEdges(x, y);
+			collider.calcEdges(base.x, base.y);
 			
 			if (y < ground){
 				isGrounded = false; // this allows us to walk off edges and only be allowed one air jump.
@@ -181,12 +181,12 @@
 		 */
 		public function applyFix(fix: Point):void {
 			if (fix.x != 0){
-				x += fix.x;
+				base.x += fix.x;
 				velocity.x = 0;
 			}
 			
 			if (fix.y != 0) {
-				y += fix.y;
+				base.y += fix.y;
 				velocity.y = 0;
 			}
 			
@@ -195,7 +195,7 @@
 				airJumpsLeft = airJumpsMax;
 			}
 			
-			collider.calcEdges(x, y);
+			collider.calcEdges(base.x, base.y);
 		} // ends applyFix
 		
 	} // ends class
