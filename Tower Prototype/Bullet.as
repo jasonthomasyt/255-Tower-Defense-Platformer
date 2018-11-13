@@ -31,6 +31,7 @@
 			
 			velocity.x = 10 * Math.cos(angle); //Sets velocities of bullets
 			velocity.y = 10 * Math.sin(angle);
+			/* TO DO: Implement delta time where necessary */
 			
 		}
 

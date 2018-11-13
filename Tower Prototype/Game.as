@@ -11,7 +11,7 @@
 		/* The constructor for the game class */
 		public function Game() {
 			addEventListener(Event.ENTER_FRAME, gameLoop); //Runs gameLoop on startup
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, spawnBullets);
+			stage.addEventListener(MouseEvent.MOUSE_DOWN, spawnBullets); //adds event listener for mouse clicks
 		}
 		/* The function for the game loop */
 		public function gameLoop(e:Event):void {
@@ -36,5 +36,4 @@
 			}
 		}
 	}
-	
 }

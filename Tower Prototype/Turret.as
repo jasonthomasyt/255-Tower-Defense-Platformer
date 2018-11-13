@@ -12,7 +12,10 @@
 		/* Update function for the turret */
 		public function update():void {
 			
-			/* Updates the rotation angle of the turret to follow the mouse */
+			/**
+			 * Updates the rotation angle of the turret to follow the mouse
+			 * TO DO: Update to follow closest enemy
+			 */
 			var tx:Number = parent.mouseX - x;
 			var ty:Number = parent.mouseY - y;
 			var angle:Number = Math.atan2(ty, tx);
