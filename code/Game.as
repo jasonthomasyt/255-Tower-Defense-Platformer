@@ -2,80 +2,59 @@
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	
-	
+	/**
+	 * This is our Game Class. It runs and rules over all of our app logic.
+	 */
 	public class Game extends MovieClip {
 		
-		private var bullets: Array = new Array();
-		
-		
-		public function Game() {
-			KeyboardInput.setup(stage);
-			addEventListener(Event.ENTER_FRAME, gameLoop);
-		} // ends Game
 		
 		/**
-		 * The gameLoop design pattern.
-		 * Updates time, the player, and keyboard input.
+		 * This stores the current scene using a Finite State Machine.
+		 * 1: Title
+		 * 2: Play
+		 * 3: Game Over
+		 * 0: Error
+		 */
+		private var gameScene: GameScene;
+		
+		/** This stores the previous scene */
+		private var gameScenePrevious: GameScene;
+		
+		/**
+		 * This is the constructor code for our game, where we set up some of our Objects and Event Listeners.
+		 */
+		public function Game() {
+			KeyboardInput.setup(stage);
+			switchScene(new SceneTitle());
+			addEventListener(Event.ENTER_FRAME, gameLoop);
+			
+		} // ends Game
+		/**
+		 * The gameLoop design pattern. Updates time, keyboard input, and the current GameScene.
+		 * @param e The current frame we are on. It is the Event that triggered this event-handler.
 		 */
 		private function gameLoop(e: Event): void {
 			
 			Time.update();
-			
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, handleClick);
-			
-			player.update();
-			
-			updateBullets();
+			if (gameScene) switchScene(gameScene.update(gameScenePrevious));
 			
 		} // ends gameLoop
-		
 		/**
-		 * This event-handler is called everytime the left mouse button is down.
-		 * It causes the player to shoot bullets.
-		 * @param e The MouseEvent that triggered this event-handler.
+		 * This gets called every frame to check if we need to change our current scene.
+		 * @param newScene The new scene we would want to switch to.
 		 */
-		private function handleClick(e: MouseEvent): void {
-			
-			spawnBullet();
-			
-		} // ends handleClick
-		
-		/** 
-		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
-		 */
-		private function spawnBullet(): void {
-			
-			var b: Bullet = new Bullet(player);
-			addChild(b);
-			bullets.push(b);
-			
-		} // ends spawnBullet
-		
-		/**
-		 * Updates bullets for every frame.
-		 */
-		private function updateBullets(): void {
-			
-			// update everything:
-			for (var i: int = bullets.length - 1; i >= 0; i--) {
-				bullets[i].update(); // Update design pattern.
-
-				/** If bullet is dead, remove it. */
-				if (bullets[i].isDead) {
-					// remove it!!
-
-					// 1. remove the object from the scene-graph
-					removeChild(bullets[i]);
-
-					// 2. nullify any variables pointing to it
-					// if the variable is an array,
-					// remove the object from the array
-					bullets.splice(i, 1);
-				}
-			} // ends for loop updating bullets
-			
-		} // ends updateBullets
+		private function switchScene(newScene: GameScene): void {
+			if (newScene) {
+				//switch scenes...
+				if (gameScene) gameScene.onEnd();
+				if (gameScene) removeChild(gameScene);
+				if (gameScene) gameScenePrevious = gameScene; //cache the current scene before switching to the new one
+				gameScene = newScene;
+				addChild(gameScene);
+				gameScene.onBegin();
+				stage.focus = stage;
+			}
+		} // end switchScene
 	} // ends class
 } // ends package

@@ -49,7 +49,7 @@
 		 * @param e The keyboard input event.
 		 */
 		static private function handleKeyDown(e: KeyboardEvent): void {
-
+			trace(e.keyCode)
 			updateKey(e.keyCode, true);
 
 		} // ends handleKeyDown
@@ -68,10 +68,10 @@
 		 * Checks if the key is currently pressed.
 		 * @return The true/false value for the state of the key (if it is currently being pressed or not).
 		 */
-		static public function IsKeyDown(keyCode: int): Boolean {
+		static public function isKeyDown(keyCode: int): Boolean {
 			if (keyCode < 0) return false;
 			if (keyCode >= keysState.length) return false;
-			
+			trace("is " + keyCode + " down?");
 			return keysState[keyCode];
 		} // ends IsKeyDown
 		
@@ -79,7 +79,7 @@
 		 * Checks if the key has been pressed.
 		 * @return The true/false value for the key (if it has just been pressed or not).
 		 */
-		static public function OnKeyDown(keyCode: int): Boolean {
+		static public function onKeyDown(keyCode: int): Boolean {
 			if (keyCode < 0) return false;
 			if (keyCode >= keysState.length) return false;
 			
