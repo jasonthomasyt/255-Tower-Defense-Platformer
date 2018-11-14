@@ -5,6 +5,9 @@
 	import flash.ui.Keyboard;
 	import flash.geom.Point;
 	
+	/**
+	 * This is our ScenePlay Object, where our gameplay should take place in.
+	 */
 	public class ScenePlay extends GameScene {
 
 		/** This is our array of Bullet Objects. */
@@ -18,12 +21,15 @@
 		public var player: Player;
 		
 		/**
-		 *
+		 * This is our constructor script. It loads us our level.
 		 */
 		public function ScenePlay() {
 			// constructor code
 			loadLevel();
 		}
+		/**
+		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
+		 */
 		private function doCameraMove(): void {
 			var targetX: Number = -player.x + stage.stageWidth / 2;
 			var targetY: Number = -player.y + stage.stageHeight / 2;
@@ -46,9 +52,9 @@
 			}
 		}
 		/**
-		 *
-		 * @param previousScene
-		 * @return
+		 * This is our update function that is called every frame! It lets our game run.
+		 * @param previousScene If passed in, it allows us to save everything that happened on the scene previous to this one. (Left over from pause screen functionality.)
+		 * @return This returns null every frame, unless it is tim to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
 		 */
 		override public function update(previousScene: GameScene = null): GameScene {
 			player.update();
@@ -65,16 +71,16 @@
 			return null
 		}
 		/**
-		 *
+		 * Adds our EventListeners to the stage when this scene is created.
 		 */
 		override public function onBegin(): void {
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, handleClick);
 		} // end onBegin
 		/**
-		 *
+		 * Removes our EventListeners to the stage when this scene is created.
 		 */
 		override public function onEnd(): void {
-
+			stage.removeEventListener(MouseEvent.MOUSE_DOWN, handleClick);
 		} // end onEnd
 		/**
 		 * This event-handler is called everytime the left mouse button is down.
@@ -87,7 +93,8 @@
 
 		} // ends handleClick
 		/**
-		 * 
+		 * Because our camera moves our platforms around on-screen, we call this function to primarily recalculate our platforms AABB's.
+		 * However, because it is an update function, we can add some more functionality to our platforms if we so wish.
 		 */
 		private function updatePlatforms(): void {
 			for (var i: int = platforms.length - 1; i >= 0; i--) {
@@ -100,17 +107,29 @@
 		private function spawnBullet(): void {
 
 			var b: Bullet = new Bullet(player);
-			level.addChild(b);
+			level.addChildAt(b, 0);
 			bullets.push(b);
 
 		} // ends spawnBullet
 		/**
-		 * this loads the level
+		 * This loads the level
 		 */
 		private function loadLevel(): void {
 			//level = new Level01();
 			addChild(level);
-			if (!player && level.player) {
+			spawnPlayer();
+		}
+		/**
+		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
+		 */
+		private function spawnPlayer(): void {
+			if (!player) {
+				if (!level.player) {
+					level.player = new Player();
+					level.addChild(level.player);
+					level.player.x = level.playerSpawner.x;
+					level.player.y = level.playerSpawner.y;
+				}
 				player = level.player;
 			}
 		}
