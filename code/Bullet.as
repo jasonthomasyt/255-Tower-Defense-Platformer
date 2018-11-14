@@ -8,10 +8,11 @@
 	public class Bullet extends MovieClip {
 		
 		/** Speed of the bullet. */
-		public const SPEED: Number = 240;
+		public const SPEED: Number = 420;
 
-		/** Velocity of the bullet. */
+		/** The X Velocity of the bullet. */
 		public var velocityX: Number = 0;
+		/** The Y Velocity of the bullet. */
 		public var velocityY: Number = -10;
 
 		/** Checks for if the bullet should be deleted. */
@@ -23,17 +24,22 @@
 		/** Angle of the bullet. */
 		public var angle: Number = 0;
 		
+		/** The amount of time the bullet will stay alive for in seconds. */
+		private var lifeMax: Number = 10;
+		/** The current amount of time the bullet has been on screen */
+		private var lifeCurrent: Number = 0;
+		
 		/**
 		 * Bullet constructor function.
 		 * @param p The player object of the game.
 		 */
 		public function Bullet(p: Player) {
-			// Set coordinates of bullet to player coordinates. 
-			x = p.x - p.gun.x;
-			y = p.y;
-
 			// Set angle to gun rotation. 
 			angle = (p.gun.rotation - 90) * Math.PI / 180;
+			
+			// Set coordinates of bullet to player coordinates. 
+			x = p.x;
+			y = p.y;
 
 			// Set velocity according to speed and angle of the bullet.
 			velocityX = SPEED * Math.cos(angle);
@@ -48,9 +54,12 @@
 			// Moves bullet according to velocity.
 			x += velocityX * Time.dtScaled;
 			y += velocityY * Time.dtScaled;
+			
+			// Increment how long this bullet has been alive for.
+			lifeCurrent += Time.dtScaled;
 
-			// If it moves off the stage, mark it as dead.
-			if (!stage || y < 0 || x < 0 || x > stage.stageWidth || y > stage.stageHeight) isDead = true;
+			// If this object has lived a long fulfillful life, mark it as dead.
+			if (lifeCurrent > lifeMax) isDead = true;
 			
 		} // ends update
 	} // ends class

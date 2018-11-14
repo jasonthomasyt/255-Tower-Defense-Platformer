@@ -57,7 +57,7 @@
 		
 		/**
 		 * The update design pattern for the player.
-		 * Handles physics, walking, jumping, and ground detection.
+		 * Handles physics, walking, jumping, aiming, and calculating our collision box.
 		 */
 		public function update(): void {
 			
@@ -67,7 +67,7 @@
 
 			doPhysics();
 
-			detectGround();
+			//detectGround();
 			
 			handleAiming();
 			
@@ -76,7 +76,7 @@
 			if (y < ground){
 				isGrounded = false; // this allows us to walk off edges and only be allowed one air jump.
 			}
-			trace(y);
+			//trace(y);
 		} // ends update
 		
 		/**
