@@ -17,6 +17,8 @@
 		/** */
 		public var player: Player;
 		
+		public var castle: Castle;
+		
 		/**
 		 *
 		 */
@@ -52,12 +54,13 @@
 		 */
 		override public function update(previousScene: GameScene = null): GameScene {
 			player.update();
+			castle.update();
 			doCameraMove();
 			updateBullets();
 			updatePlatforms();
 			doCollisionDetection();
 			
-			if (KeyboardInput.onKeyDown(Keyboard.R)) {
+			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
 				//trace("if is true");
 				return new SceneLose();
 			}
@@ -113,6 +116,9 @@
 			if (!player && level.player) {
 				player = level.player;
 			}
+			if (!castle && level.castle) {
+				castle = level.castle;
+			}
 		}
 		/**
 		 * Updates bullets for every frame.
@@ -146,14 +152,22 @@
 			for (var i: int = 0; i < platforms.length; i++) {
 				if (player.collider.checkOverlap(platforms[i].collider)) { // if we are overlapping
 					// find the fix:
-					var fix: Point = player.collider.findOverlapFix(platforms[i].collider);
+					var platformFix: Point = player.collider.findOverlapFix(platforms[i].collider);
 
 					// apply the fix:
-					player.applyFix(fix);
+					player.applyFix(platformFix);
+					
+					// Recalculate player collider
+					player.collider.calcEdges(player.x, player.y);
 
 				}
 			} // ends for
 
+			if (player.collider.checkOverlap(castle.collider)) {
+				var castleFix: Point = player.collider.findOverlapFix(castle.collider);
+				
+				player.applyFix(castleFix);
+			}
 
 
 		} // ends doCollisionDetection()
