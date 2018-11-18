@@ -23,11 +23,18 @@
 		/** Angle of the bullet. */
 		public var angle: Number = 0;
 		
+		/** The AABB collision for this object. */
+		public var collider:AABB;
+		
 		/**
 		 * Bullet constructor function.
 		 * @param p The player object of the game.
 		 */
 		public function Bullet(p: Player) {
+			
+			collider = new AABB(width/2, height/2)
+			collider.calcEdges(x, y);
+			
 			// Set coordinates of bullet to player coordinates. 
 			x = p.x - p.gun.x;
 			y = p.y;
@@ -44,6 +51,8 @@
 		 * The update design pattern for the bullet.
 		 */
 		public function update(): void {
+			
+			collider.calcEdges(x, y);
 			
 			// Moves bullet according to velocity.
 			x += velocityX * Time.dtScaled;
