@@ -40,13 +40,16 @@
 		private var jumpVelocity:Number = 400;
 		
 		/** Detects the ground in the game. */
-		var ground: Number = 700;
+		var ground: Number = 2000;
 		
 		/** The angle that the gun is pointed. */
 		public var angle: Number = 0;
 		
 		/** The collider for the player. */
 		public var collider:AABB;
+		
+		/** Whether or not This object should be dead. */
+		public var isDead:Boolean = false;
 		
 		/**
 		 * The Player constructor class
@@ -61,13 +64,15 @@
 		 */
 		public function update(): void {
 			
+			trace(y);
+			
 			handleJumping();
 
 			handleWalking();
 
 			doPhysics();
 
-			//detectGround();
+			detectDeathGround();
 			
 			handleAiming();
 			
@@ -163,15 +168,12 @@
 		} // ends doPhysics
 		
 		/**
-		 * Detects when the player has hit the ground.
+		 * Detects when the player has hit the death plane.
 		 */
-		private function detectGround(): void {
+		private function detectDeathGround(): void {
 			// look at y position
 			if (y >= ground) {
-				y = ground; // clamp
-				velocity.y = 0;
-				isGrounded = true;
-				airJumpsLeft = airJumpsMax;
+				isDead = true;
 			}
 		} // ends detectGround
 		

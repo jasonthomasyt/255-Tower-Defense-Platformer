@@ -58,6 +58,10 @@
 		 */
 		override public function update(previousScene: GameScene = null): GameScene {
 			player.update();
+			if (player.isDead) {
+				killPlayer();
+				spawnPlayer();
+			}
 			doCameraMove();
 			updateBullets();
 			updatePlatforms();
@@ -120,6 +124,13 @@
 			spawnPlayer();
 		}
 		/**
+		 * Will destroy the current player object and remove it from memory. Currently does nothing.
+		 */
+		private function killPlayer(): void {
+			//level.removeChild(player);
+			//player = null;
+		}
+		/**
 		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
 		 */
 		private function spawnPlayer(): void {
@@ -127,11 +138,12 @@
 				if (!level.player) {
 					level.player = new Player();
 					level.addChild(level.player);
-					level.player.x = level.playerSpawner.x;
-					level.player.y = level.playerSpawner.y;
 				}
 				player = level.player;
 			}
+			level.player.x = level.playerSpawner.x;
+			level.player.y = level.playerSpawner.y;
+			//level.pleyer.isDead = false;
 		}
 		/**
 		 * Updates bullets for every frame.
