@@ -29,16 +29,16 @@
 		/** The current amount of time the bullet has been on screen */
 		private var lifeCurrent: Number = 0;
 		
+		/** The AABB collision for this object. */
+		public var collider:AABB;
+		
 		/**
 		 * Bullet constructor function.
 		 * @param p The player object of the game.
 		 */
 		public function Bullet(p: Player) {
-			// Set angle to gun rotation. 
-			angle = (p.gun.rotation - 90) * Math.PI / 180;
-			
 			// Set coordinates of bullet to player coordinates. 
-			x = p.x;
+			x = p.x - p.gun.x;
 			y = p.y;
 
 			// Set velocity according to speed and angle of the bullet.
@@ -50,6 +50,8 @@
 		 * The update design pattern for the bullet.
 		 */
 		public function update(): void {
+			
+			collider.calcEdges(x, y);
 			
 			// Moves bullet according to velocity.
 			x += velocityX * Time.dtScaled;
@@ -64,3 +66,10 @@
 		} // ends update
 	} // ends class
 } // ends package
+
+			
+			collider = new AABB(width/2, height/2)
+			collider.calcEdges(x, y);
+			
+			// Set coordinates of bullet to player coordinates. 
+			x = p.x - p.gun.x;
