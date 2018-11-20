@@ -63,26 +63,24 @@
 		
 		private function spawnTower(e:MouseEvent):void {
 			
-			if(!towerExists){
-				trace("yay");
-				/* Instantiate a tower */
-				var newTower:Tower = new Tower();
-				/* Set tower's position to the build spot's */
-				newTower.x = buildSpot.x;
-				newTower.y = buildSpot.y;
-				/* Instantiate a turret */
-				var newTurret:Turret = new Turret();
-				/* Set turret's position to the new tower's */
-				newTurret.x = newTower.x;
-				newTurret.y = newTower.y - 225;
-				/* Adds tower/turret to stage */
-				addChild(newTower);
-				addChild(newTurret);
-				/* Adds turret to turret array */
-				turrets.push(newTurret);
-				towerExists = true;
-				buildSpot.visible = false;
-			}
+			trace("yay");
+			/* Instantiate a tower */
+			var newTower:Tower = new Tower();
+			/* Set tower's position to the build spot's */
+			newTower.x = buildSpot.x;
+			newTower.y = buildSpot.y;
+			/* Instantiate a turret */
+			var newTurret:Turret = new Turret();
+			/* Set turret's position to the new tower's */
+			newTurret.x = newTower.x;
+			newTurret.y = newTower.y - 225;
+			/* Adds tower/turret to stage */
+			addChild(newTower);
+			addChild(newTurret);
+			/* Adds turret to turret array */
+			turrets.push(newTurret);
+			towerExists = true;
+			buildSpot.visible = false;
 			
 		}
 	}
