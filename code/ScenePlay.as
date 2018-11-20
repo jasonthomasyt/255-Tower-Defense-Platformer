@@ -30,6 +30,7 @@
 		public function ScenePlay() {
 			// constructor code
 			loadLevel();
+			
 		}
 		/**
 		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
@@ -89,6 +90,7 @@
 		 */
 		override public function onEnd(): void {
 			stage.removeEventListener(MouseEvent.MOUSE_DOWN, handleClick);
+			platforms = new Array();
 		} // end onEnd
 		/**
 		 * This event-handler is called everytime the left mouse button is down.
@@ -124,7 +126,7 @@
 		 */
 		private function loadLevel(): void {
 			//level = new Level01();
-			addChild(level);
+			//addChild(level);
 			spawnPlayer();
 		}
 		/**
