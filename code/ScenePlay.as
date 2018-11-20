@@ -38,8 +38,8 @@
 		 * Handles camera movement.
 		 */
 		private function doCameraMove(): void {
-			var targetX: Number = -player.x + stage.stageWidth / 2;
-			var targetY: Number = -player.y + stage.stageHeight / 2;
+			var targetX: Number = -player.base.x + stage.stageWidth / 2;
+			var targetY: Number = -player.base.y + stage.stageHeight / 2;
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
 			var offsetY: Number = 0 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
