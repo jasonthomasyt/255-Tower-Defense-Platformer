@@ -9,13 +9,13 @@
 		public function HUD() {
 			// constructor code
 		}
-		public function update(game:Game):void {
+		public function update(scenePlay:ScenePlay):void {
 			
 			parent.setChildIndex(this, parent.numChildren - 1);
 			
-			scoreboard.text = "score: " + Sceneplay.score;
-			coinboard.text = "coin: " + player.coin;
-			bar.scaleX = player.health;
+			scoreboard.text = "score: " + scenePlay.score;
+			coinboard.text = "coin: " + scenePlay.coin;
+			bar.scaleX = scenePlay.player.health / scenePlay.player.maxHealth;
 			
 			
 			
