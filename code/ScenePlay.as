@@ -10,6 +10,7 @@
 		private var bullets: Array = new Array();
 		private var level: MovieClip;
 		private var shakeTimer: Number = 0;
+		public var score:number = 0;
 		/**
 		 *
 		 */
