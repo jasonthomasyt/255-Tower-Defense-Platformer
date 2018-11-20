@@ -4,7 +4,10 @@
 	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
 	import flash.geom.Point;
-	
+
+	/**
+	 * This is our ScenePlay Object, where our gameplay should take place in.
+	 */
 	public class ScenePlay extends GameScene {
 
 		/** This is our array of Bullet Objects. */
@@ -16,19 +19,38 @@
 
 		/** This is our array of Platform Objects. */
 		static public var platforms: Array = new Array();
+
 		/** */
+		private var enemies: Array = new Array();
+		/** */
+		public var towers: Array = new Array();
+
+
+
+		/** The player object for the game. */
 		public var player: Player;
-		
+
+		/** The castle object for the game. */
+		public var castle: Castle;
+
+		/** The array of particle objects. */
+		private var particles: Array = new Array();
+
+
 		/**
 		 * This is our constructor script. It loads us our level.
 		 */
 		public function ScenePlay() {
 			// constructor code
 			loadLevel();
+			spawnPlayer();
 		}
+		/**
+		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
+		 */
 		private function doCameraMove(): void {
-			var targetX: Number = -player.base.x + stage.stageWidth / 2;
-			var targetY: Number = -player.base.y + stage.stageHeight / 2;
+			var targetX: Number = -player.x + stage.stageWidth / 2;
+			var targetY: Number = -player.y + stage.stageHeight / 2;
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
 			var offsetY: Number = 0 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
@@ -51,11 +73,16 @@
 		/**
 		 * This is our update function that is called every frame! It lets our game run.
 		 * @param previousScene If passed in, it allows us to save everything that happened on the scene previous to this one. (Left over from pause screen functionality.)
-		 * @return This returns null every frame, unless it is tim to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
+		 * @return This returns null every frame, unless it is time to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
 		 */
 		override public function update(previousScene: GameScene = null): GameScene {
 			player.update();
+			if (player.isDead) {
+				killPlayer();
+				spawnPlayer();
+			}
 			doCameraMove();
+			castle.update();
 			updateBullets();
 			updatePlatforms();
 			updateParticles();
@@ -92,12 +119,41 @@
 			spawnBullet();
 
 		} // ends handleClick
+
 		/**
-		 * 
+		 * Will destroy the current player object and remove it from memory. Currently does nothing.
+		 */
+		private function killPlayer(): void {
+			//level.removeChild(player);
+			//player = null;
+		}
+		/**
+		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
+		 */
+		private function spawnPlayer(): void {
+			if (!player) {
+				if (!level.player) {
+					level.player = new Player();
+					level.addChild(level.player);
+				}
+				player = level.player;
+			}
+			level.player.x = level.playerSpawner.x;
+			level.player.y = level.playerSpawner.y;
+			/*
+			if (player){
+				level.pleyer.isDead = false;
+			}
+			*/
+		}
+
+		/**
+		 * Because our camera moves our platforms around on-screen, we call this function to primarily recalculate our platforms AABB's.
+		 * However, because it is an update function, we can add some more functionality to our platforms if we so wish.
 		 */
 		private function updatePlatforms(): void {
 			for (var i: int = platforms.length - 1; i >= 0; i--) {
-				platforms[i].update();
+				//addChild(level);
 			}
 		} // ends updatePlatforms
 
@@ -130,10 +186,9 @@
 		 */
 		private function loadLevel(): void {
 			//level = new Level01();
-			addChild(level);
-			if (!player && level.player) {
-				player = level.player;
-			}
+			//addChild(level);
+			spawnPlayer();
+			castle = level.castle
 		}
 		/**
 		 * Updates bullets for every frame.
@@ -216,74 +271,3 @@
 		} // ends explodePlayerBullet
 	} // ends class
 } // ends package
-	
-	/**
-	 * This is our ScenePlay Object, where our gameplay should take place in.
-	 */
-		static public var platforms: Array = new Array();
-		/** */
-		public var player: Player;
-		/** */
-		private var enemies: Array = new Array();
-		/** */
-		public var towers: Array = new Array();
-		
-		static public var platforms: Array = new Array();
-
-		/** The player object for the game. */
-		public var player: Player;
-
-		/** The castle object for the game. */
-		public var castle: Castle;
-
-		/** The array of particle objects. */
-		private var particles: Array = new Array();
-
-			loadLevel();
-			
-		}
-		/**
-		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
-		 */
-			player.update();
-			if (player.isDead) {
-				killPlayer();
-				spawnPlayer();
-			}
-			doCameraMove();
-			castle.update();
-		} // ends handleClick
-		/**
-		 * Because our camera moves our platforms around on-screen, we call this function to primarily recalculate our platforms AABB's.
-		 * However, because it is an update function, we can add some more functionality to our platforms if we so wish.
-		 */
-		private function updatePlatforms(): void {
-			for (var i: int = platforms.length - 1; i >= 0; i--) {
-			//addChild(level);
-			spawnPlayer();
-		}
-		/**
-		 * Will destroy the current player object and remove it from memory. Currently does nothing.
-		 */
-		private function killPlayer(): void {
-			//level.removeChild(player);
-			//player = null;
-		}
-		/**
-		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
-		 */
-		private function spawnPlayer(): void {
-			if (!player) {
-				if (!level.player) {
-					level.player = new Player();
-					level.addChild(level.player);
-				}
-				player = level.player;
-			}
-			level.player.x = level.playerSpawner.x;
-			level.player.y = level.playerSpawner.y;
-			/*
-			if (player){
-				level.pleyer.isDead = false;
-			}
-			*/

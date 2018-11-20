@@ -37,9 +37,16 @@
 		 * @param p The player object of the game.
 		 */
 		public function Bullet(p: Player) {
+			
+			collider = new AABB(width/2, height/2)
+			collider.calcEdges(x, y);
+			
 			// Set coordinates of bullet to player coordinates. 
 			x = p.x - p.gun.x;
 			y = p.y;
+			
+			// Set angle to gun rotation.
+			angle = (p.gun.rotation - 90) * Math.PI /180;
 
 			// Set velocity according to speed and angle of the bullet.
 			velocityX = SPEED * Math.cos(angle);
@@ -66,10 +73,3 @@
 		} // ends update
 	} // ends class
 } // ends package
-
-			
-			collider = new AABB(width/2, height/2)
-			collider.calcEdges(x, y);
-			
-			// Set coordinates of bullet to player coordinates. 
-			x = p.x - p.gun.x;
