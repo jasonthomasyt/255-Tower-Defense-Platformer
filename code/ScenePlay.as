@@ -19,6 +19,10 @@
 		static public var platforms: Array = new Array();
 		/** */
 		public var player: Player;
+		/** */
+		private var enemies: Array = new Array();
+		/** */
+		public var towers: Array = new Array();
 		
 		/**
 		 * This is our constructor script. It loads us our level.
@@ -143,7 +147,11 @@
 			}
 			level.player.x = level.playerSpawner.x;
 			level.player.y = level.playerSpawner.y;
-			//level.pleyer.isDead = false;
+			/*
+			if (player){
+				level.pleyer.isDead = false;
+			}
+			*/
 		}
 		/**
 		 * Updates bullets for every frame.

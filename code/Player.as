@@ -13,7 +13,7 @@
 		private var gravity: Point = new Point(0, 1000);
 		
 		/** Sets the X max speed for the player. */
-		private var maxSpeedX: Number = 200;
+		private var maxSpeedX: Number = 300;
 		
 		/** Sets the velocity for the player. */
 		private var velocity: Point = new Point(1, 5);
@@ -37,7 +37,7 @@
 		private var airJumpsMax:int = 1;
 		
 		/** The player's jump velocity. */
-		private var jumpVelocity:Number = 400;
+		private var jumpVelocity:Number = 500;
 		
 		/** Detects the ground in the game. */
 		var ground: Number = 2000;
@@ -64,7 +64,7 @@
 		 */
 		public function update(): void {
 			
-			trace(y);
+			//trace(y);
 			
 			handleJumping();
 
