@@ -8,7 +8,9 @@
 	 * The class for the Player object.
 	 */
 	public class Player extends MovieClip {
-		
+		public var health: int = 100; 
+		public var maxHealth: int = 100;
+		public var coin: int = 0;
 		/** Sets the gravity for the player. */
 		private var gravity: Point = new Point(0, 1000);
 		

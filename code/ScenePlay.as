@@ -12,31 +12,8 @@
 
 		/** This is our array of Bullet Objects. */
 		private var bullets: Array = new Array();
-		//private var level: MovieClip;
-
-		/** */
+		private var level: MovieClip;
 		private var shakeTimer: Number = 0;
-
-		/** This is our array of Platform Objects. */
-		static public var platforms: Array = new Array();
-
-		/** */
-		private var enemies: Array = new Array();
-		/** */
-		public var towers: Array = new Array();
-
-
-
-		/** The player object for the game. */
-		public var player: Player;
-
-		/** The castle object for the game. */
-		public var castle: Castle;
-
-		/** The array of particle objects. */
-		private var particles: Array = new Array();
-
-
 		/**
 		 * This is our constructor script. It loads us our level.
 		 */
@@ -271,3 +248,29 @@
 		} // ends explodePlayerBullet
 	} // ends class
 } // ends package
+		//private var level: MovieClip;
+
+		/** */
+		private var shakeTimer: Number = 0;
+
+		/** This is our array of Platform Objects. */
+		static public var platforms: Array = new Array();
+
+		/** */
+		private var enemies: Array = new Array();
+		/** */
+		public var towers: Array = new Array();
+
+
+
+		/** The player object for the game. */
+		public var player: Player;
+
+		/** The castle object for the game. */
+		public var castle: Castle;
+
+		/** The array of particle objects. */
+		private var particles: Array = new Array();
+
+
+		public var score:number = 0;
