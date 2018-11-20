@@ -79,11 +79,11 @@
 		 * @return This returns null every frame, unless it is time to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
 		 */
 		override public function update(previousScene: GameScene = null): GameScene {
-			player.update();
 			if (player.isDead) {
 				killPlayer();
 				spawnPlayer();
 			}
+			player.update();
 			doCameraMove();
 			castle.update();
 			updateBullets();
@@ -130,20 +130,22 @@
 		 * Will destroy the current player object and remove it from memory. Currently does nothing.
 		 */
 		private function killPlayer(): void {
-			//level.removeChild(player);
-			//player = null;
+			if (level.contains(player)) {
+				level.removeChild(player);
+				player = null;
+				level.player = null;
+			}
+
 		}
 		/**
 		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
 		 */
 		private function spawnPlayer(): void {
-			if (!player) {
-				if (!level.player) {
-					level.player = new Player();
-					level.addChild(level.player);
-				}
-				player = level.player;
+			if (!level.player) {
+				level.player = new Player();
+				level.addChild(level.player);
 			}
+			player = level.player;
 			level.player.x = level.playerSpawner.x;
 			level.player.y = level.playerSpawner.y;
 			/*
@@ -232,14 +234,6 @@
 					if (platforms[i].collider.checkOverlap(bullets[j].collider)) {
 						explodePlayerBullet(j);
 					}
-
-					if (bullets[j].y > 700) { // If bullet hits ground...
-						explodePlayerBullet(j);
-					}
-
-					if (bullets[j].collider.checkOverlap(castle.collider)) {
-						explodePlayerBullet(j);
-					}
 				}
 
 				if (player.collider.checkOverlap(platforms[i].collider)) { // if we are overlapping
@@ -254,6 +248,16 @@
 
 				}
 			} // ends for
+
+			for (var k: int = 0; k < bullets.length; k++) {
+				if (bullets[k].y > 700) { // If bullet hits ground...
+					explodePlayerBullet(k);
+				}
+
+				if (bullets[k].collider.checkOverlap(castle.collider)) {
+					explodePlayerBullet(k);
+				}
+			}
 
 			if (player.collider.checkOverlap(castle.collider)) {
 				var castleFix: Point = player.collider.findOverlapFix(castle.collider);

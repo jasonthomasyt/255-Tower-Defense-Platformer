@@ -13,7 +13,7 @@
 			
 			angularVelocity = Math.random() * 180 - 90;
 			
-			scaleX = Math.random() * .5;
+			scaleX = Math.random() * .2;
 			
 			scaleY = scaleX;
 
