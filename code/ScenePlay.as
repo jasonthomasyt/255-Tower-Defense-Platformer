@@ -67,7 +67,7 @@
 		override public function update(previousScene: GameScene = null): GameScene {
 			player.update();
 			castle.update();
-			doCameraMove();
+			//doCameraMove();
 			updateBullets();
 			updatePlatforms();
 			updateParticles();
@@ -223,7 +223,7 @@
 		private function explodePlayerBullet(index: int): void {
 			bullets[index].isDead = true;
 
-			for (var i: int = 0; i < 10; i++) {
+			for (var i: int = 0; i < 5; i++) {
 				var p: Particle = new ParticleBoom(bullets[index].x, bullets[index].y);
 				level.addChild(p);
 				particles.push(p);
