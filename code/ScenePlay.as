@@ -9,7 +9,7 @@
 	 * This is our ScenePlay Object, where our gameplay should take place in.
 	 */
 	public class ScenePlay extends GameScene {
-		
+
 		/** */
 		public var score: int = 0;
 		/** */
@@ -90,7 +90,7 @@
 			updatePlatforms();
 			updateParticles();
 			doCollisionDetection();
-			
+
 			hud.update(this)
 
 			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
@@ -279,19 +279,19 @@
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
-	} // ends class
-} // ends package
-		private function spawnTower():void{
+		/**
+		 *
+		 */
+		private function spawnTower(): void {
 			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_1)) {
 				//spawn basic tower
-				var newBasicTower:BasicTower = new BasicTower();
+				var newBasicTower: BasicTower = new BasicTower();
 				newBasicTower.y = level.buildSpot.y;
 				newBasicTower.x = level.buildSpot.x;
 				level.removeChild(level.buildSpot);
 				level.addChild(newBasicTower);
 				towers.push(newBasicTower);
-			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_2)) {
-			}
+				if (KeyboardInput.onKeyDown(Keyboard.NUMBER_2)) {}
 				trace("tower spawn");
 				//spawn rapid fire tower
 				level.buildSpot.visible = false;
@@ -300,8 +300,8 @@
 			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_3)) {
 				//spawn bomb tower
 			}
-				level.buildSpot.visible = false;
-				//var newBombTower:BombTower = new BombTower();
+			level.buildSpot.visible = false;
+			//var newBombTower:BombTower = new BombTower();
 		}
-
-		
+	} // ends class
+} // ends package
