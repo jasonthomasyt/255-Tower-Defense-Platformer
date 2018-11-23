@@ -29,6 +29,8 @@
 		/** */
 		public var towers: Array = new Array();
 
+		public var smokeDelay: Number = 0;
+
 
 
 		/** The player object for the game. */
@@ -88,6 +90,7 @@
 			castle.update();
 			updateBullets();
 			updatePlatforms();
+			spawnSmoke();
 			updateParticles();
 			doCollisionDetection();
 
@@ -184,8 +187,8 @@
 		 */
 		private function spawnBullet(): void {
 
-			var b: Bullet = new Bullet(player);
-			level.addChildAt(b, 0);
+			var b: Bullet = new Bullet(level.player);
+			level.addChild(b);
 			bullets.push(b);
 
 		} // ends spawnBullet
@@ -279,6 +282,22 @@
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
+
+		private function spawnSmoke(): void {
+
+			smokeDelay--;
+			
+			if (smokeDelay <= 0) {
+				for (var i: int = 0; i < 5; i++) {
+					var p: Particle = new ParticleSmoke(Math.random() * stage.width, 650);
+					level.addChildAt(p, 1);
+					particles.push(p);
+				}
+				
+				smokeDelay = Math.random() * 3 + .5;
+			}
+		} // ends spawnSmoke
+
 		/**
 		 *
 		 */
