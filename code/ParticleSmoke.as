@@ -15,7 +15,7 @@
 			
 			scalarVelocity = Math.random() * .1;
 			
-			alphaVelocity = -.005;
+			alphaVelocity = -.0005;
 			
 			alpha = 1;
 		}

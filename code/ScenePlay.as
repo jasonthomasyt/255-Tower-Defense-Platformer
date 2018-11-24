@@ -30,6 +30,8 @@
 		public var towers: Array = new Array();
 
 		public var smokeDelay: Number = 0;
+		
+		public var smokeParticleDelay: Number = 0;
 
 
 
@@ -91,6 +93,7 @@
 			updateBullets();
 			updatePlatforms();
 			spawnSmoke();
+			spawnSmokeParticle();
 			updateParticles();
 			doCollisionDetection();
 
@@ -286,17 +289,31 @@
 		private function spawnSmoke(): void {
 
 			smokeDelay--;
-			
+
 			if (smokeDelay <= 0) {
-				for (var i: int = 0; i < 5; i++) {
-					var p: Particle = new ParticleSmoke(Math.random() * stage.width, 650);
+				for (var i: int = 0; i < 10; i++) {
+					var p: Particle = new ParticleSmoke(Math.random() * stage.width, 670);
 					level.addChildAt(p, 1);
 					particles.push(p);
 				}
-				
+
 				smokeDelay = Math.random() * 3 + .5;
 			}
 		} // ends spawnSmoke
+
+		private function spawnSmokeParticle(): void {
+
+			smokeParticleDelay--;
+
+			if (smokeParticleDelay <= 0) {
+				for (var i: int = 0; i < 5; i++) {
+					var p: Particle = new ParticleSmokeParticle(Math.random() * stage.width, 670);
+					level.addChildAt(p, 1);
+					particles.push(p);
+				}
+				smokeParticleDelay = Math.random() * 3 + .5;
+			}
+		}
 
 		/**
 		 *
