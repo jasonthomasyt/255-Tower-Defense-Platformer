@@ -55,7 +55,7 @@
 			var targetX: Number = -player.x + stage.stageWidth / 2;
 			var targetY: Number = -player.y + stage.stageHeight / 2;
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
-			var offsetY: Number = 0 //Math.random() * 20 - 10;
+			var offsetY: Number = 4 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
 			level.x += (targetX - level.x) * Time.dt * camEaseMultipler + offsetX;
 			level.y += (targetY - level.y) * Time.dt * camEaseMultipler + offsetY;
@@ -248,7 +248,7 @@
 
 				}
 			} // ends for
-
+			/*
 			for (var k: int = 0; k < bullets.length; k++) {
 				if (bullets[k].y > 700) { // If bullet hits ground...
 					explodePlayerBullet(k);
@@ -258,12 +258,13 @@
 					explodePlayerBullet(k);
 				}
 			}
-
+			
 			if (player.collider.checkOverlap(castle.collider)) {
 				var castleFix: Point = player.collider.findOverlapFix(castle.collider);
 
 				player.applyFix(castleFix);
 			}
+			*/
 		} // ends doCollisionDetection()
 
 		/**
