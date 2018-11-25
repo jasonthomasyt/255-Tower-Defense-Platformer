@@ -67,7 +67,7 @@
 		 */
 		public function update(): void {
 			
-			//trace(y);
+			trace(y);
 			
 			handleJumping();
 
@@ -84,7 +84,7 @@
 			if (y < ground){
 				isGrounded = false; // this allows us to walk off edges and only be allowed one air jump.
 			}
-			trace(y);
+			
 		} // ends update
 		
 		/**
