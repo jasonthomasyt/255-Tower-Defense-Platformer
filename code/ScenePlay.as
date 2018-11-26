@@ -24,6 +24,9 @@
 		static public var enemies: Array = new Array();
 		/** */
 		static public var towers: Array = new Array();
+		
+		/** */
+		static public var main:ScenePlay; // singleton
 
 		/** The player object for the game. */
 		public var player: Player;
@@ -40,6 +43,8 @@
 		 */
 		public function ScenePlay() {
 			// constructor code
+			ScenePlay.main = this;
+			
 			loadLevel();
 			spawnPlayer();
 		}
@@ -209,12 +214,6 @@
 
 			//Collision for platforms
 			for (var i: int = 0; i < ScenePlay.platforms.length; i++) {
-				// Collision for player bullets hitting platforms.
-				for (var j: int = 0; j < bullets.length; j++) {
-					if (platforms[i].collider.checkOverlap(bullets[j].collider)) {
-						explodePlayerBullet(j);
-					}
-				}
 				
 				// Collision for player hitting platforms.
 				if (player.collider.checkOverlap(platforms[i].collider)) { // if we are overlapping
@@ -223,6 +222,13 @@
 
 					// apply the fix:
 					player.applyFix(playerFix);
+				}
+				
+				// Collision for player bullets hitting platforms.
+				for (var j: int = 0; j < bullets.length; j++) {
+					if (platforms[i].collider.checkOverlap(bullets[j].collider)) {
+						explodePlayerBullet(j);
+					}
 				}
 				
 				// Collision for enemies hitting platforms.

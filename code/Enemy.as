@@ -33,6 +33,9 @@
 		
 		/** */
 		private var state:EnemyState;
+		
+		/** */
+		public var sightDistance:Number = 100;
 
 		/** Detects the ground in the game. */
 		var ground: Number = 2000;
@@ -67,6 +70,8 @@
 		 */
 		public function update(): void {
 
+			//trace("enemy update");
+			
 			if(state) {
 				var nextState:EnemyState = state.update(this)
 				changeState(nextState);
@@ -122,7 +127,7 @@
 		 * This function looks at the direction input in order to accelerate the enemy, changing the enemy's velocity.
 		 * @param direction If a negative number is passed in, it accelerates left. If positive, it'll accelerate right.
 		 */
-		private function handleWalking(direction: int): void {
+		public function handleWalking(direction: int): void {
 			if (direction < 0) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
 			if (direction > 0) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
 
@@ -220,6 +225,16 @@
 			if (gun.rotation < -135 && gun.rotation > -170) gun.rotation = 135;
 			if (gun.rotation > 135 && gun.rotation < 170) gun.rotation = -135;
 		} // end handleAiming
+		
+		/**
+		 * 
+		 */
+		public function getDistToPlayer():Number {
+			var distX:Number = ScenePlay.main.player.x - x;
+			var distY:Number = ScenePlay.main.player.y - y;
+			
+			return Math.sqrt(distX * distX + distY * distY);
+		}
 		
 	} // end class Enemy
 } // end package code

@@ -67,7 +67,7 @@
 		 */
 		public function update(): void {
 			
-			trace(y);
+			//trace(y);
 			
 			handleJumping();
 
