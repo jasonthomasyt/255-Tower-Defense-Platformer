@@ -4,6 +4,7 @@
 	import flash.events.MouseEvent;
 	import flash.ui.Keyboard;
 	import flash.geom.Point;
+	import sounds.*;
 
 	/**
 	 * This is our ScenePlay Object, where our gameplay should take place in.
@@ -41,6 +42,12 @@
 
 		/** The array of particle objects. */
 		private var particles: Array = new Array();
+		
+		/** The sound for shooting bullets. */
+		private var shootSound: ShootSound = new ShootSound();
+		
+		/** The sound for when the bullet hits a wall. */
+		private var hitSound: HitSound = new HitSound();
 
 		/**
 		 * This is our constructor script. It loads us our level.
@@ -186,6 +193,8 @@
 		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
 		 */
 		private function spawnBullet(): void {
+			
+			shootSound.play();
 
 			var b: Bullet = new Bullet(level.player);
 			level.addChild(b);
@@ -274,6 +283,9 @@
 		 * @param index The index of the bullet in the bullets array.
 		 */
 		private function explodePlayerBullet(index: int): void {
+			
+			hitSound.play();
+			
 			bullets[index].isDead = true;
 
 			for (var i: int = 0; i < 5; i++) {
