@@ -25,6 +25,10 @@
 		static public var enemies: Array = new Array();
 		/** */
 		public var towers: Array = new Array();
+		
+		public var smokeParticleDelay: Number = 0;
+		
+		static public var main:ScenePlay; // singleton
 
 		/** The player object for the game. */
 		public var player: Player;
@@ -192,87 +196,6 @@
 				}
 			}
 		} // ends updateEnemies
-		/**
-		 * This is our update function that is called every frame! It lets our game run.
-		 * @param previousScene If passed in, it allows us to save everything that happened on the scene previous to this one. (Left over from pause screen functionality.)
-		 * @return This returns null every frame, unless it is time to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
-		 */
-		override public function update(previousScene: GameScene = null): GameScene {
-			if (player.isDead) {
-				killPlayer();
-				spawnPlayer();
-			}
-			player.update();
-			doCameraMove();
-			castle.update();
-			updateBullets();
-			updatePlatforms();
-			updateParticles();
-			doCollisionDetection();
-
-			hud.update(this)
-
-			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
-				//trace("if is true");
-				return new SceneLose();
-			}
-
-			return null
-		} // ends update
-
-		/**
-		 * Adds our EventListeners to the stage when this scene is created.
-		 */
-		override public function onBegin(): void {
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, handleClick);
-		} // end onBegin
-		/**
-		 * Removes our EventListeners to the stage when this scene is created.
-		 */
-		override public function onEnd(): void {
-			stage.removeEventListener(MouseEvent.MOUSE_DOWN, handleClick);
-			platforms = new Array();
-			score = 0;
-		} // end onEnd
-		/**
-		 * This event-handler is called everytime the left mouse button is down.
-		 * It causes the player to shoot bullets.
-		 * @param e The MouseEvent that triggered this event-handler.
-		 */
-		private function handleClick(e: MouseEvent): void {
-
-			spawnBullet();
-
-		} // ends handleClick
-
-		/**
-		 * Will destroy the current player object and remove it from memory. Currently does nothing.
-		 */
-		private function killPlayer(): void {
-			if (level.contains(player)) {
-				level.removeChild(player);
-				player = null;
-				level.player = null;
-			}
-
-		}
-		/**
-		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
-		 */
-		private function spawnPlayer(): void {
-			if (!level.player) {
-				level.player = new Player();
-				level.addChild(level.player);
-			}
-			player = level.player;
-			level.player.x = level.playerSpawner.x;
-			level.player.y = level.playerSpawner.y;
-			/*
-			if (player){
-				level.pleyer.isDead = false;
-			}
-			*/
-		}
 
 		/**
 		 * Because our camera moves our platforms around on-screen, we call this function to primarily recalculate our platforms AABB's.
@@ -296,17 +219,7 @@
 				}
 			}
 		} // ends updateParticles
-
-		/** 
-		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
-		 */
-		private function spawnBullet(): void {
-
-			var b: Bullet = new Bullet(player);
-			level.addChildAt(b, 0);
-			bullets.push(b);
-
-		} // ends spawnBullet
+		
 		/**
 		 * This is where we do all of our AABB collision decetction. It loops through all of our walls and checks if
 		 * the player is colliding with any of them.
@@ -444,101 +357,3 @@
 		}
 	} // ends class
 } // ends package
-		public var smokeParticleDelay: Number = 0;
-		static public var main:ScenePlay; // singleton
-		 * This is our update function that is called every frame! It lets our game run.
-		 * @param previousScene If passed in, it allows us to save everything that happened on the scene previous to this one. (Left over from pause screen functionality.)
-		 * @return This returns null every frame, unless it is time to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
-		 */
-		override public function update(previousScene: GameScene = null): GameScene {
-			if (player.isDead) {
-				killPlayer();
-				spawnPlayer();
-			}
-			player.update();
-			doCameraMove();
-			castle.update();
-			updateBullets();
-			updatePlatforms();
-			spawnSmokeParticle();
-			updateParticles();
-			doCollisionDetection();
-
-			hud.update(this)
-
-			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
-				//trace("if is true");
-				return new SceneLose();
-			}
-
-			return null
-		} // ends update
-
-		/**
-		 * Adds our EventListeners to the stage when this scene is created.
-		 */
-		override public function onBegin(): void {
-			stage.addEventListener(MouseEvent.MOUSE_DOWN, handleClick);
-		} // end onBegin
-		/**
-		 * Removes our EventListeners to the stage when this scene is created.
-		 */
-		override public function onEnd(): void {
-			stage.removeEventListener(MouseEvent.MOUSE_DOWN, handleClick);
-			platforms = new Array();
-			score = 0;
-		} // end onEnd
-		/**
-		 * This event-handler is called everytime the left mouse button is down.
-		 * It causes the player to shoot bullets.
-		 * @param e The MouseEvent that triggered this event-handler.
-		 */
-		private function handleClick(e: MouseEvent): void {
-
-			spawnBullet();
-
-		} // ends handleClick
-
-		/**
-		 * Will destroy the current player object and remove it from memory. Currently does nothing.
-		 */
-		private function killPlayer(): void {
-			if (level.contains(player)) {
-				level.removeChild(player);
-				player = null;
-				level.player = null;
-			}
-
-		}
-		/**
-		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
-		 */
-		private function spawnPlayer(): void {
-			if (!level.player) {
-				level.player = new Player();
-				level.addChild(level.player);
-			}
-			player = level.player;
-			level.player.x = level.playerSpawner.x;
-			level.player.y = level.playerSpawner.y;
-			/*
-			if (player){
-				level.pleyer.isDead = false;
-			}
-			*/
-		}
-
-		/**
-
-		/** 
-		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
-		 */
-		private function spawnBullet(): void {
-			
-			shootSound.play();
-
-			var b: Bullet = new Bullet(level.player);
-			level.addChildAt(b, 1);
-			bullets.push(b);
-
-		} // ends spawnBullet
