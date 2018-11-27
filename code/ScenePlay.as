@@ -45,6 +45,8 @@
 
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
+		
+		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
 
 		/**
 		 * This is our constructor script. It loads us our level.
@@ -335,6 +337,7 @@
 		} // ends explodePlayerBullet
 
 		private function killEnemy(index: int): void {
+			enemyDieSound.play();
 			ScenePlay.enemies[index].isDead = true;
 
 			for (var i: int = 0; i < 10; i++) {
