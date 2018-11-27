@@ -1,8 +1,6 @@
 ﻿package code {
 	
 	import flash.display.MovieClip;
-	public var health: int = 0;
-	public var maxHealth: int = 0;
 	
 	public class Castle extends MovieClip {
 		
@@ -11,6 +9,10 @@
 		
 		/** The collider for the castle. */
 		public var collider:AABB;
+		
+		public var health: int = 0;
+		
+		public var maxHealth: int = 0;
 		
 		public function Castle() {
 			collider = new AABB(width / 2, height / 2);
