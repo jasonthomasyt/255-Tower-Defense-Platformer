@@ -15,7 +15,7 @@
 		public var score: int = 0;
 		/** */
 		public var coin: int = 0;
-		
+
 		/** */
 		private var shakeTimer: Number = 0;
 
@@ -25,10 +25,10 @@
 		static public var enemies: Array = new Array();
 		/** */
 		public var towers: Array = new Array();
-		
+
 		public var smokeParticleDelay: Number = 0;
-		
-		static public var main:ScenePlay; // singleton
+
+		static public var main: ScenePlay; // singleton
 
 		/** The player object for the game. */
 		public var player: Player;
@@ -39,10 +39,10 @@
 
 		/** The array of particle objects. */
 		private var particles: Array = new Array();
-		
+
 		/** The sound for shooting bullets. */
 		private var shootSound: ShootSound = new ShootSound();
-		
+
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
 
@@ -52,7 +52,7 @@
 		public function ScenePlay() {
 			// constructor code
 			ScenePlay.main = this;
-			
+
 			loadLevel();
 			spawnPlayer();
 		}
@@ -95,16 +95,17 @@
 			player.update();
 			updateBullets();
 			updateEnemies();
-			
+
 			updatePlatforms();
 			castle.update();
-			
+
+			spawnSmokeParticles();
 			updateParticles();
-			
+
 			doCollisionDetection();
-			
+
 			doCameraMove();
-			
+
 			//hud.update(this)
 
 			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
@@ -185,10 +186,10 @@
 			} // ends for loop updating bullets
 		} // ends updateBullets
 		/**
-		 * 
+		 *
 		 */
 		private function updateEnemies(): void {
-			for(var i:int = ScenePlay.enemies.length -1; i >= 0; i--){
+			for (var i: int = ScenePlay.enemies.length - 1; i >= 0; i--) {
 				ScenePlay.enemies[i].update();
 				if (ScenePlay.enemies[i].isDead) {
 					level.removeChild(ScenePlay.enemies[i]);
@@ -219,56 +220,79 @@
 				}
 			}
 		} // ends updateParticles
-		
+
 		/**
 		 * This is where we do all of our AABB collision decetction. It loops through all of our walls and checks if
 		 * the player is colliding with any of them.
 		 */
 		private function doCollisionDetection(): void {
 
-			//Collision for platforms
 			for (var i: int = 0; i < ScenePlay.platforms.length; i++) {
-				
-				// Collision for player hitting platforms.
-				if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
-					
-					// find the fix:
-					var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
-					//trace(fix);
-					// apply the fix:
-					player.applyFix(fix);
-				}
-				
-				// Collision for player bullets hitting platforms.
-				for (var j: int = 0; j < bullets.length; j++) {
-					if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-						//trace(player.collider.checkOverlap(platforms[i].collider));
-						explodePlayerBullet(j);
-					}
-				}
-				
-				// Collision for enemies hitting platforms.
-				for (var k:int = 0; k < ScenePlay.enemies.length; k++) {
-					
-					if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)){
-						var enemyFix:Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
-						ScenePlay.enemies[k].applyFix(enemyFix);
-					}
-					
-				}
-				
+				//Collision for platforms
+				platformCollision(i);
+
 				// Collision for player bullets hitting enemies.
-				for (var l: int = 0; l < bullets.length; l++){
-					for (var m: int = 0; m < ScenePlay.enemies.length; m++){
-						if (bullets[l].collider.checkOverlap(ScenePlay.enemies[m].collider)){
-							killEnemy(m);
-							explodePlayerBullet(l);
-						}
-					}
-				}
-				
+				bulletEnemyCollision();
+
+				// Collision between player and enemies
+				playerEnemyCollision();
 			} // ends for
+
+
 		} // ends doCollisionDetection()
+
+		private function platformCollision(i: Number): void {
+
+
+			// Collision for player hitting platforms.
+			if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
+
+				// find the fix:
+				var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
+				//trace(fix);
+				// apply the fix:
+				player.applyFix(fix);
+			}
+
+			// Collision for enemies hitting platforms.
+			for (var k: int = 0; k < ScenePlay.enemies.length; k++) {
+
+				if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					ScenePlay.enemies[k].applyFix(enemyFix);
+				}
+
+			}
+
+			// Collision for player bullets hitting platforms.
+			for (var j: int = 0; j < bullets.length; j++) {
+				if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					//trace(player.collider.checkOverlap(platforms[i].collider));
+					explodePlayerBullet(j);
+				}
+			} // ends for
+		} // ends platformCollision
+
+		private function bulletEnemyCollision(): void {
+			for (var i: int = 0; i < bullets.length; i++) {
+				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
+					if (bullets[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
+						killEnemy(j);
+						explodePlayerBullet(i);
+					}
+				} // ends for
+			} // ends for
+		} // ends bulletEnemyCollision
+
+		private function playerEnemyCollision(): void {
+			for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
+				if (player.collider.checkOverlap(ScenePlay.enemies[i].collider)) {
+					var playerFix: Point = player.collider.findOverlapFix(ScenePlay.enemies[i].collider);
+					player.applyFix(playerFix);
+				}
+			} // ends for
+		} // ends playerEnemyCollision
+
 		/**
 		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
 		 */
@@ -298,9 +322,9 @@
 		 * @param index The index of the bullet in the bullets array.
 		 */
 		private function explodePlayerBullet(index: int): void {
-			
+
 			hitSound.play();
-			
+
 			bullets[index].isDead = true;
 
 			for (var i: int = 0; i < 5; i++) {
@@ -309,10 +333,10 @@
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
-		
+
 		private function killEnemy(index: int): void {
 			ScenePlay.enemies[index].isDead = true;
-			
+
 			for (var i: int = 0; i < 10; i++) {
 				var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
 				level.addChild(p);
@@ -320,7 +344,7 @@
 			}
 		}
 
-		private function spawnSmokeParticle(): void {
+		private function spawnSmokeParticles(): void {
 
 			smokeParticleDelay--;
 
