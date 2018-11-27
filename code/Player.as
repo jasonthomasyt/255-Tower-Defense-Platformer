@@ -43,7 +43,7 @@
 		private var jumpVelocity:Number = 500;
 		
 		/** Detects the ground in the game. */
-		var ground: Number = 2000;
+		var ground: Number = 700.45;
 		
 		/** The angle that the gun is pointed. */
 		public var angle: Number = 0;
@@ -69,8 +69,6 @@
 			
 			parent.setChildIndex(this, parent.numChildren - 1);
 			
-			//trace(y);
-			
 			handleJumping();
 
 			handleWalking();
@@ -86,7 +84,7 @@
 			if (y < ground){
 				isGrounded = false; // this allows us to walk off edges and only be allowed one air jump.
 			}
-			
+			trace(y);
 		} // ends update
 		
 		/**
@@ -207,3 +205,4 @@
 		
 	} // ends class
 } // ends package
+			}
