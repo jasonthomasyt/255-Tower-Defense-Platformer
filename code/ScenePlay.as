@@ -105,7 +105,7 @@
 			
 			doCameraMove();
 			
-			hud.update(this)
+			//hud.update(this)
 
 			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
 				//trace("if is true");
@@ -257,24 +257,17 @@
 					
 				}
 				
+				// Collision for player bullets hitting enemies.
+				for (var l: int = 0; l < bullets.length; l++){
+					for (var m: int = 0; m < ScenePlay.enemies.length; m++){
+						if (bullets[l].collider.checkOverlap(ScenePlay.enemies[m].collider)){
+							killEnemy(m);
+							explodePlayerBullet(l);
+						}
+					}
+				}
+				
 			} // ends for
-			/*
-			for (var k: int = 0; k < bullets.length; k++) {
-				if (bullets[k].y > 700) { // If bullet hits ground...
-					explodePlayerBullet(k);
-				}
-
-				if (bullets[k].collider.checkOverlap(castle.collider)) {
-					explodePlayerBullet(k);
-				}
-			}
-			
-			if (player.collider.checkOverlap(castle.collider)) {
-				var castleFix: Point = player.collider.findOverlapFix(castle.collider);
-
-				player.applyFix(castleFix);
-			}
-			*/
 		} // ends doCollisionDetection()
 		/**
 		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
@@ -316,6 +309,16 @@
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
+		
+		private function killEnemy(index: int): void {
+			ScenePlay.enemies[index].isDead = true;
+			
+			for (var i: int = 0; i < 10; i++) {
+				var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
+				level.addChild(p);
+				particles.push(p);
+			}
+		}
 
 		private function spawnSmokeParticle(): void {
 
