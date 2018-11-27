@@ -61,7 +61,7 @@
 		public function Enemy() {
 			// constructor code
 			ScenePlay.enemies.push(this);
-			collider = new AABB(width / 2, height / 2);
+			collider = new AABB(base.width / 2, base.height / 2);
 			changeState(new EnemyStateIdle());
 		} // end constructor
 		/**

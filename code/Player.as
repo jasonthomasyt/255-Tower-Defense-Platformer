@@ -58,7 +58,7 @@
 		 * The Player constructor class
 		 */
 		public function Player() {
-			collider = new AABB(width / 2, height / 2);
+			collider = new AABB(base.width / 2, base.height / 2);
 		} // ends Player
 		
 		/**
@@ -200,7 +200,7 @@
 				airJumpsLeft = airJumpsMax;
 			}
 			
-			collider.calcEdges(base.x, base.y);
+			collider.calcEdges(x, y);
 		} // ends applyFix
 		
 	} // ends class

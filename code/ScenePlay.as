@@ -219,10 +219,10 @@
 				if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
 					
 					// find the fix:
-					var playerFix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
-					//trace(playerFix);
+					var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					trace(fix);
 					// apply the fix:
-					player.applyFix(playerFix);
+					player.applyFix(fix);
 				}
 				
 				// Collision for player bullets hitting platforms.
@@ -269,7 +269,7 @@
 			var targetX: Number = -player.x + stage.stageWidth / 2;
 			var targetY: Number = -player.y + stage.stageHeight / 2;
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
-			var offsetY: Number = 0 //Math.random() * 20 - 10;
+			var offsetY: Number = 4 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
 			level.x += (targetX - level.x) * Time.dt * camEaseMultipler + offsetX;
 			level.y += (targetY - level.y) * Time.dt * camEaseMultipler + offsetY;
