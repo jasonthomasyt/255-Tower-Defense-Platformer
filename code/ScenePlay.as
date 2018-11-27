@@ -49,10 +49,12 @@
 		/**
 		 * This is our constructor script. It loads us our level.
 		 */
+		 var hud:HUD = new HUD;
+
 		public function ScenePlay() {
 			// constructor code
 			ScenePlay.main = this;
-			
+			addChild(hud);
 			loadLevel();
 			spawnPlayer();
 		}

@@ -14,7 +14,7 @@
 		public function update(scenePlay: ScenePlay): void {
 
 
-			towerHealth.scaleX = health / maxHealth;
+			
 
 
 
