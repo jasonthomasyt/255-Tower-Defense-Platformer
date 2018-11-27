@@ -3,6 +3,7 @@
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import flash.ui.Keyboard;
+	import sounds.*;
 	
 	/**
 	 * The class for the Player object.
@@ -53,6 +54,10 @@
 		
 		/** Whether or not This object should be dead. */
 		public var isDead:Boolean = false;
+		
+		private var jumpSound: JumpSound = new JumpSound();
+		
+		private var doubleJumpSound: DoubleJumpSound = new DoubleJumpSound();
 		
 		/**
 		 * The Player constructor class
@@ -110,11 +115,13 @@
 		private function handleJumping(): void {
 			if (KeyboardInput.onKeyDown(Keyboard.SPACE)) {
 				if (isGrounded) { // we are on the ground...
+					jumpSound.play();
 					isGrounded = false; // not on ground
 					velocity.y = -jumpVelocity; // apply an impulse up
 					isJumping = true;
 				} else { // in air, attempting a double-jump
 					if (airJumpsLeft > 0 && isJumping == false) { // if we have air-jumps left:
+						doubleJumpSound.play();
 						velocity.y = -jumpVelocity; // air jump
 						airJumpsLeft--;
 						isJumping = true;
