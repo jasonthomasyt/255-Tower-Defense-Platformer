@@ -1,7 +1,8 @@
 ﻿package code {
 	
 	import flash.display.MovieClip;
-	
+	public var health: int = 0;
+	public var maxHealth: int = 0;
 	
 	public class Castle extends MovieClip {
 		
@@ -20,6 +21,7 @@
 		 */
 		public function update(): void {
 			collider.calcEdges(x, y);
+				castleHealth.scaleX = health / maxHealth;
 		}
 	}
 	
