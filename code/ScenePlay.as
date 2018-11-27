@@ -23,6 +23,8 @@
 		/** */
 		static public var enemies: Array = new Array();
 		/** */
+		private var bulletsBad: Array = new Array();
+		/** */
 		static public var towers: Array = new Array();
 		
 		/** */
@@ -87,6 +89,7 @@
 			player.update();
 			updateBullets();
 			updateEnemies();
+			updateBulletsBad();
 			
 			updatePlatforms();
 			castle.update();
@@ -153,6 +156,16 @@
 			bullets.push(b);
 
 		} // ends spawnBullet
+		/** 
+		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
+		 */
+		public function spawnBulletBad(enemy:Enemy): void {
+			trace("spawnBulletBad FIRE!");
+			var b: BulletBad = new BulletBad(enemy);
+			level.addChild(b);
+			bulletsBad.push(b);
+
+		} // ends spawnBullet
 		/**
 		 * Updates bullets for every frame.
 		 */
@@ -173,6 +186,29 @@
 					// if the variable is an array,
 					// remove the object from the array
 					bullets.splice(i, 1);
+				}
+			} // ends for loop updating bullets
+		} // ends updateBullets
+		/**
+		 * Updates bullets for every frame.
+		 */
+		private function updateBulletsBad(): void {
+
+			// update everything:
+			for (var i: int = bulletsBad.length - 1; i >= 0; i--) {
+				bulletsBad[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (bulletsBad[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(bulletsBad[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					bulletsBad.splice(i, 1);
 				}
 			} // ends for loop updating bullets
 		} // ends updateBullets

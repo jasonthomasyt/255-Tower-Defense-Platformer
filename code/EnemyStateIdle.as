@@ -17,22 +17,29 @@
 		 * 
 		 */
 		override public function update(enemy:Enemy):EnemyState {
+			/*
+			DESIRED BEHAVIOR:
+			LOOK FOR THE CASTLE, THE TOWERS, AND THE PLAYER.
+			IF ANY OF THOSE TARGETS ARE WITHIN RANGE, SHOOT THAT TARGET.
+			IF NONE ARE IN RANGE, ADVANCE TO THE LEFT.
+			*/
+			
 			//trace("I'm pretty idle right now");
 			// BEHAVIOR:
-			enemy.handleWalking(0);
-			enemy.doPhysics();
+			// Go to the left
+			enemy.handleWalking(-1);
+			
+			// Look for tergets in range
+			enemy.findValidTargets();
+			//enemy.getDistToTargets();
 			
 			// TRANSITIONS:
-			
-			// to aggro:
-			
-			
-			if(enemy.getDistToPlayer() < enemy.sightDistance){
-				// we can see the player!
+			// If in range, Go Aggro:
+			if(enemy.closestTarget > -1){
+				// we can see a target!
+				// Get Closest Target
 				return new EnemyStateAggro();
 			}
-			
-			// if player is too close...
 			
 			return null;
 		} // ends update
