@@ -15,20 +15,20 @@
 		public var score: int = 0;
 		/** */
 		public var coin: int = 0;
-		
+
 		/** */
 		private var shakeTimer: Number = 0;
-
+		private var delaySpawn: int = 0;
 		/** This is our array of Platform Objects. */
 		static public var platforms: Array = new Array();
 		/** */
 		static public var enemies: Array = new Array();
 		/** */
 		public var towers: Array = new Array();
-		
+
 		public var smokeParticleDelay: Number = 0;
-		
-		static public var main:ScenePlay; // singleton
+
+		static public var main: ScenePlay; // singleton
 
 		/** The player object for the game. */
 		public var player: Player;
@@ -39,17 +39,17 @@
 
 		/** The array of particle objects. */
 		private var particles: Array = new Array();
-		
+
 		/** The sound for shooting bullets. */
 		private var shootSound: ShootSound = new ShootSound();
-		
+
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
 
 		/**
 		 * This is our constructor script. It loads us our level.
 		 */
-		 var hud:HUD = new HUD;
+		var hud: HUD = new HUD;
 
 		public function ScenePlay() {
 			// constructor code
@@ -90,23 +90,25 @@
 		 * @return This returns null every frame, unless it is time to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
 		 */
 		override public function update(previousScene: GameScene = null): GameScene {
+
 			if (player.isDead) {
 				killPlayer();
 				spawnPlayer();
 			}
 			player.update();
 			updateBullets();
+			spawnEnemy();
 			updateEnemies();
-			
+
 			updatePlatforms();
 			castle.update();
-			
+
 			updateParticles();
-			
+
 			doCollisionDetection();
-			
+
 			doCameraMove();
-			
+
 			hud.update(this)
 
 			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
@@ -187,10 +189,10 @@
 			} // ends for loop updating bullets
 		} // ends updateBullets
 		/**
-		 * 
+		 *
 		 */
 		private function updateEnemies(): void {
-			for(var i:int = ScenePlay.enemies.length -1; i >= 0; i--){
+			for (var i: int = ScenePlay.enemies.length - 1; i >= 0; i--) {
 				ScenePlay.enemies[i].update();
 				if (ScenePlay.enemies[i].isDead) {
 					level.removeChild(ScenePlay.enemies[i]);
@@ -221,7 +223,7 @@
 				}
 			}
 		} // ends updateParticles
-		
+
 		/**
 		 * This is where we do all of our AABB collision decetction. It loops through all of our walls and checks if
 		 * the player is colliding with any of them.
@@ -230,17 +232,17 @@
 
 			//Collision for platforms
 			for (var i: int = 0; i < ScenePlay.platforms.length; i++) {
-				
+
 				// Collision for player hitting platforms.
 				if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
-					
+
 					// find the fix:
 					var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
 					//trace(fix);
 					// apply the fix:
 					player.applyFix(fix);
 				}
-				
+
 				// Collision for player bullets hitting platforms.
 				for (var j: int = 0; j < bullets.length; j++) {
 					if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
@@ -248,17 +250,17 @@
 						explodePlayerBullet(j);
 					}
 				}
-				
+
 				// Collision for enemies hitting platforms.
-				for (var k:int = 0; k < ScenePlay.enemies.length; k++) {
-					
-					if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)){
-						var enemyFix:Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+				for (var k: int = 0; k < ScenePlay.enemies.length; k++) {
+
+					if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+						var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
 						ScenePlay.enemies[k].applyFix(enemyFix);
 					}
-					
+
 				}
-				
+
 			} // ends for
 			/*
 			for (var k: int = 0; k < bullets.length; k++) {
@@ -307,9 +309,9 @@
 		 * @param index The index of the bullet in the bullets array.
 		 */
 		private function explodePlayerBullet(index: int): void {
-			
+
 			hitSound.play();
-			
+
 			bullets[index].isDead = true;
 
 			for (var i: int = 0; i < 5; i++) {
@@ -332,7 +334,16 @@
 				smokeParticleDelay = Math.random() * 3 + .5;
 			}
 		}
-
+		private function spawnEnemy(): void {
+			// spawn snow:
+			delaySpawn -= Time.dtScaled;
+			if (delaySpawn <= 0) {
+				var e: Enemy = new Enemy();
+				level.addChild(e);
+				enemies.push(e);
+				delaySpawn = (int)(Math.random() * 1000 + .5);
+			}
+		}
 		/**
 		 *
 		 */
