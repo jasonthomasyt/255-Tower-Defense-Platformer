@@ -67,6 +67,8 @@
 		 */
 		public function update(): void {
 			
+			parent.setChildIndex(this, parent.numChildren - 1);
+			
 			//trace(y);
 			
 			handleJumping();

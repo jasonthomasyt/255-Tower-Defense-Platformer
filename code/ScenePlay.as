@@ -149,7 +149,7 @@
 		private function spawnBullet(): void {
 
 			var b: Bullet = new Bullet(player);
-			level.addChildAt(b, 0);
+			level.addChild(b);
 			bullets.push(b);
 
 		} // ends spawnBullet
@@ -182,6 +182,10 @@
 		private function updateEnemies(): void {
 			for(var i:int = ScenePlay.enemies.length -1; i >= 0; i--){
 				ScenePlay.enemies[i].update();
+				if (ScenePlay.enemies[i].isDead) {
+					level.removeChild(ScenePlay.enemies[i]);
+					ScenePlay.enemies.splice(i, 1);
+				}
 			}
 		} // ends updateEnemies
 		/**
@@ -220,7 +224,7 @@
 					
 					// find the fix:
 					var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
-					trace(fix);
+					//trace(fix);
 					// apply the fix:
 					player.applyFix(fix);
 				}
