@@ -197,7 +197,7 @@
 			shootSound.play();
 
 			var b: Bullet = new Bullet(level.player);
-			level.addChild(b);
+			level.addChildAt(b, 1);
 			bullets.push(b);
 
 		} // ends spawnBullet
