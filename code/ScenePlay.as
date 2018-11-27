@@ -32,14 +32,14 @@
 
 		/** */
 		public var turrets: Array = new Array();
-
 		/** The player object for the game. */
 		public var player: Player;
 		/** This is our array of Bullet Objects. */
 		private var bullets: Array = new Array();
 		/** The castle object for the game. */
 		public var castle: Castle;
-
+		/** */
+		private var buildSpotChooser:int = 0;
 		/** The array of particle objects. */
 		private var particles: Array = new Array();
 
@@ -291,13 +291,20 @@
 
 				//player.applyFix(castleFix);
 			}
-			if (player.collider.checkOverlap(level.buildSpot.collider)) {
-				if(!level.buildSpot.used) {
-					trace("choose a tower");
+			*/
+			if(player.collider.checkOverlap(level.buildSpot1.collider)) {
+				if(!level.buildSpot1.used){
+					buildSpotChooser = 1;
 					spawnTower();
 				}
 			}
-			*/
+			if(player.collider.checkOverlap(level.buildSpot2.collider)) {
+				if(!level.buildSpot2.used){
+					buildSpotChooser = 2;
+					spawnTower();
+				}
+			}
+			
 		} // ends doCollisionDetection()
 		/**
 		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
@@ -363,58 +370,78 @@
 				var newBasicTower: BasicTower = new BasicTower();
 				var newBasicTurret: BasicTurret = new BasicTurret();
 				/* Sets tower/turret x and y positions */
-				newBasicTower.y = level.buildSpot.y;
-				newBasicTower.x = level.buildSpot.x;
+				if(buildSpotChooser == 1){
+					newBasicTower.y = level.buildSpot1.y;
+					newBasicTower.x = level.buildSpot1.x;
+					level.removeChild(level.buildSpot1);
+					level.buildSpot1.used = true;
+				} else if (buildSpotChooser == 2) {
+					newBasicTower.y = level.buildSpot2.y;
+					newBasicTower.x = level.buildSpot2.x;
+					level.removeChild(level.buildSpot2);
+					level.buildSpot2.used = true;
+				}
 				newBasicTurret.y = newBasicTower.y - 75;
 				newBasicTurret.x = newBasicTower.x;
 				/* Removes build spot from stage and adds tower/turret */
-				level.removeChild(level.buildSpot);
 				level.addChild(newBasicTower);
 				level.addChild(newBasicTurret);
 				/* Adds tower/turret to their respective arrays */
 				towers.push(newBasicTower);
 				turrets.push(newBasicTurret);
-				/* Sets the buildspot's "used" variable to true */
-				level.buildSpot.used = true;
+				
 			}
 			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_2)) { //if "2" key is pressed...
 				/* Spawns a rapid fire tower. */
 				var newRapidTower: RapidTower = new RapidTower();
 				var newRapidTurret: RapidTurret = new RapidTurret();
 				/* Sets tower/turret x and y positions */
-				newRapidTower.y = level.buildSpot.y;
-				newRapidTower.x = level.buildSpot.x;
+				if(buildSpotChooser == 1){
+					newRapidTower.y = level.buildSpot1.y;
+					newRapidTower.x = level.buildSpot1.x;
+					level.removeChild(level.buildSpot1);
+					level.buildSpot1.used = true;
+				} else if (buildSpotChooser == 2) {
+					newRapidTower.y = level.buildSpot2.y;
+					newRapidTower.x = level.buildSpot2.x;
+					level.removeChild(level.buildSpot2);
+					level.buildSpot2.used = true;
+				}
 				newRapidTurret.y = newRapidTower.y - 75;
 				newRapidTurret.x = newRapidTower.x;
 				/* Removes build spot from stage and adds tower/turret */
-				level.removeChild(level.buildSpot);
 				level.addChild(newRapidTower);
 				level.addChild(newRapidTurret);
 				/* Adds tower/turret to their respective arrays */
 				towers.push(newRapidTower);
 				turrets.push(newRapidTurret);
-				/* Sets the buildspot's "used" variable to true */
-				level.buildSpot.used = true;
 			}
 			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_3)) { //if "3" key is pressed...
 				/* Spawns a bomb tower. */
 				var newBombTower: BombTower = new BombTower();
 				var newBombTurret: BombTurret = new BombTurret();
 				/* Sets tower/turret x and y positions */
-				newBombTower.y = level.buildSpot.y;
-				newBombTower.x = level.buildSpot.x;
+				if(buildSpotChooser == 1){
+					newBombTower.y = level.buildSpot1.y;
+					newBombTower.x = level.buildSpot1.x;
+					level.removeChild(level.buildSpot1);
+					level.buildSpot1.used = true;
+				} else if (buildSpotChooser == 2) {
+					newBombTower.y = level.buildSpot2.y;
+					newBombTower.x = level.buildSpot2.x;
+					level.removeChild(level.buildSpot2);
+					level.buildSpot2.used = true;
+				}
 				newBombTurret.y = newBombTower.y - 75;
 				newBombTurret.x = newBombTower.x;
 				/* Removes build spot from stage and adds tower/turret */
-				level.removeChild(level.buildSpot);
 				level.addChild(newBombTower);
 				level.addChild(newBombTurret);
 				/* Adds tower/turret to their respective arrays */
 				towers.push(newBombTower);
 				turrets.push(newBombTurret);
-				/* Sets the buildspot's "used" variable to true */
-				level.buildSpot.used = true;
-			} //ends if statements
+				
+			}
 		}
 	} // ends class
 } // ends package
