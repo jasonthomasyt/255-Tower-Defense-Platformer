@@ -216,17 +216,19 @@
 			for (var i: int = 0; i < ScenePlay.platforms.length; i++) {
 				
 				// Collision for player hitting platforms.
-				if (player.collider.checkOverlap(platforms[i].collider)) { // if we are overlapping
+				if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
+					
 					// find the fix:
-					var playerFix: Point = player.collider.findOverlapFix(platforms[i].collider);
-
+					var playerFix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					//trace(playerFix);
 					// apply the fix:
 					player.applyFix(playerFix);
 				}
 				
 				// Collision for player bullets hitting platforms.
 				for (var j: int = 0; j < bullets.length; j++) {
-					if (platforms[i].collider.checkOverlap(bullets[j].collider)) {
+					if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+						//trace(player.collider.checkOverlap(platforms[i].collider));
 						explodePlayerBullet(j);
 					}
 				}
@@ -236,7 +238,7 @@
 					
 					if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)){
 						var enemyFix:Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
-						ScenePlay.enemies[j].applyFix(enemyFix);
+						ScenePlay.enemies[k].applyFix(enemyFix);
 					}
 					
 				}
