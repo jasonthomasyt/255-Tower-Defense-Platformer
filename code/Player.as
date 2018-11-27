@@ -43,7 +43,7 @@
 		private var jumpVelocity:Number = 500;
 		
 		/** Detects the ground in the game. */
-		var ground: Number = 2000;
+		var ground: Number = 700.45;
 		
 		/** The angle that the gun is pointed. */
 		public var angle: Number = 0;
@@ -58,7 +58,7 @@
 		 * The Player constructor class
 		 */
 		public function Player() {
-			collider = new AABB(width / 2, height / 2);
+			collider = new AABB(base.width / 2, base.height / 2);
 		} // ends Player
 		
 		/**
@@ -67,7 +67,7 @@
 		 */
 		public function update(): void {
 			
-			//trace(y);
+			parent.setChildIndex(this, parent.numChildren - 1);
 			
 			handleJumping();
 
@@ -98,10 +98,10 @@
 			angle *= 180 / Math.PI;
 			gun.rotation = angle + 90;
 			
-			if (gun.rotation > -45 && gun.rotation < 0) gun.rotation = 45;
-			if (gun.rotation < 45 && gun.rotation > 0) gun.rotation = -45;
-			if (gun.rotation < -135 && gun.rotation > -170) gun.rotation = 135;
-			if (gun.rotation > 135 && gun.rotation < 170) gun.rotation = -135;
+			if (gun.rotation > -45 && gun.rotation < 0) gun.rotation = -45;
+			if (gun.rotation < 45 && gun.rotation > 0) gun.rotation = 45;
+			if (gun.rotation < -135 && gun.rotation > -170) gun.rotation = -135;
+			if (gun.rotation > 135 && gun.rotation < 170) gun.rotation = 135;
 		} // end handleAiming
 		
 		/**
@@ -200,7 +200,7 @@
 				airJumpsLeft = airJumpsMax;
 			}
 			
-			collider.calcEdges(base.x, base.y);
+			collider.calcEdges(x, y);
 		} // ends applyFix
 		
 	} // ends class

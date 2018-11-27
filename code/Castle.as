@@ -2,7 +2,6 @@
 	
 	import flash.display.MovieClip;
 	
-	
 	public class Castle extends MovieClip {
 		
 		/** Checks for if the castle should be deleted. */
@@ -10,6 +9,10 @@
 		
 		/** The collider for the castle. */
 		public var collider:AABB;
+		
+		public var health: int = 0;
+		
+		public var maxHealth: int = 0;
 		
 		public function Castle() {
 			collider = new AABB(width / 2, height / 2);
@@ -20,6 +23,7 @@
 		 */
 		public function update(): void {
 			collider.calcEdges(x, y);
+				castleHealth.scaleX = health / maxHealth;
 		}
 	}
 	

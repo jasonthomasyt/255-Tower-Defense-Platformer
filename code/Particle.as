@@ -9,6 +9,10 @@
 		protected var velocity: Point = new Point(0, 10);
 
 		protected var angularVelocity: Number = 0;
+		
+		protected var scalarVelocity: Number = 0;
+		
+		protected var alphaVelocity: Number = 0;
 
 		protected var lifeSpan: Number;
 
@@ -24,6 +28,11 @@
 		public function update(): void {
 
 			rotation += angularVelocity * Time.dt;
+			
+			scaleX += scalarVelocity * Time.dt;
+			scaleY = scaleX;
+			
+			alpha += alphaVelocity * Time.dt;
 
 			velocity.x += acceleration.x * Time.dt;
 			velocity.y += acceleration.y * Time.dt;
@@ -33,10 +42,20 @@
 
 			age += Time.dt;
 
-			if (age > lifeSpan) {
+			if (shouldDie()) {
 				isDead = true;
 			}
 		}
+		
+		public function shouldDie(): Boolean {
+			
+			if (age > lifeSpan){
+				return true;
+			}
+			
+			return false;
+			
+		} // ends checkIfDead
 
 	}
 
