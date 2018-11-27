@@ -17,7 +17,7 @@
 		 * 
 		 */
 		override public function update(enemy:Enemy):EnemyState {
-			trace("I'm pretty idle right now");
+			//trace("I'm pretty idle right now");
 			// BEHAVIOR:
 			enemy.handleWalking(0);
 			enemy.doPhysics();

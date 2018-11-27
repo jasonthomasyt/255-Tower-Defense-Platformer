@@ -17,7 +17,7 @@
 		 * 
 		 */
 		override public function update(enemy:Enemy):EnemyState {
-			trace("I'm so aggro right now");
+			//trace("I'm so aggro right now");
 			
 			// BEHAVIOR:
 			if(ScenePlay.main.player.x < enemy.x){
