@@ -28,9 +28,8 @@
 		private var enemies: Array = new Array();
 		/** */
 		public var towers: Array = new Array();
-
-
-
+		/** */
+		public var turrets: Array = new Array();
 		/** The player object for the game. */
 		public var player: Player;
 
@@ -86,6 +85,7 @@
 			player.update();
 			doCameraMove();
 			castle.update();
+			updateTurrets();
 			updateBullets();
 			updatePlatforms();
 			updateParticles();
@@ -221,6 +221,14 @@
 				}
 			} // ends for loop updating bullets
 		} // ends updateBullets
+		/**
+		 * Updates turrets every frame.
+		 */
+		private function updateTurrets():void {
+			for(var i:int = turrets.length - 1; i >= 0; i--) {
+				turrets[i].update();
+			}
+		}//ends updateTurrets
 
 		/**
 		 * This is where we do all of our AABB collision decetction. It loops through all of our walls and checks if
@@ -262,7 +270,13 @@
 			if (player.collider.checkOverlap(castle.collider)) {
 				var castleFix: Point = player.collider.findOverlapFix(castle.collider);
 
-				player.applyFix(castleFix);
+				//player.applyFix(castleFix);
+			}
+			if (player.collider.checkOverlap(level.buildSpot.collider)) {
+				if(!level.buildSpot.used) {
+					trace("choose a tower");
+					spawnTower();
+				}
 			}
 		} // ends doCollisionDetection()
 
@@ -280,28 +294,66 @@
 			} // ends for
 		} // ends explodePlayerBullet
 		/**
-		 *
+		 * This function handles spawning of towers.
 		 */
 		private function spawnTower(): void {
-			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_1)) {
-				//spawn basic tower
-				var newBasicTower: BasicTower = new BasicTower();
+			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_1)) { //if "1" key is pressed...
+				/* Spawns a basic tower. */
+				var newBasicTower:BasicTower = new BasicTower();
+				var newBasicTurret:BasicTurret = new BasicTurret();
+				/* Sets tower/turret x and y positions */
 				newBasicTower.y = level.buildSpot.y;
 				newBasicTower.x = level.buildSpot.x;
+				newBasicTurret.y = newBasicTower.y - 75;
+				newBasicTurret.x = newBasicTower.x;
+				/* Removes build spot from stage and adds tower/turret */
 				level.removeChild(level.buildSpot);
 				level.addChild(newBasicTower);
+				level.addChild(newBasicTurret);
+				/* Adds tower/turret to their respective arrays */
 				towers.push(newBasicTower);
-				if (KeyboardInput.onKeyDown(Keyboard.NUMBER_2)) {}
-				trace("tower spawn");
-				//spawn rapid fire tower
-				level.buildSpot.visible = false;
-				//var newRapidTower:RapidFireTower = new RapidFireTower();
+				turrets.push(newBasicTurret);
+				/* Sets the buildspot's "used" variable to true */
+				level.buildSpot.used = true;
 			}
-			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_3)) {
-				//spawn bomb tower
+			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_2)) { //if "2" key is pressed...
+				/* Spawns a rapid fire tower. */
+				var newRapidTower:RapidTower = new RapidTower();
+				var newRapidTurret:RapidTurret = new RapidTurret();
+				/* Sets tower/turret x and y positions */
+				newRapidTower.y = level.buildSpot.y;
+				newRapidTower.x = level.buildSpot.x;
+				newRapidTurret.y = newRapidTower.y - 75;
+				newRapidTurret.x = newRapidTower.x;
+				/* Removes build spot from stage and adds tower/turret */
+				level.removeChild(level.buildSpot);
+				level.addChild(newRapidTower);
+				level.addChild(newRapidTurret);
+				/* Adds tower/turret to their respective arrays */
+				towers.push(newRapidTower);
+				turrets.push(newRapidTurret);
+				/* Sets the buildspot's "used" variable to true */
+				level.buildSpot.used = true;
 			}
-			level.buildSpot.visible = false;
-			//var newBombTower:BombTower = new BombTower();
+			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_3)) { //if "3" key is pressed...
+				/* Spawns a bomb tower. */
+				var newBombTower:BombTower = new BombTower();
+				var newBombTurret:BombTurret = new BombTurret();
+				/* Sets tower/turret x and y positions */
+				newBombTower.y = level.buildSpot.y;
+				newBombTower.x = level.buildSpot.x;
+				newBombTurret.y = newBombTower.y - 75;
+				newBombTurret.x = newBombTower.x;
+				/* Removes build spot from stage and adds tower/turret */
+				level.removeChild(level.buildSpot);
+				level.addChild(newBombTower);
+				level.addChild(newBombTurret);
+				/* Adds tower/turret to their respective arrays */
+				towers.push(newBombTower);
+				turrets.push(newBombTurret);
+				/* Sets the buildspot's "used" variable to true */
+				level.buildSpot.used = true;
+			}//ends if statements
 		}
 	} // ends class
 } // ends package
