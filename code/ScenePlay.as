@@ -165,7 +165,7 @@
 		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
 		 */
 		public function spawnBulletBad(enemy: Enemy): void {
-			trace("spawnBulletBad FIRE!");
+			//trace("spawnBulletBad FIRE!");
 			var b: BulletBad = new BulletBad(enemy);
 			level.addChild(b);
 			bulletsBad.push(b);
