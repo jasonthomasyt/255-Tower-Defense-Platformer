@@ -315,13 +315,37 @@
 
 			} // ends for
 			
+			// Collision between player and badBullets
 			playerBulletBadCollision();
 
 			// Collision between player and coins
 			playerCoinCollision();
+			
+			// Collision between the Castle and badBullets
+			castleBulletBadCollision();
 
 		} // ends doCollisionDetection()
 
+		/**
+		 * 
+		 */
+		private function castleBulletBadCollision(): void {
+			for (var i: int = 0; i < bulletsBad.length; i++) {
+				if(castle.colliderCenter.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
+				if(castle.colliderRight.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
+				if(castle.colliderLeft.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
+			}
+		}
+		
 		/**
 		 * 
 		 */
@@ -420,6 +444,13 @@
 		 */
 		private function damagePlayer(): void {
 			player.health -= 10;
+		}
+		
+		/**
+		 * 
+		 */
+		private function damageCastle(): void {
+			castle.health -= 10;
 		}
 
 		/**
