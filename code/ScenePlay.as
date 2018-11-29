@@ -107,6 +107,8 @@
 			doCollisionDetection();
 
 			doCameraMove();
+			
+			hud.update(this)
 
 			//hud.update(this)
 
