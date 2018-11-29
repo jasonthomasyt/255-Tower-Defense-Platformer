@@ -35,6 +35,7 @@
 			colliderRight.calcEdges(x, y);
 			colliderLeft.calcEdges(x, y);
 			castleHealth.scaleX = health / maxHealth;
+			if (health <= 0) isDead = true;
 		}
 	}
 	

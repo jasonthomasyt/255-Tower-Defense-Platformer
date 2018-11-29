@@ -53,6 +53,9 @@
 		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
 
 		private var coinSound: CoinSound = new CoinSound();
+		
+		/** */
+		private var gameOver:Boolean = false;
 
 		/**
 		 * This is our constructor script. It loads us our level.
@@ -117,10 +120,13 @@
 
 			hud.update(this);
 
-			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
-				//trace("if is true");
-				return new SceneLose();
+			if (castle.isDead) {
+				//start Game Over Sequence
+				//replace this later for polish
+				gameOver = true;
 			}
+			
+			if (gameOver) return new SceneLose();
 
 			return null
 		} // ends update
