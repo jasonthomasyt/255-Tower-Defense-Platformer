@@ -68,10 +68,9 @@
 		 */
 		public function Enemy() {
 			// constructor code
-			ScenePlay.enemies.push(this);
+			
 			collider = new AABB(base.width / 2, base.height / 2);
 			changeState(new EnemyStateIdle());
-			closestTargetDist = sightDistance;
 		} // end constructor
 		/**
 		 * The update design pattern for the enemy.
@@ -80,8 +79,6 @@
 		public function update(): void {
 
 			//trace("enemy update");
-			
-			parent.setChildIndex(this, parent.numChildren - 2);
 			
 			if(state) {
 				var nextState:EnemyState = state.update(this)
@@ -193,7 +190,7 @@
 		 * @param direction If a negative number is passed in, it accelerates left. If positive, it'll accelerate right.
 		 */
 		public function handleWalking(direction: int): void {
-			if (direction < 0) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+			/**if (direction < 0) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
 			if (direction > 0) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
 
 			if (direction == 0) { // left and right not being pressed...
@@ -206,8 +203,15 @@
 					velocity.x -= HORIZONTAL_DECELERATION * Time.dt; // accelerate left
 					if (velocity.x < 0) velocity.x = 0; // clamp at 0
 				}
+			}*/
+			if (this.x > 2000){
+				trace(this.x);
+			velocity.x -= HORIZONTAL_DECELERATION * Time.dt;	
 			}
-
+			if
+				(this.x < 800){
+velocity.x = 0;
+			}
 		} // ends handleWalking
 
 		/**
@@ -335,3 +339,8 @@
 		}
 	} // end class Enemy
 } // end package code
+			changeState(new EnemyStateIdle());
+			closestTargetDist = sightDistance;
+			
+			parent.setChildIndex(this, parent.numChildren - 2);
+			

@@ -5,7 +5,14 @@
 		public function BasicTower() {
 			// constructor code
 		}
+	public override function update(scenePlay: ScenePlay): void {
 
+
+			towerHealth.scaleX = health / maxHealth;
+
+
+
+		}
 	}
 	
 }
