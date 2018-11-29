@@ -26,6 +26,8 @@
 		/** */
 		static public var enemies: Array = new Array();
 		/** */
+		private var bulletsBad: Array = new Array();
+		/** */
 		public var towers: Array = new Array();
 
 		public var smokeParticleDelay: Number = 0;
@@ -101,19 +103,17 @@
 			player.update();
 			updateBullets();
 			updateEnemies();
-			updateCoins();
-
+			
 			updatePlatforms();
 			castle.update();
-
-			spawnSmokeParticles();
+			
 			updateParticles();
-
+			
 			doCollisionDetection();
-
+			
 			doCameraMove();
-
-			//hud.update(this)
+			
+			hud.update(this)
 
 			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
 				//trace("if is true");
@@ -169,40 +169,6 @@
 			bullets.push(b);
 
 		} // ends spawnBullet
-		
-		private function spawnCoin(coinNum: int, spawnX: Number, spawnY: Number): void {
-			
-			for (var i: int = 0; i < coinNum; i++) {
-				var c: Coin = new Coin(spawnX, spawnY);
-				level.addChild(c);
-				coins.push(c);
-				updateCoins();
-			}
-			
-		} // ends spawnCoin
-		
-		private function updateCoins(): void {
-			
-			// update everything:
-			for (var i: int = ScenePlay.coins.length - 1; i >= 0; i--) {
-				ScenePlay.coins[i].update(); // Update design pattern.
-
-				/** If bullet is dead, remove it. */
-				if (ScenePlay.coins[i].isDead) {
-					// remove it!!
-
-					// 1. remove the object from the scene-graph
-					level.removeChild(ScenePlay.coins[i]);
-
-					// 2. nullify any variables pointing to it
-					// if the variable is an array,
-					// remove the object from the array
-					ScenePlay.coins.splice(i, 1);
-				}
-			} // ends for loop updating bullets
-			
-		}
-		
 		/**
 		 * Updates bullets for every frame.
 		 */
@@ -227,10 +193,10 @@
 			} // ends for loop updating bullets
 		} // ends updateBullets
 		/**
-		 *
+		 * 
 		 */
 		private function updateEnemies(): void {
-			for (var i: int = ScenePlay.enemies.length - 1; i >= 0; i--) {
+			for(var i:int = ScenePlay.enemies.length -1; i >= 0; i--){
 				ScenePlay.enemies[i].update();
 				if (ScenePlay.enemies[i].isDead) {
 					level.removeChild(ScenePlay.enemies[i]);
@@ -454,3 +420,72 @@
 		}
 	} // ends class
 } // ends package
+			updateCoins();
+			hud.update(this)
+		/** 
+		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
+		 */
+		public function spawnBulletBad(enemy:Enemy): void {
+			trace("spawnBulletBad FIRE!");
+			var b: BulletBad = new BulletBad(enemy);
+			level.addChild(b);
+			bulletsBad.push(b);
+
+		} // ends spawnBullet
+		
+		private function spawnCoin(coinNum: int, spawnX: Number, spawnY: Number): void {
+			
+			for (var i: int = 0; i < coinNum; i++) {
+				var c: Coin = new Coin(spawnX, spawnY);
+				level.addChild(c);
+				coins.push(c);
+				updateCoins();
+			}
+			
+		} // ends spawnCoin
+		
+		private function updateCoins(): void {
+			
+			// update everything:
+			for (var i: int = ScenePlay.coins.length - 1; i >= 0; i--) {
+				ScenePlay.coins[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (ScenePlay.coins[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(ScenePlay.coins[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					ScenePlay.coins.splice(i, 1);
+				}
+			} // ends for loop updating bullets
+			
+		}
+		
+		/**
+		 * Updates bullets for every frame.
+		 */
+		private function updateBulletsBad(): void {
+
+			// update everything:
+			for (var i: int = bulletsBad.length - 1; i >= 0; i--) {
+				bulletsBad[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (bulletsBad[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(bulletsBad[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					bulletsBad.splice(i, 1);
+				}
+		} // ends updateBullets
+			} // ends for loop updating bullets
