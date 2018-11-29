@@ -41,7 +41,7 @@
 			
 			
 			// TRANSITIONS:
-			if(enemy.closestTarget < 0){
+			if(enemy.closestTarget <= -1){
 				// we can'y see the player!
 				return new EnemyStateIdle();
 			}

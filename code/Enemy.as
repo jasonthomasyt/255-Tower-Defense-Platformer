@@ -61,7 +61,7 @@
 		/** */
 		public var closestTarget:int = -1;
 		/** */
-		public var closestTargetDist:Number = 10000;
+		public var closestTargetDist:Number = 20000;
 
 		/**
 		 *
@@ -140,34 +140,40 @@
 			closestTargetDist = sightDistance;
 			//trace("looking for castle");
 			validTargets.push(ScenePlay.main.castle);
-			
+			//trace(validTargets[0]);
 			for (var i:int = 0; i < ScenePlay.towers.length; i++) {
-				trace("looking for tower " + i);
+				//trace("looking for tower " + i);
 				validTargets.push(ScenePlay.towers[i]);
 			}		
 			//trace("looking for player");
 			validTargets.push(ScenePlay.main.player);
 			if(validTargets.length > 0) {
 				//find the distances between the enemy and the targets.
-				//trace("finding distances");
 				for(var j:int = 0; j < validTargets.length; j++){
+					//trace("finding distance between me and " + validTargets[j]);
 					var distX:Number = validTargets[j].x - x;
 					var distY:Number = validTargets[j].y - y;
 					//trace("pushing Distance");
 					var dist:Number = Math.sqrt(distX * distX + distY * distY)
+					//trace("Distance found: " + dist);
 					targetsDistances.push(dist);
 					
 				}
 				//get the clostest target
 				for(var k:int = 0; k < targetsDistances.length; k++){
-					//trace("For ClosestTarget");
+					//trace(targetsDistances[k] + " ? " + closestTargetDist);
 					if (targetsDistances[k] < closestTargetDist) {
 						//trace("if ClosestTarget");
 						closestTargetDist = targetsDistances[k];
 						closestTarget = k;
-					} else closestTarget = -1;
+						//trace("Closest Target: #" + k + validTargets[k] + " Distance: " + targetsDistances[k]);
+					} else if (closestTarget <= -1) {
+						closestTarget = -1;
+						//trace("No closest Target");
+					}
 				}
 			}
+			//trace("closestTarget: " + closestTarget);
 			
 		}
 		/**
@@ -272,7 +278,7 @@
 		 * Changes the gun's rotation based on where the mouse is pointing.
 		 */
 		public function handleAiming(): void {
-			if(closestTarget < 0) return
+			if(closestTarget <= -1) return
 			var tx: Number = validTargets[closestTarget].x - x;
 			var ty: Number = validTargets[closestTarget].y - y;
 
