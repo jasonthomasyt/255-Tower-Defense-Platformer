@@ -89,6 +89,7 @@
 			if (y < ground){
 				isGrounded = false; // this allows us to walk off edges and only be allowed one air jump.
 			}
+			if (health <= 0) isDead = true;
 			//trace(y);
 		} // ends update
 		

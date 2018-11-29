@@ -314,12 +314,26 @@
 				playerEnemyCollision();
 
 			} // ends for
+			
+			playerBulletBadCollision();
 
 			// Collision between player and coins
 			playerCoinCollision();
 
 		} // ends doCollisionDetection()
 
+		/**
+		 * 
+		 */
+		private function playerBulletBadCollision(): void {
+			for (var i: int = 0; i < bulletsBad.length; i++) {
+				if(player.collider.checkOverlap(bulletsBad[i].collider)) {
+					damagePlayer();
+					explodeEnemyBullet(i);
+				}
+			}
+		}
+		
 		private function platformCollision(i: Number): void {
 			// Collision for player hitting platforms.
 			if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
@@ -343,6 +357,14 @@
 				if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
 					//trace(player.collider.checkOverlap(platforms[i].collider));
 					explodePlayerBullet(j);
+				}
+			} // ends for
+			
+			// Collision for enemy bullets hitting platforms.
+			for (var m: int = 0; m < bulletsBad.length; m++) {
+				if (bulletsBad[m].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					//trace(player.collider.checkOverlap(platforms[i].collider));
+					explodeEnemyBullet(m);
 				}
 			} // ends for
 
@@ -392,6 +414,13 @@
 			ScenePlay.coins[index].isDead = true;
 			coinCount++;
 		}
+		
+		/**
+		 * 
+		 */
+		private function damagePlayer(): void {
+			player.health -= 10;
+		}
 
 		/**
 		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
@@ -429,6 +458,23 @@
 
 			for (var i: int = 0; i < 5; i++) {
 				var p: Particle = new ParticleBoom(bullets[index].x, bullets[index].y);
+				level.addChild(p);
+				particles.push(p);
+			} // ends for
+		} // ends explodePlayerBullet
+		
+		/**
+		 * Explodes the enemy bullet with particles when it hits a wall or the ground.
+		 * @param index The index of the bullet in the bullets array.
+		 */
+		private function explodeEnemyBullet(index: int): void {
+
+			hitSound.play();
+
+			bulletsBad[index].isDead = true;
+
+			for (var i: int = 0; i < 5; i++) {
+				var p: Particle = new ParticleBoom(bulletsBad[index].x, bulletsBad[index].y);
 				level.addChild(p);
 				particles.push(p);
 			} // ends for
