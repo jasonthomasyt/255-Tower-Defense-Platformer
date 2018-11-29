@@ -15,7 +15,7 @@
 		public var score: int = 0;
 		/** */
 		public var coinCount: int = 0;
-		
+
 		static public var coins: Array = new Array();
 
 		/** */
@@ -28,7 +28,7 @@
 		/** */
 		private var bulletsBad: Array = new Array();
 		/** */
-		public var towers: Array = new Array();
+		static public var towers: Array = new Array();
 
 		public var smokeParticleDelay: Number = 0;
 
@@ -49,9 +49,9 @@
 
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
-		
+
 		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
-		
+
 		private var coinSound: CoinSound = new CoinSound();
 
 		/**
@@ -103,17 +103,19 @@
 			player.update();
 			updateBullets();
 			updateEnemies();
-			
+			updateBulletsBad();
+			updateCoins();
+
 			updatePlatforms();
 			castle.update();
-			
+
 			updateParticles();
-			
+
 			doCollisionDetection();
-			
+
 			doCameraMove();
-			
-			hud.update(this)
+
+			hud.update(this);
 
 			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
 				//trace("if is true");
@@ -162,6 +164,74 @@
 		/** 
 		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
 		 */
+		public function spawnBulletBad(enemy: Enemy): void {
+			trace("spawnBulletBad FIRE!");
+			var b: BulletBad = new BulletBad(enemy);
+			level.addChild(b);
+			bulletsBad.push(b);
+
+		} // ends spawnBullet
+
+		private function spawnCoin(coinNum: int, spawnX: Number, spawnY: Number): void {
+
+			for (var i: int = 0; i < coinNum; i++) {
+				var c: Coin = new Coin(spawnX, spawnY);
+				level.addChild(c);
+				coins.push(c);
+				updateCoins();
+			}
+
+		} // ends spawnCoin
+
+		private function updateCoins(): void {
+
+			// update everything:
+			for (var i: int = ScenePlay.coins.length - 1; i >= 0; i--) {
+				ScenePlay.coins[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (ScenePlay.coins[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(ScenePlay.coins[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					ScenePlay.coins.splice(i, 1);
+				}
+			} // ends for loop updating bullets
+
+		}
+
+		/**
+		 * Updates bullets for every frame.
+		 */
+		private function updateBulletsBad(): void {
+
+			// update everything:
+			for (var i: int = bulletsBad.length - 1; i >= 0; i--) {
+				bulletsBad[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (bulletsBad[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(bulletsBad[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					bulletsBad.splice(i, 1);
+				}
+			} // ends updateBullets
+		} // ends for loop updating bullets
+
+		/** 
+		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
+		 */
 		private function spawnBullet(): void {
 
 			var b: Bullet = new Bullet(player);
@@ -193,10 +263,10 @@
 			} // ends for loop updating bullets
 		} // ends updateBullets
 		/**
-		 * 
+		 *
 		 */
 		private function updateEnemies(): void {
-			for(var i:int = ScenePlay.enemies.length -1; i >= 0; i--){
+			for (var i: int = ScenePlay.enemies.length - 1; i >= 0; i--) {
 				ScenePlay.enemies[i].update();
 				if (ScenePlay.enemies[i].isDead) {
 					level.removeChild(ScenePlay.enemies[i]);
@@ -229,13 +299,12 @@
 		} // ends updateParticles
 
 		/**
-		 * This is where we do all of our AABB collision decetction. It loops through all of our walls and checks if
-		 * the player is colliding with any of them.
+		 * This is where we do all of our AABB collision decetction.
 		 */
 		private function doCollisionDetection(): void {
 
 			for (var i: int = 0; i < ScenePlay.platforms.length; i++) {
-				//Collision for platforms
+				//Collision for platforms and everything else.
 				platformCollision(i);
 
 				// Collision for player bullets hitting enemies.
@@ -243,21 +312,17 @@
 
 				// Collision between player and enemies
 				playerEnemyCollision();
-				
-				// Collision between player and coins
-				playerCoinCollision();
-				
+
 			} // ends for
 
+			// Collision between player and coins
+			playerCoinCollision();
 
 		} // ends doCollisionDetection()
 
 		private function platformCollision(i: Number): void {
-
-
 			// Collision for player hitting platforms.
 			if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
-
 				// find the fix:
 				var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
 				//trace(fix);
@@ -267,12 +332,10 @@
 
 			// Collision for enemies hitting platforms.
 			for (var k: int = 0; k < ScenePlay.enemies.length; k++) {
-
 				if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
 					var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
 					ScenePlay.enemies[k].applyFix(enemyFix);
 				}
-
 			}
 
 			// Collision for player bullets hitting platforms.
@@ -282,7 +345,7 @@
 					explodePlayerBullet(j);
 				}
 			} // ends for
-			
+
 			// Collision for coins hitting platforms.
 			for (var l: int = 0; l < coins.length; l++) {
 				if (ScenePlay.coins[l].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
@@ -290,7 +353,7 @@
 					ScenePlay.coins[l].applyFix(coinFix);
 				}
 			} // ends for 
-			
+
 		} // ends platformCollision
 
 		private function bulletEnemyCollision(): void {
@@ -309,11 +372,13 @@
 			for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
 				if (player.collider.checkOverlap(ScenePlay.enemies[i].collider)) {
 					var playerFix: Point = player.collider.findOverlapFix(ScenePlay.enemies[i].collider);
+					//var enemyFix: Point = ScenePlay.enemies[i].collider.findOverlapFix(player.collider);
 					player.applyFix(playerFix);
+					//ScenePlay.enemies[i].applyFix(enemyFix);
 				}
 			} // ends for
 		} // ends playerEnemyCollision
-		
+
 		private function playerCoinCollision(): void {
 			for (var i: int = 0; i < ScenePlay.coins.length; i++) {
 				if (player.collider.checkOverlap(ScenePlay.coins[i].collider)) {
@@ -321,7 +386,7 @@
 				}
 			}
 		}
-		
+
 		private function collectCoin(index: int) {
 			coinSound.play();
 			ScenePlay.coins[index].isDead = true;
@@ -420,72 +485,3 @@
 		}
 	} // ends class
 } // ends package
-			updateCoins();
-			hud.update(this)
-		/** 
-		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
-		 */
-		public function spawnBulletBad(enemy:Enemy): void {
-			trace("spawnBulletBad FIRE!");
-			var b: BulletBad = new BulletBad(enemy);
-			level.addChild(b);
-			bulletsBad.push(b);
-
-		} // ends spawnBullet
-		
-		private function spawnCoin(coinNum: int, spawnX: Number, spawnY: Number): void {
-			
-			for (var i: int = 0; i < coinNum; i++) {
-				var c: Coin = new Coin(spawnX, spawnY);
-				level.addChild(c);
-				coins.push(c);
-				updateCoins();
-			}
-			
-		} // ends spawnCoin
-		
-		private function updateCoins(): void {
-			
-			// update everything:
-			for (var i: int = ScenePlay.coins.length - 1; i >= 0; i--) {
-				ScenePlay.coins[i].update(); // Update design pattern.
-
-				/** If bullet is dead, remove it. */
-				if (ScenePlay.coins[i].isDead) {
-					// remove it!!
-
-					// 1. remove the object from the scene-graph
-					level.removeChild(ScenePlay.coins[i]);
-
-					// 2. nullify any variables pointing to it
-					// if the variable is an array,
-					// remove the object from the array
-					ScenePlay.coins.splice(i, 1);
-				}
-			} // ends for loop updating bullets
-			
-		}
-		
-		/**
-		 * Updates bullets for every frame.
-		 */
-		private function updateBulletsBad(): void {
-
-			// update everything:
-			for (var i: int = bulletsBad.length - 1; i >= 0; i--) {
-				bulletsBad[i].update(); // Update design pattern.
-
-				/** If bullet is dead, remove it. */
-				if (bulletsBad[i].isDead) {
-					// remove it!!
-
-					// 1. remove the object from the scene-graph
-					level.removeChild(bulletsBad[i]);
-
-					// 2. nullify any variables pointing to it
-					// if the variable is an array,
-					// remove the object from the array
-					bulletsBad.splice(i, 1);
-				}
-		} // ends updateBullets
-			} // ends for loop updating bullets

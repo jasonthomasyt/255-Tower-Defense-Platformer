@@ -81,6 +81,8 @@
 
 			//trace("enemy update");
 			
+			parent.setChildIndex(this, parent.numChildren - 2);
+			
 			if(state) {
 				var nextState:EnemyState = state.update(this)
 				changeState(nextState);
