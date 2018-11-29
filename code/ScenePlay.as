@@ -14,7 +14,9 @@
 		/** */
 		public var score: int = 0;
 		/** */
-		public var coin: int = 0;
+		public var coinCount: int = 0;
+		
+		static public var coins: Array = new Array();
 
 		/** */
 		private var shakeTimer: Number = 0;
@@ -47,6 +49,8 @@
 		private var hitSound: HitSound = new HitSound();
 		
 		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
+		
+		private var coinSound: CoinSound = new CoinSound();
 
 		/**
 		 * This is our constructor script. It loads us our level.
@@ -97,6 +101,7 @@
 			player.update();
 			updateBullets();
 			updateEnemies();
+			updateCoins();
 
 			updatePlatforms();
 			castle.update();
@@ -107,8 +112,6 @@
 			doCollisionDetection();
 
 			doCameraMove();
-			
-			hud.update(this)
 
 			//hud.update(this)
 
@@ -166,6 +169,40 @@
 			bullets.push(b);
 
 		} // ends spawnBullet
+		
+		private function spawnCoin(coinNum: int, spawnX: Number, spawnY: Number): void {
+			
+			for (var i: int = 0; i < coinNum; i++) {
+				var c: Coin = new Coin(spawnX, spawnY);
+				level.addChild(c);
+				coins.push(c);
+				updateCoins();
+			}
+			
+		} // ends spawnCoin
+		
+		private function updateCoins(): void {
+			
+			// update everything:
+			for (var i: int = ScenePlay.coins.length - 1; i >= 0; i--) {
+				ScenePlay.coins[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (ScenePlay.coins[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(ScenePlay.coins[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					ScenePlay.coins.splice(i, 1);
+				}
+			} // ends for loop updating bullets
+			
+		}
+		
 		/**
 		 * Updates bullets for every frame.
 		 */
@@ -240,6 +277,10 @@
 
 				// Collision between player and enemies
 				playerEnemyCollision();
+				
+				// Collision between player and coins
+				playerCoinCollision();
+				
 			} // ends for
 
 
@@ -275,6 +316,15 @@
 					explodePlayerBullet(j);
 				}
 			} // ends for
+			
+			// Collision for coins hitting platforms.
+			for (var l: int = 0; l < coins.length; l++) {
+				if (ScenePlay.coins[l].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					var coinFix: Point = ScenePlay.coins[l].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					ScenePlay.coins[l].applyFix(coinFix);
+				}
+			} // ends for 
+			
 		} // ends platformCollision
 
 		private function bulletEnemyCollision(): void {
@@ -283,6 +333,7 @@
 					if (bullets[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
 						killEnemy(j);
 						explodePlayerBullet(i);
+						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
 					}
 				} // ends for
 			} // ends for
@@ -296,6 +347,20 @@
 				}
 			} // ends for
 		} // ends playerEnemyCollision
+		
+		private function playerCoinCollision(): void {
+			for (var i: int = 0; i < ScenePlay.coins.length; i++) {
+				if (player.collider.checkOverlap(ScenePlay.coins[i].collider)) {
+					collectCoin(i);
+				}
+			}
+		}
+		
+		private function collectCoin(index: int) {
+			coinSound.play();
+			ScenePlay.coins[index].isDead = true;
+			coinCount++;
+		}
 
 		/**
 		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
