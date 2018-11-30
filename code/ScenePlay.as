@@ -19,6 +19,7 @@ package code {
 
 		/** */
 		private var shakeTimer: Number = 0;
+		private var delaySpawn: int = 0;
 
 		/** This is our array of Platform Objects. */
 		static public var platforms: Array = new Array();
@@ -114,6 +115,8 @@ package code {
 			}
 			player.update();
 			updateBullets();
+			spawnEnemy();
+			spawnSmokeParticles();
 			updateEnemies();
 			updateBulletsBad();
 			updateCoins();
@@ -238,6 +241,7 @@ package code {
 					level.removeChild(ScenePlay.enemies[i]);
 					ScenePlay.enemies.splice(i, 1);
 				}
+				
 			}
 		} // ends updateEnemies
 
@@ -288,22 +292,23 @@ package code {
 				// Collision between player and enemies
 				playerEnemyCollision();
 
+				// Collision bewteen good bullets and bad bullets
+				doubleBulletCollision();
+
+				// Collision between player and badBullets
+				playerBulletBadCollision();
+
+				// Collision between player and coins
+				playerCoinCollision();
+
+				// Collision between the Castle and badBullets
+				castleBulletBadCollision();
+
+				//Collision between the player and the build spot boxes
+				playerBuildSpotCollsion();
+
+
 			} // ends for
-
-			// Collision bewteen good bullets and bad bullets
-			doubleBulletCollision();
-
-			// Collision between player and badBullets
-			playerBulletBadCollision();
-
-			// Collision between player and coins
-			playerCoinCollision();
-
-			// Collision between the Castle and badBullets
-			castleBulletBadCollision();
-
-			playerBuildSpotCollsion();
-			//Collision between the player and the build spot boxes
 
 		} // ends doCollisionDetection()
 		/*
@@ -403,11 +408,8 @@ package code {
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
-
+		
 		private function spawnSmokeParticles(): void {
-
-		}
-		private function spawnSmokeParticle(): void {
 
 			smokeParticleDelay--;
 
@@ -418,6 +420,17 @@ package code {
 					particles.push(p);
 				}
 				smokeParticleDelay = Math.random() * 3 + .5;
+			}
+		}
+		
+		private function spawnEnemy(): void {
+			// spawn snow:
+			delaySpawn -= Time.dtScaled;
+			if (delaySpawn <= 0) {
+				var e: Enemy = new Enemy();
+				level.addChild(e);
+				ScenePlay.enemies.push(e);
+				delaySpawn = (int)(Math.random() * 1000 + .5);
 			}
 		}
 
@@ -523,6 +536,7 @@ package code {
 				updateCoins();
 			}
 		} // ends spawnCoin
+		
 		private function updateCoins(): void {
 
 			// update everything:
@@ -544,9 +558,6 @@ package code {
 			} // ends for loop updating bullets
 
 		}
-
-
-
 
 		/**
 		 * Updates bullets for every frame.
@@ -571,9 +582,6 @@ package code {
 				}
 			} // ends updateBullets
 		} // ends for loop updating bullets
-
-
-
 
 		/**
 		 *
@@ -630,37 +638,38 @@ package code {
 				// apply the fix:
 				player.applyFix(fix);
 			}
+
 			// Collision for enemies hitting platforms.
 			for (var k: int = 0; k < ScenePlay.enemies.length; k++) {
 				if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
 					var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
 					ScenePlay.enemies[k].applyFix(enemyFix);
-					// Collision for player bullets hitting platforms.
-					for (var j: int = 0; j < bullets.length; j++) {
-						if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-							//trace(player.collider.checkOverlap(platforms[i].collider));
-							explodePlayerBullet(j);
-						}
-					} // ends for
 
-					// Collision for enemy bullets hitting platforms.
-					for (var m: int = 0; m < bulletsBad.length; m++) {
-						if (bulletsBad[m].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-							//trace(player.collider.checkOverlap(platforms[i].collider));
-							explodeEnemyBullet(m);
-						}
-					} // ends for
-					// Collision for coins hitting platforms.
-					for (var l: int = 0; l < coins.length; l++) {
-						if (ScenePlay.coins[l].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-							var coinFix: Point = ScenePlay.coins[l].collider.findOverlapFix(ScenePlay.platforms[i].collider);
-							ScenePlay.coins[l].applyFix(coinFix);
-						}
-					} // ends for 
 				}
 			}
-		} // ends platformCollision
+			// Collision for player bullets hitting platforms.
+			for (var j: int = 0; j < bullets.length; j++) {
+				if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					//trace(player.collider.checkOverlap(platforms[i].collider));
+					explodePlayerBullet(j);
+				}
+			} // ends for
 
+			// Collision for enemy bullets hitting platforms.
+			for (var m: int = 0; m < bulletsBad.length; m++) {
+				if (bulletsBad[m].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					//trace(player.collider.checkOverlap(platforms[i].collider));
+					explodeEnemyBullet(m);
+				}
+			} // ends for
+			// Collision for coins hitting platforms.
+			for (var l: int = 0; l < coins.length; l++) {
+				if (ScenePlay.coins[l].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					var coinFix: Point = ScenePlay.coins[l].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					ScenePlay.coins[l].applyFix(coinFix);
+				}
+			} // ends for 
+		} // ends platformCollision
 
 		private function playerBuildSpotCollsion(): void {
 			//trace("playerBuildSpotCollision()");
@@ -680,7 +689,6 @@ package code {
 			}
 		}
 
-
 		private function bulletEnemyCollision(): void {
 			for (var i: int = 0; i < bullets.length; i++) {
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
@@ -688,6 +696,7 @@ package code {
 						killEnemy(j);
 						explodePlayerBullet(i);
 						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
+						updateEnemies();
 					}
 				} // ends for
 			} // ends for
@@ -715,6 +724,7 @@ package code {
 		private function collectCoin(index: int) {
 			coinSound.play();
 			ScenePlay.coins[index].isDead = true;
+			updateCoins();
 			coinCount++;
 		}
 
