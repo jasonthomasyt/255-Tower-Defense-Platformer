@@ -35,7 +35,7 @@
 		private var state:EnemyState;
 		
 		/** */
-		public var sightDistance:Number = 100;
+		public var sightDistance:Number = 500;
 
 		/** Detects the ground in the game. */
 		var ground: Number = 2000;
@@ -50,10 +50,18 @@
 		private var shootingRange: Number = 1000;
 
 		/** */
-		private var validTargets: Array = new Array();
+		public var validTargets: Array = new Array();
+		
+		/** */
+		public var targetsDistances: Array = new Array();
 
 		/** How long it takes for this enemy to shoot at it's target in seconds. */
 		private var aimingTimer: Number = 1;
+		
+		/** */
+		public var closestTarget:int = -1;
+		/** */
+		public var closestTargetDist:Number = 20000;
 
 		/**
 		 *
@@ -63,6 +71,7 @@
 			ScenePlay.enemies.push(this);
 			collider = new AABB(base.width / 2, base.height / 2);
 			changeState(new EnemyStateIdle());
+			closestTargetDist = sightDistance;
 		} // end constructor
 		/**
 		 * The update design pattern for the enemy.
@@ -72,10 +81,18 @@
 
 			//trace("enemy update");
 			
+			parent.setChildIndex(this, parent.numChildren - 2);
+			
 			if(state) {
 				var nextState:EnemyState = state.update(this)
 				changeState(nextState);
 			}
+			/*
+			DESIRED BEHAVIOR:
+			LOOK FOR THE CASTLE, THE TOWERS, AND THE PLAYER.
+			IF ANY OF THOSE TARGETS ARE WITHIN RANGE, SHOOT THAT TARGET.
+			IF NONE ARE IN RANGE, ADVANCE TO THE LEFT.
+			*/
 			/*
 			if (findValidTargets()) {
 				handleAiming();
@@ -91,12 +108,17 @@
 			}
 
 			*/
-			//doPhysics();
+			doPhysics();
 
 			detectDeathGround();
 
 			collider.calcEdges(x, y);
 			isGrounded = false;
+			
+			//empty validTargets Array();
+			//trace(validTargets.length);
+			
+			
 			//trace(y);
 		} // ends update
 		/**
@@ -112,16 +134,59 @@
 		/**
 		 *
 		 */
-		private function findValidTargets(): Boolean {
-			if (validTargets.length > 0) {
-				return true
-			} else return false
+		public function findValidTargets():void {
+			if (targetsDistances.length > 0) targetsDistances.length = 0;
+			if (validTargets.length > 0) validTargets.length = 0;
+			closestTargetDist = sightDistance;
+			//trace("looking for castle");
+			validTargets.push(ScenePlay.main.castle);
+			//trace(validTargets[0]);
+			for (var i:int = 0; i < ScenePlay.towers.length; i++) {
+				//trace("looking for tower " + i);
+				validTargets.push(ScenePlay.towers[i]);
+			}		
+			//trace("looking for player");
+			validTargets.push(ScenePlay.main.player);
+			if(validTargets.length > 0) {
+				//find the distances between the enemy and the targets.
+				for(var j:int = 0; j < validTargets.length; j++){
+					//trace("finding distance between me and " + validTargets[j]);
+					var distX:Number = validTargets[j].x - x;
+					var distY:Number = validTargets[j].y - y;
+					//trace("pushing Distance");
+					var dist:Number = Math.sqrt(distX * distX + distY * distY)
+					//trace("Distance found: " + dist);
+					targetsDistances.push(dist);
+					
+				}
+				//get the clostest target
+				for(var k:int = 0; k < targetsDistances.length; k++){
+					//trace(targetsDistances[k] + " ? " + closestTargetDist);
+					if (targetsDistances[k] < closestTargetDist) {
+						//trace("if ClosestTarget");
+						closestTargetDist = targetsDistances[k];
+						closestTarget = k;
+						//trace("Closest Target: #" + k + validTargets[k] + " Distance: " + targetsDistances[k]);
+					} else if (closestTarget <= -1) {
+						closestTarget = -1;
+						//trace("No closest Target");
+					}
+				}
+			}
+			//trace("closestTarget: " + closestTarget);
+			
 		}
 		/**
 		 *
 		 */
-		private function shootTarget(): void {
-
+		public function shootTarget(): void {
+			//trace(aimingTimer + "Before");
+			aimingTimer -= Time.dtScaled;
+			//trace(aimingTimer + "After");
+			if(aimingTimer <= 0){
+				aimingTimer = 1;
+				ScenePlay.main.spawnBulletBad(this);
+			}
 		}
 		/**
 		 * This function looks at the direction input in order to accelerate the enemy, changing the enemy's velocity.
@@ -212,29 +277,61 @@
 		/**
 		 * Changes the gun's rotation based on where the mouse is pointing.
 		 */
-		private function handleAiming(): void {
-			var tx: Number = parent.mouseX - x;
-			var ty: Number = parent.mouseY - y;
+		public function handleAiming(): void {
+			if(closestTarget <= -1) return
+			var tx: Number = validTargets[closestTarget].x - x;
+			var ty: Number = validTargets[closestTarget].y - y;
 
 			angle = Math.atan2(ty, tx);
 			angle *= 180 / Math.PI;
 			gun.rotation = angle + 90;
 
-			if (gun.rotation > -45 && gun.rotation < 0) gun.rotation = 45;
-			if (gun.rotation < 45 && gun.rotation > 0) gun.rotation = -45;
-			if (gun.rotation < -135 && gun.rotation > -170) gun.rotation = 135;
-			if (gun.rotation > 135 && gun.rotation < 170) gun.rotation = -135;
+			if (gun.rotation > -45 && gun.rotation < 0) gun.rotation = -45;
+			if (gun.rotation < 45 && gun.rotation > 0) gun.rotation = 45;
+			if (gun.rotation < -135 && gun.rotation > -170) gun.rotation = -135;
+			if (gun.rotation > 135 && gun.rotation < 170) gun.rotation = 135;
 		} // end handleAiming
 		
 		/**
 		 * 
 		 */
-		public function getDistToPlayer():Number {
-			var distX:Number = ScenePlay.main.player.x - x;
-			var distY:Number = ScenePlay.main.player.y - y;
-			
-			return Math.sqrt(distX * distX + distY * distY);
+		public function getDistToTargets(): void {
+			trace("I want to look for targets!");
+			for (var i:int = 0; i < validTargets.length; i++){
+				var distX:Number = validTargets[i].x - x;
+				var distY:Number = validTargets[i].y - y;
+				trace("Distance to " + validTargets[i] + " is " + (Math.sqrt(distX * distX + distY * distY)));
+				targetsDistances.push(Math.sqrt(distX * distX + distY * distY));
+				
+			}
 		}
-		
+		/**
+		 * 
+		 */
+		public function findClosestTarget(): int {
+			var closestTarget:int = 0;
+			var closestDistance: Number;
+			for (var i:int = 0; i < targetsDistances.length; i++) {
+				if (targetsDistances[i] < closestDistance) {
+					closestTarget = i;
+				}
+			}
+			return i;
+		}
+		/**
+		 * 
+		 * 
+		 */
+		public function areTargetsInRange(): Boolean {
+			trace("is anything in range?");
+			for (var i:int = 0; i < targetsDistances.length; i++) {
+				trace("is " + targetsDistances[i] + " in range?");
+				if (targetsDistances[i] < sightDistance) {
+					trace("target " + validTargets[i] + " in Range!");
+					return true
+				}
+			}
+			return false
+		}
 	} // end class Enemy
 } // end package code

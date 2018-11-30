@@ -7,8 +7,6 @@
 		
 		public var maxHealth: int = 0;
 		
-		public var used:Boolean = false;
-		
 		public function Tower() {
 			// constructor code
 		}

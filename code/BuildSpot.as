@@ -4,6 +4,7 @@
 	public class BuildSpot extends MovieClip{
 		
 		public var collider:AABB;
+		
 		public var used:Boolean = false;
 
 		public function BuildSpot() {

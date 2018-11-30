@@ -14,8 +14,11 @@
 		/** */
 		public var score: int = 0;
 		/** */
-		public var coin: int = 0;
+		public var coinCount: int = 0;
 
+		static public var coins: Array = new Array();
+		/** */
+		private var buildSpotChooser:int = 0;
 		/** */
 		private var shakeTimer: Number = 0;
 
@@ -24,22 +27,23 @@
 		/** */
 		static public var enemies: Array = new Array();
 		/** */
-		public var towers: Array = new Array();
+		private var bulletsBad: Array = new Array();
+		/** */
+		static public var towers: Array = new Array();
+		/** */
+		static public var turrets: Array = new Array();
 
 		public var smokeParticleDelay: Number = 0;
 
 		static public var main: ScenePlay; // singleton
 
-		/** */
-		public var turrets: Array = new Array();
 		/** The player object for the game. */
 		public var player: Player;
 		/** This is our array of Bullet Objects. */
 		private var bullets: Array = new Array();
 		/** The castle object for the game. */
 		public var castle: Castle;
-		/** */
-		private var buildSpotChooser:int = 0;
+
 		/** The array of particle objects. */
 		private var particles: Array = new Array();
 
@@ -48,6 +52,10 @@
 
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
+
+		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
+
+		private var coinSound: CoinSound = new CoinSound();
 
 		/**
 		 * This is our constructor script. It loads us our level.
@@ -96,23 +104,23 @@
 				spawnPlayer();
 			}
 			player.update();
-			doCameraMove();
-			castle.update();
 			updateBullets();
 			updateEnemies();
-
-			updateTurrets();
+			updateBulletsBad();
+			updateCoins();
 
 			updatePlatforms();
 			castle.update();
 
 			updateParticles();
+			
+			updateTurrets();
 
 			doCollisionDetection();
 
 			doCameraMove();
 
-			//hud.update(this)
+			hud.update(this);
 
 			if (KeyboardInput.onKeyDown(Keyboard.R) || castle.isDead) {
 				//trace("if is true");
@@ -161,6 +169,74 @@
 		/** 
 		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
 		 */
+		public function spawnBulletBad(enemy: Enemy): void {
+			trace("spawnBulletBad FIRE!");
+			var b: BulletBad = new BulletBad(enemy);
+			level.addChild(b);
+			bulletsBad.push(b);
+
+		} // ends spawnBullet
+
+		private function spawnCoin(coinNum: int, spawnX: Number, spawnY: Number): void {
+
+			for (var i: int = 0; i < coinNum; i++) {
+				var c: Coin = new Coin(spawnX, spawnY);
+				level.addChild(c);
+				coins.push(c);
+				updateCoins();
+			}
+
+		} // ends spawnCoin
+
+		private function updateCoins(): void {
+
+			// update everything:
+			for (var i: int = ScenePlay.coins.length - 1; i >= 0; i--) {
+				ScenePlay.coins[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (ScenePlay.coins[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(ScenePlay.coins[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					ScenePlay.coins.splice(i, 1);
+				}
+			} // ends for loop updating bullets
+
+		}
+
+		/**
+		 * Updates bullets for every frame.
+		 */
+		private function updateBulletsBad(): void {
+
+			// update everything:
+			for (var i: int = bulletsBad.length - 1; i >= 0; i--) {
+				bulletsBad[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (bulletsBad[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(bulletsBad[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					bulletsBad.splice(i, 1);
+				}
+			} // ends updateBullets
+		} // ends for loop updating bullets
+
+		/** 
+		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
+		 */
 		private function spawnBullet(): void {
 
 			var b: Bullet = new Bullet(player);
@@ -191,6 +267,18 @@
 				}
 			} // ends for loop updating bullets
 		} // ends updateBullets
+		/**
+		 *
+		 */
+		private function updateEnemies(): void {
+			for (var i: int = ScenePlay.enemies.length - 1; i >= 0; i--) {
+				ScenePlay.enemies[i].update();
+				if (ScenePlay.enemies[i].isDead) {
+					level.removeChild(ScenePlay.enemies[i]);
+					ScenePlay.enemies.splice(i, 1);
+				}
+			}
+		} // ends updateEnemies
 
 		/**
 		 * Because our camera moves our platforms around on-screen, we call this function to primarily recalculate our platforms AABB's.
@@ -214,20 +302,6 @@
 				}
 			}
 		} // ends updateParticles
-
-		/**
-		 *
-		 */
-		private function updateEnemies(): void {
-			for (var i: int = ScenePlay.enemies.length - 1; i >= 0; i--) {
-				ScenePlay.enemies[i].update();
-				if (ScenePlay.enemies[i].isDead) {
-					level.removeChild(ScenePlay.enemies[i]);
-					ScenePlay.enemies.splice(i, 1);
-				}
-			}
-		} // ends updateEnemies
-
 		/**
 		 * Updates turrets every frame.
 		 */
@@ -238,60 +312,144 @@
 		} //ends updateTurrets
 
 		/**
-		 * This is where we do all of our AABB collision decetction. It loops through all of our walls and checks if
-		 * the player is colliding with any of them.
+		 * This is where we do all of our AABB collision decetction.
 		 */
 		private function doCollisionDetection(): void {
 
-			//Collision for platforms
 			for (var i: int = 0; i < ScenePlay.platforms.length; i++) {
+				//Collision for platforms and everything else.
+				platformCollision(i);
 
-				// Collision for player hitting platforms.
-				if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
+				// Collision for player bullets hitting enemies.
+				bulletEnemyCollision();
 
-					// find the fix:
-					var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
-					//trace(fix);
-					// apply the fix:
-					player.applyFix(fix);
-				}
-
-				// Collision for player bullets hitting platforms.
-				for (var j: int = 0; j < bullets.length; j++) {
-					if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-						//trace(player.collider.checkOverlap(platforms[i].collider));
-						explodePlayerBullet(j);
-					}
-				}
-
-				// Collision for enemies hitting platforms.
-				for (var k: int = 0; k < ScenePlay.enemies.length; k++) {
-
-					if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-						var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
-						ScenePlay.enemies[k].applyFix(enemyFix);
-					}
-
-				}
+				// Collision between player and enemies
+				playerEnemyCollision();
 
 			} // ends for
-			/*
-			for (var k: int = 0; k < bullets.length; k++) {
-				if (bullets[k].y > 700) { // If bullet hits ground...
-					explodePlayerBullet(k);
-				}
-
-				if (bullets[k].collider.checkOverlap(castle.collider)) {
-					explodePlayerBullet(k);
-				}
-			}
 			
-			if (player.collider.checkOverlap(castle.collider)) {
-				var castleFix: Point = player.collider.findOverlapFix(castle.collider);
+			// Collision between player and badBullets
+			playerBulletBadCollision();
 
-				//player.applyFix(castleFix);
+			// Collision between player and coins
+			playerCoinCollision();
+			
+			// Collision between the Castle and badBullets
+			castleBulletBadCollision();
+			
+			//Collision between the player and the build spot boxes
+			playerBuildSpotCollsion();
+
+		} // ends doCollisionDetection()
+
+		/**
+		 * 
+		 */
+		private function castleBulletBadCollision(): void {
+			for (var i: int = 0; i < bulletsBad.length; i++) {
+				if(castle.colliderCenter.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
+				if(castle.colliderRight.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
+				if(castle.colliderLeft.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
 			}
-			*/
+		}
+		
+		/**
+		 * 
+		 */
+		private function playerBulletBadCollision(): void {
+			for (var i: int = 0; i < bulletsBad.length; i++) {
+				if(player.collider.checkOverlap(bulletsBad[i].collider)) {
+					damagePlayer();
+					explodeEnemyBullet(i);
+				}
+			}
+		}
+		
+		private function platformCollision(i: Number): void {
+			// Collision for player hitting platforms.
+			if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
+				// find the fix:
+				var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
+				//trace(fix);
+				// apply the fix:
+				player.applyFix(fix);
+			}
+
+			// Collision for enemies hitting platforms.
+			for (var k: int = 0; k < ScenePlay.enemies.length; k++) {
+				if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					ScenePlay.enemies[k].applyFix(enemyFix);
+				}
+			}
+
+			// Collision for player bullets hitting platforms.
+			for (var j: int = 0; j < bullets.length; j++) {
+				if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					//trace(player.collider.checkOverlap(platforms[i].collider));
+					explodePlayerBullet(j);
+				}
+			} // ends for
+			
+			// Collision for enemy bullets hitting platforms.
+			for (var m: int = 0; m < bulletsBad.length; m++) {
+				if (bulletsBad[m].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					//trace(player.collider.checkOverlap(platforms[i].collider));
+					explodeEnemyBullet(m);
+				}
+			} // ends for
+
+			// Collision for coins hitting platforms.
+			for (var l: int = 0; l < coins.length; l++) {
+				if (ScenePlay.coins[l].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					var coinFix: Point = ScenePlay.coins[l].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					ScenePlay.coins[l].applyFix(coinFix);
+				}
+			} // ends for 
+
+		} // ends platformCollision
+
+		private function bulletEnemyCollision(): void {
+			for (var i: int = 0; i < bullets.length; i++) {
+				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
+					if (bullets[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
+						killEnemy(j);
+						explodePlayerBullet(i);
+						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
+					}
+				} // ends for
+			} // ends for
+		} // ends bulletEnemyCollision
+
+		private function playerEnemyCollision(): void {
+			for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
+				if (player.collider.checkOverlap(ScenePlay.enemies[i].collider)) {
+					var playerFix: Point = player.collider.findOverlapFix(ScenePlay.enemies[i].collider);
+					//var enemyFix: Point = ScenePlay.enemies[i].collider.findOverlapFix(player.collider);
+					player.applyFix(playerFix);
+					//ScenePlay.enemies[i].applyFix(enemyFix);
+				}
+			} // ends for
+		} // ends playerEnemyCollision
+
+		private function playerCoinCollision(): void {
+			for (var i: int = 0; i < ScenePlay.coins.length; i++) {
+				if (player.collider.checkOverlap(ScenePlay.coins[i].collider)) {
+					collectCoin(i);
+				}
+			}
+		}
+		
+		private function playerBuildSpotCollsion():void {
 			if(player.collider.checkOverlap(level.buildSpot1.collider)) {
 				if(!level.buildSpot1.used){
 					buildSpotChooser = 1;
@@ -304,8 +462,28 @@
 					spawnTower();
 				}
 			}
-			
-		} // ends doCollisionDetection()
+		}
+
+		private function collectCoin(index: int) {
+			coinSound.play();
+			ScenePlay.coins[index].isDead = true;
+			coinCount++;
+		}
+		
+		/**
+		 * 
+		 */
+		private function damagePlayer(): void {
+			player.health -= 10;
+		}
+		
+		/**
+		 * 
+		 */
+		private function damageCastle(): void {
+			castle.health -= 10;
+		}
+
 		/**
 		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
 		 */
@@ -346,8 +524,36 @@
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
+		
+		/**
+		 * Explodes the enemy bullet with particles when it hits a wall or the ground.
+		 * @param index The index of the bullet in the bullets array.
+		 */
+		private function explodeEnemyBullet(index: int): void {
 
-		private function spawnSmokeParticle(): void {
+			hitSound.play();
+
+			bulletsBad[index].isDead = true;
+
+			for (var i: int = 0; i < 5; i++) {
+				var p: Particle = new ParticleBoom(bulletsBad[index].x, bulletsBad[index].y);
+				level.addChild(p);
+				particles.push(p);
+			} // ends for
+		} // ends explodePlayerBullet
+
+		private function killEnemy(index: int): void {
+			enemyDieSound.play();
+			ScenePlay.enemies[index].isDead = true;
+
+			for (var i: int = 0; i < 10; i++) {
+				var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
+				level.addChild(p);
+				particles.push(p);
+			}
+		}
+
+		private function spawnSmokeParticles(): void {
 
 			smokeParticleDelay--;
 
@@ -362,12 +568,27 @@
 		}
 
 		/**
-		 * This function handles spawning of towers.
+		 *
 		 */
 		private function spawnTower(): void {
 			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_1)) { //if "1" key is pressed...
 				/* Spawns a basic tower. */
-				var newBasicTower: BasicTower = new BasicTower();
+				spawnBasicTower();
+				
+			}
+			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_2)) { //if "2" key is pressed...
+				/* Spawns a rapid fire tower. */
+				spawnRapidTower();
+				
+			}
+			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_3)) { //if "3" key is pressed...
+				/* Spawns a bomb tower. */
+				spawnBombTower();
+				
+			}
+		}
+		private function spawnBasicTower():void {
+			var newBasicTower: BasicTower = new BasicTower();
 				var newBasicTurret: BasicTurret = new BasicTurret();
 				/* Sets tower/turret x and y positions */
 				if(buildSpotChooser == 1){
@@ -389,11 +610,9 @@
 				/* Adds tower/turret to their respective arrays */
 				towers.push(newBasicTower);
 				turrets.push(newBasicTurret);
-				
-			}
-			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_2)) { //if "2" key is pressed...
-				/* Spawns a rapid fire tower. */
-				var newRapidTower: RapidTower = new RapidTower();
+		}
+		private function spawnRapidTower():void {
+			var newRapidTower: RapidTower = new RapidTower();
 				var newRapidTurret: RapidTurret = new RapidTurret();
 				/* Sets tower/turret x and y positions */
 				if(buildSpotChooser == 1){
@@ -415,10 +634,9 @@
 				/* Adds tower/turret to their respective arrays */
 				towers.push(newRapidTower);
 				turrets.push(newRapidTurret);
-			}
-			if (KeyboardInput.onKeyDown(Keyboard.NUMBER_3)) { //if "3" key is pressed...
-				/* Spawns a bomb tower. */
-				var newBombTower: BombTower = new BombTower();
+		}
+		private function spawnBombTower():void {
+			var newBombTower: BombTower = new BombTower();
 				var newBombTurret: BombTurret = new BombTurret();
 				/* Sets tower/turret x and y positions */
 				if(buildSpotChooser == 1){
@@ -440,8 +658,6 @@
 				/* Adds tower/turret to their respective arrays */
 				towers.push(newBombTower);
 				turrets.push(newBombTurret);
-				
-			}
 		}
 	} // ends class
 } // ends package
