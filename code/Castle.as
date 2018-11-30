@@ -31,12 +31,15 @@
 		 * The update design pattern for the castle.
 		 */
 		public function update(): void {
+			collider.calcEdges(x, y);
+				castleHealth.scaleX = health / maxHealth;
+		}
+	}
+	
+}
+
 			colliderCenter.calcEdges(x, y);
 			colliderRight.calcEdges(x, y);
 			colliderLeft.calcEdges(x, y);
 			castleHealth.scaleX = health / maxHealth;
 			if (health <= 0) isDead = true;
-		}
-	}
-	
-}
