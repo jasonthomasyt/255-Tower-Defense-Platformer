@@ -20,6 +20,7 @@
 			
 			// add to platforms array...
 			ScenePlay.platforms.push(this);
+			stop();
 		} // end constructor
 		/**
 		 * 
