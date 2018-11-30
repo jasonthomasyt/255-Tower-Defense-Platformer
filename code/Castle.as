@@ -1,23 +1,23 @@
 ﻿package code {
-	
+
 	import flash.display.MovieClip;
-	
+
 	public class Castle extends MovieClip {
-		
+
 		/** Checks for if the castle should be deleted. */
 		public var isDead: Boolean = false;
-		
+
 		/** The collider for the castle. */
-		public var colliderCenter:AABB;
+		public var colliderCenter: AABB;
 		/** The collider for the castle. */
-		public var colliderRight:AABB;
+		public var colliderRight: AABB;
 		/** The collider for the castle. */
-		public var colliderLeft:AABB;
-		
+		public var colliderLeft: AABB;
+
 		public var health: int = 100;
-		
+
 		public var maxHealth: int = 100;
-		
+
 		public function Castle() {
 			colliderCenter = new AABB(colliderBoxCenter.width / 2, colliderBoxCenter.height / 2);
 			colliderRight = new AABB(colliderBoxRight.width / 2, colliderBoxRight.height / 2);
@@ -26,20 +26,18 @@
 			colliderBoxRight.alpha = 0;
 			colliderBoxLeft.alpha = 0;
 		}
-		
+
 		/**
 		 * The update design pattern for the castle.
 		 */
 		public function update(): void {
-			collider.calcEdges(x, y);
-				castleHealth.scaleX = health / maxHealth;
-		}
-	}
-	
-}
 
 			colliderCenter.calcEdges(x, y);
 			colliderRight.calcEdges(x, y);
 			colliderLeft.calcEdges(x, y);
 			castleHealth.scaleX = health / maxHealth;
 			if (health <= 0) isDead = true;
+		}
+	}
+
+}
