@@ -14,8 +14,12 @@
 		/** */
 		public var score: int = 0;
 		/** */
-		public var coin: int = 0;
-		
+		public var coinCount: int = 0;
+
+		static public var coins: Array = new Array();
+
+		private var bulletsBad: Array = new Array();
+
 		/** */
 		private var shakeTimer: Number = 0;
 		private var delaySpawn: int = 0;
@@ -24,11 +28,7 @@
 		/** */
 		static public var enemies: Array = new Array();
 		/** */
-		public var towers: Array = new Array();
-		
-		public var smokeParticleDelay: Number = 0;
-		
-		static public var main:ScenePlay; // singleton
+		static public var towers: Array = new Array();
 
 		public var smokeParticleDelay: Number = 0;
 
@@ -57,12 +57,12 @@
 		/**
 		 * This is our constructor script. It loads us our level.
 		 */
-		var hud: HUD = new HUD;
+		//public var hud: HUD = new HUD();
 
 		public function ScenePlay() {
 			// constructor code
 			ScenePlay.main = this;
-			
+
 			loadLevel();
 			spawnPlayer();
 		}
@@ -107,7 +107,8 @@
 			updateBullets();
 			spawnEnemy();
 			updateEnemies();
-			
+			updateBulletsBad();
+			updateCoins();
 			updatePlatforms();
 			castle.update();
 
@@ -116,8 +117,6 @@
 			doCollisionDetection();
 
 			doCameraMove();
-			
-			hud.update(this)
 
 			hud.update(this);
 
@@ -308,36 +307,62 @@
 		private function doCollisionDetection(): void {
 
 			for (var i: int = 0; i < ScenePlay.platforms.length; i++) {
-				
-				// Collision for player hitting platforms.
-				if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
-					
-					// find the fix:
-					var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
-					//trace(fix);
-					// apply the fix:
-					player.applyFix(fix);
-				}
-				
-				// Collision for player bullets hitting platforms.
-				for (var j: int = 0; j < bullets.length; j++) {
-					if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-						//trace(player.collider.checkOverlap(platforms[i].collider));
-						explodePlayerBullet(j);
-					}
-				}
-				
-				// Collision for enemies hitting platforms.
-				for (var k:int = 0; k < ScenePlay.enemies.length; k++) {
-					
-					if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)){
-						var enemyFix:Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
-						ScenePlay.enemies[k].applyFix(enemyFix);
-					}
-					
-				}
-				
+
+				// Collision for platforms.
+				platformCollision(i);
+
+				// Collision between player bullets and enemies.
+				bulletEnemyCollision();
+
+				// Collision between player and enemies.
+				playerEnemyCollision();
+
+				// Collision between player and badBullets
+				playerBulletBadCollision();
+
+				// Collision between player and coins
+				playerCoinCollision();
+
+				// Collision between the Castle and badBullets
+				castleBulletBadCollision();
+
 			} // ends for
+		}
+
+		private function platformCollision(i: Number): void {
+			// Collision for player hitting platforms.
+			if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
+				// find the fix:
+				var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
+				//trace(fix);
+				// apply the fix:
+				player.applyFix(fix);
+			}
+
+			// Collision for enemies hitting platforms.
+			for (var k: int = 0; k < ScenePlay.enemies.length; k++) {
+				if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					ScenePlay.enemies[k].applyFix(enemyFix);
+				}
+			}
+
+			// Collision for player bullets hitting platforms.
+			for (var j: int = 0; j < bullets.length; j++) {
+				if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					//trace(player.collider.checkOverlap(platforms[i].collider));
+					explodePlayerBullet(j);
+				} // ends if
+			}
+
+			// Collision for enemy bullets hitting platforms.
+			for (var m: int = 0; m < bulletsBad.length; m++) {
+				if (bulletsBad[m].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					//trace(player.collider.checkOverlap(platforms[i].collider));
+					explodeEnemyBullet(m);
+				} // ends if
+			} // ends for
+
 
 			// Collision for coins hitting platforms.
 			for (var l: int = 0; l < coins.length; l++) {
@@ -380,21 +405,54 @@
 			}
 		}
 
+		/**
+		 *
+		 */
+		private function castleBulletBadCollision(): void {
+			for (var i: int = 0; i < bulletsBad.length; i++) {
+				if (castle.colliderCenter.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
+				if (castle.colliderRight.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
+				if (castle.colliderLeft.checkOverlap(bulletsBad[i].collider)) {
+					damageCastle();
+					explodeEnemyBullet(i);
+				}
+			}
+		}
+
+		/**
+		 *
+		 */
+		private function playerBulletBadCollision(): void {
+			for (var i: int = 0; i < bulletsBad.length; i++) {
+				if (player.collider.checkOverlap(bulletsBad[i].collider)) {
+					damagePlayer();
+					explodeEnemyBullet(i);
+				}
+			}
+		}
+
 		private function collectCoin(index: int) {
 			coinSound.play();
 			ScenePlay.coins[index].isDead = true;
-			coinCount++;
+			updateCoins();
+			coinCount += 1;
 		}
-		
+
 		/**
-		 * 
+		 *
 		 */
 		private function damagePlayer(): void {
 			player.health -= 10;
 		}
-		
+
 		/**
-		 * 
+		 *
 		 */
 		private function damageCastle(): void {
 			castle.health -= 10;
@@ -440,7 +498,7 @@
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
-		
+
 		/**
 		 * Explodes the enemy bullet with particles when it hits a wall or the ground.
 		 * @param index The index of the bullet in the bullets array.
@@ -518,97 +576,3 @@
 		}
 	} // ends class
 } // ends package
-		public var coinCount: int = 0;
-
-		static public var coins: Array = new Array();
-
-		private var bulletsBad: Array = new Array();
-		/** */
-		static public var towers: Array = new Array();
-
-			updateBulletsBad();
-			updateCoins();
-
-				//Collision for platforms and everything else.
-				platformCollision(i);
-
-				// Collision for player bullets hitting enemies.
-				bulletEnemyCollision();
-
-				// Collision between player and enemies
-				playerEnemyCollision();
-
-			} // ends for
-			
-			// Collision between player and badBullets
-			playerBulletBadCollision();
-
-			// Collision between player and coins
-			playerCoinCollision();
-			
-			// Collision between the Castle and badBullets
-			castleBulletBadCollision();
-
-		} // ends doCollisionDetection()
-
-		/**
-		 * 
-		 */
-		private function castleBulletBadCollision(): void {
-			for (var i: int = 0; i < bulletsBad.length; i++) {
-				if(castle.colliderCenter.checkOverlap(bulletsBad[i].collider)) {
-					damageCastle();
-					explodeEnemyBullet(i);
-				}
-				if(castle.colliderRight.checkOverlap(bulletsBad[i].collider)) {
-					damageCastle();
-					explodeEnemyBullet(i);
-				}
-				if(castle.colliderLeft.checkOverlap(bulletsBad[i].collider)) {
-					damageCastle();
-					explodeEnemyBullet(i);
-				}
-			}
-		}
-		
-		/**
-		 * 
-		 */
-		private function playerBulletBadCollision(): void {
-			for (var i: int = 0; i < bulletsBad.length; i++) {
-				if(player.collider.checkOverlap(bulletsBad[i].collider)) {
-					damagePlayer();
-					explodeEnemyBullet(i);
-			}
-		}
-		
-		private function platformCollision(i: Number): void {
-			// Collision for player hitting platforms.
-			if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
-				// find the fix:
-				var fix: Point = player.collider.findOverlapFix(ScenePlay.platforms[i].collider);
-				//trace(fix);
-				// apply the fix:
-				player.applyFix(fix);
-			}
-
-			// Collision for enemies hitting platforms.
-			for (var k: int = 0; k < ScenePlay.enemies.length; k++) {
-				if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-					var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
-					ScenePlay.enemies[k].applyFix(enemyFix);
-			}
-
-			// Collision for player bullets hitting platforms.
-			for (var j: int = 0; j < bullets.length; j++) {
-				if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-					//trace(player.collider.checkOverlap(platforms[i].collider));
-					explodePlayerBullet(j);
-			} // ends for
-			
-			// Collision for enemy bullets hitting platforms.
-			for (var m: int = 0; m < bulletsBad.length; m++) {
-				if (bulletsBad[m].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
-					//trace(player.collider.checkOverlap(platforms[i].collider));
-					explodeEnemyBullet(m);
-				}
