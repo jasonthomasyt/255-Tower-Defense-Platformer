@@ -13,10 +13,10 @@
 			
 			parent.setChildIndex(this, parent.numChildren - 1);
 			
-			waveboard.text = "Wave: " + scenePlay.score;
+			waveboard.text = "Wave: " + scenePlay.waveCount;
 			coinboard.text = "Coins: " + scenePlay.coinCount;
 			bar.barColor.scaleX = scenePlay.player.health / scenePlay.player.maxHealth;
-			
+			enemiesboard.text = "Enemies Remaining: " + scenePlay.enemiesRemainingCount;
 			
 			
 		}

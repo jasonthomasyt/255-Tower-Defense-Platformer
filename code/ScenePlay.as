@@ -13,7 +13,26 @@ package code {
 	public class ScenePlay extends GameScene {
 
 		/** */
-		public var score: int = 0;
+		public var waveCount: int = 0;
+
+		private var spawnIncrement: int = 0;
+
+		private var enemyCounter: int = 0;
+		
+		private var waveStart: Boolean = false;
+		
+		private var waveEnd: Boolean = true;
+		
+		private var spawnDecrement: int = 5;
+		
+		private var spawnRate: int = 2000;
+		
+		private var spawnRateMin: int = 900;
+		
+		public var enemiesRemainingCount: int = 0;
+		
+		private var enemyNum: int = 0;
+		
 		/** */
 		public var coin: int = 0;
 
@@ -91,7 +110,7 @@ package code {
 			platforms = new Array();
 			enemies = new Array();
 			towers = new Array();
-			score = 0;
+			waveCount = 0;
 		} // end onEnd
 		/**
 		 * This event-handler is called everytime the left mouse button is down.
@@ -115,8 +134,8 @@ package code {
 			}
 			player.update();
 			updateBullets();
-			spawnEnemy();
 			spawnSmokeParticles();
+			spawnEnemy(5);
 			updateEnemies();
 			updateBulletsBad();
 			updateCoins();
@@ -240,8 +259,13 @@ package code {
 				if (ScenePlay.enemies[i].isDead) {
 					level.removeChild(ScenePlay.enemies[i]);
 					ScenePlay.enemies.splice(i, 1);
+					enemiesRemainingCount--;
 				}
 
+			}
+			
+			if (ScenePlay.enemies.length == 0) {
+				updateWave();
 			}
 		} // ends updateEnemies
 
@@ -275,6 +299,15 @@ package code {
 				turrets[i].update();
 			}
 		} //ends updateTurrets
+
+		private function updateWave(): void {
+			if (waveEnd == true) {
+				enemiesRemainingCount = enemyNum;
+				waveCount++;
+				waveEnd = false;
+				waveStart = true;
+			}
+		}
 
 		/**
 		 * This is where we do all of our AABB collision decetction.
@@ -341,14 +374,14 @@ package code {
 		 *
 		 */
 		private function damagePlayer(): void {
-			player.health -= 10;
+			player.health -= 5;
 		}
 
 		/**
 		 *
 		 */
 		private function damageCastle(): void {
-			castle.health -= 10;
+			castle.health -= 5;
 		}
 
 		/**
@@ -423,15 +456,32 @@ package code {
 			}
 		}
 
-		private function spawnEnemy(): void {
+		private function spawnEnemy(spawnCount: int): void {
 			// spawn snow:
-			delaySpawn -= Time.dtScaled;
-			if (delaySpawn <= 0) {
-				var e: Enemy = new Enemy();
-				level.addChild(e);
-				ScenePlay.enemies.push(e);
-				delaySpawn = (int)(Math.random() * 1000 + .5);
+			spawnCount += spawnIncrement;
+			enemyNum = spawnCount;
+			if (enemyCounter < spawnCount && waveStart == true) {
+				for (var i: int = 0; i < spawnCount; i++) {
+					delaySpawn -= Time.dtScaled;
+					if (delaySpawn <= 0) {
+						var e: Enemy = new Enemy();
+						level.addChild(e);
+						ScenePlay.enemies.push(e);
+						enemyCounter++;
+						delaySpawn = (int)(Math.random() * spawnRate + spawnRateMin);
+					}
+				}
 			}
+
+			if (enemyCounter == spawnCount) {
+				waveStart = false;
+				waveEnd = true;
+				enemyCounter = 0;
+				spawnIncrement += 5;
+				spawnRate -= spawnDecrement;
+				spawnRateMin -= spawnDecrement;
+			}
+			
 		}
 
 
@@ -514,7 +564,7 @@ package code {
 			}
 
 		} // ends spawnRapidTower
-		
+
 		private function spawnBombTower(): void {
 			var newBombTower: BombTower = new BombTower();
 			var newBombTurret: BombTurret = new BombTurret();
@@ -539,12 +589,12 @@ package code {
 				/* Adds tower/turret to their respective arrays */
 				towers.push(newBombTower);
 				turrets.push(newBombTurret);
-				
+
 				spendCoins(50);
 			}
-			
+
 		} // ends spawnBombTower
-		
+
 		private function spawnCoin(coinNum: int, spawnX: Number, spawnY: Number): void {
 
 			for (var i: int = 0; i < coinNum; i++) {
@@ -712,6 +762,7 @@ package code {
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
 					if (bullets[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
 						killEnemy(j);
+						explodePlayerBullet(i);
 						explodePlayerBullet(i);
 						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
 						updateEnemies();
