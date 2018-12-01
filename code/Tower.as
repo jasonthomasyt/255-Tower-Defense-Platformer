@@ -3,9 +3,9 @@
 
 	public class Tower extends MovieClip {
 		
-		public var health: int = 0;
+		public var health: int = 100;
 		
-		public var maxHealth: int = 0;
+		public var maxHealth: int = 100;
 		
 		public function Tower() {
 			// constructor code

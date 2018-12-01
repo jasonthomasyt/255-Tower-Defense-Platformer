@@ -38,12 +38,12 @@
 		 */
 		public function BulletBad(e: Enemy) {
 			
-			collider = new AABB(width/2, height/2)
-			collider.calcEdges(x, y);
-			
 			// Set coordinates of bullet to player coordinates. 
 			x = e.x - e.gun.x;
 			y = e.y;
+			
+			collider = new AABB(width/2, height/2)
+			collider.calcEdges(x, y);
 			
 			// Set angle to gun rotation.
 			angle = (e.gun.rotation - 90) * Math.PI /180;

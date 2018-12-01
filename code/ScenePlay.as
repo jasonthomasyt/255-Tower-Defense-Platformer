@@ -44,8 +44,6 @@ package code {
 		static public var platforms: Array = new Array();
 		/** */
 		static public var enemies: Array = new Array();
-		/** */
-		public var towers: Array = new Array();
 
 		public var smokeParticleDelay: Number = 0;
 
@@ -357,6 +355,9 @@ package code {
 			
 			//Collision between the player and the far wall
 			playerWallCollision();
+			
+			//Collision between the towers and enemy bullets
+			towerBulletsBadCollision();
 
 		} // ends doCollisionDetection()
 		/*
@@ -699,6 +700,23 @@ package code {
 			}
 		}
 
+		/**
+		 * 
+		 */
+		private function towerBulletsBadCollision(): void {
+			for (var i: int = 0; i < bulletsBad.length; i++) {
+				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
+					if (ScenePlay.towers[j].colliderSpire.checkOverlap(bulletsBad[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						explodeEnemyBullet[i];
+					}
+					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						explodeEnemyBullet[i];
+					}
+				}
+			}
+		}
 
 		/**
 		 *

@@ -42,7 +42,7 @@
 			this.halfWidth = halfWidth;
 			this.halfHeight = halfHeight;
 			// recalculate edges!!!
-			calcEdges((xMin + xMax) / 2, (yMin + yMax) / 2); // Calculate the collider's edges.
+			//calcEdges((xMin + xMax) / 2, (yMin + yMax) / 2); // Calculate the collider's edges.
 		} // ends setSize
 
 		/**
