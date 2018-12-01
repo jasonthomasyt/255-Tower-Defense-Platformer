@@ -373,6 +373,10 @@ package code {
 
 			//Collision between the player and the far wall
 			playerWallCollision();
+			
+			bulletWallCollision();
+			
+			coinWallCollision();
 
 			//Collision between the towers and enemy bullets
 			towerBulletsBadCollision();
@@ -757,6 +761,25 @@ package code {
 				//trace(fix);
 				// apply the fix:
 				player.applyFix(fix);
+			}
+		}
+		
+		private function coinWallCollision(): void {
+			for (var i: int = 0; i < ScenePlay.coins.length; i++) {
+				if (ScenePlay.coins[i].collider.checkOverlap(level.playerWall.collider)) {
+					var fix: Point = ScenePlay.coins[i].collider.findOverlapFix(level.playerWall.collider);
+					
+					ScenePlay.coins[i].applyFix(fix);
+				}
+			}
+		}
+		
+		private function bulletWallCollision(): void {
+			for (var i: int = 0; i < bullets.length; i++) {
+				if (bullets[i].collider.checkOverlap(level.playerWall.collider)) {
+					explodePlayerBullet(i);
+					updateBullets();
+				}
 			}
 		}
 
