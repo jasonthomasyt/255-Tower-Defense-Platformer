@@ -131,11 +131,11 @@ package code {
 				spawnPlayer();
 			}
 			player.update();
-			
+
 			spawnSmokeParticles();
 			spawnEnemy(5);
 			updateEnemies();
-			
+
 			updateCoins();
 
 			updatePlatforms();
@@ -150,10 +150,10 @@ package code {
 				}
 			}
 			updateTurrets();
-			
+
 			updateBullets();
 			updateBulletsBad();
-			
+
 			updateParticles();
 
 			doCollisionDetection();
@@ -373,9 +373,9 @@ package code {
 
 			//Collision between the player and the far wall
 			playerWallCollision();
-			
+
 			bulletWallCollision();
-			
+
 			coinWallCollision();
 
 			//Collision between the towers and enemy bullets
@@ -730,10 +730,40 @@ package code {
 				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
 					if (ScenePlay.towers[j].colliderSpire.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+									if (ScenePlay.towers[i].isDead) {
+										level.removeChild(ScenePlay.towers[i]);
+										ScenePlay.towers.splice(i, 1);
+										
+										level.removeChild(turrets[i]);
+										turrets.splice(i, 1);
+									}
+								}
+							}
+						}
 						explodeEnemyBullet(i);
 					}
 					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+									if (ScenePlay.towers[i].isDead) {
+										level.removeChild(ScenePlay.towers[i]);
+										ScenePlay.towers.splice(i, 1);
+										
+										level.removeChild(turrets[i]);
+										turrets.splice(i, 1);
+									}
+								}
+							}
+						}
 						explodeEnemyBullet(i);
 					}
 				}
@@ -763,17 +793,17 @@ package code {
 				player.applyFix(fix);
 			}
 		}
-		
+
 		private function coinWallCollision(): void {
 			for (var i: int = 0; i < ScenePlay.coins.length; i++) {
 				if (ScenePlay.coins[i].collider.checkOverlap(level.playerWall.collider)) {
 					var fix: Point = ScenePlay.coins[i].collider.findOverlapFix(level.playerWall.collider);
-					
+
 					ScenePlay.coins[i].applyFix(fix);
 				}
 			}
 		}
-		
+
 		private function bulletWallCollision(): void {
 			for (var i: int = 0; i < bullets.length; i++) {
 				if (bullets[i].collider.checkOverlap(level.playerWall.collider)) {
