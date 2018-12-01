@@ -383,6 +383,9 @@ package code {
 		 */
 		private function damagePlayer(): void {
 			player.health -= 5;
+			if (player.health <= 0) {
+				player.health = 0;
+			}
 		}
 
 		/**
@@ -390,6 +393,9 @@ package code {
 		 */
 		private function damageCastle(): void {
 			castle.health -= 5;
+			if (castle.health <= 0) {
+				castle.health = 0;
+			}
 		}
 
 		/**

@@ -35,7 +35,6 @@
 			colliderCenter.calcEdges(x, y);
 			colliderRight.calcEdges(x, y);
 			colliderLeft.calcEdges(x, y);
-			castleHealth.barColor.scaleX = health / maxHealth;
 			if (health <= 0) isDead = true;
 		}
 	}

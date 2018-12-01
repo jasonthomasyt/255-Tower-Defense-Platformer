@@ -16,6 +16,7 @@
 			waveboard.text = "Wave: " + scenePlay.waveCount;
 			coinboard.text = "Coins: " + scenePlay.coinCount;
 			bar.barColor.scaleX = scenePlay.player.health / scenePlay.player.maxHealth;
+			castleHealth.barColor.scaleX = scenePlay.castle.health / scenePlay.castle.maxHealth;
 			enemiesboard.text = "Enemies Remaining: " + scenePlay.enemiesRemainingCount;
 			
 			
