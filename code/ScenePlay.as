@@ -229,11 +229,16 @@ package code {
 		/** 
 		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
 		 */
-		private function spawnBullet(): void {
-
-			var b: Bullet = new Bullet(player);
-			level.addChild(b);
-			bullets.push(b);
+		public function spawnBullet(turret: Turret = null): void {
+			if (turret) {
+				var a: Bullet = new Bullet(null, turret);
+				level.addChild(a);
+				bullets.push(a);
+			} else {
+				var b: Bullet = new Bullet(player);
+				level.addChild(b);
+				bullets.push(b);
+			}
 
 		} // ends spawnBullet
 		/** 
