@@ -25,7 +25,7 @@
 		public var angle: Number = 0;
 		
 		/** The amount of time the bullet will stay alive for in seconds. */
-		private var lifeMax: Number = 10;
+		private var lifeMax: Number = 1;
 		/** The current amount of time the bullet has been on screen */
 		private var lifeCurrent: Number = 0;
 		

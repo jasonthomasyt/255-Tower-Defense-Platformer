@@ -18,23 +18,23 @@ package code {
 		private var spawnIncrement: int = 0;
 
 		private var enemyCounter: int = 0;
-		
+
 		private var waveStart: Boolean = false;
-		
+
 		private var waveEnd: Boolean = true;
-		
+
 		private var spawnDecrement: int = 5;
-		
+
 		private var spawnRate: int = 2000;
-		
+
 		private var spawnRateMin: int = 900;
-		
+
 		public var enemiesRemainingCount: int = 0;
-		
+
 		private var enemyNum: int = 0;
-		
+
 		/** */
-		public var coin: int = 0;
+		//public var coin: int = 20;
 
 		/** */
 		private var shakeTimer: Number = 0;
@@ -67,7 +67,7 @@ package code {
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
 
-		public var coinCount: int = 0;
+		public var coinCount: int = 20;
 
 		static public var coins: Array = new Array();
 		/** */
@@ -177,6 +177,19 @@ package code {
 			//addChild(level);
 			//spawnPlayer();
 			castle = level.castle
+			ScenePlay.platforms.splice(3, 1);
+			level.playerWall.alpha = 0;
+		}
+		/**
+		 *
+		 */
+		private function findIndexInArray(value: Object, arr: Array): Number {
+			for (var i: uint = 0; i < arr.length; i++) {
+				if (arr[i] == value) {
+					return i;
+				}
+			}
+			return NaN;
 		}
 		/**
 		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
@@ -263,7 +276,7 @@ package code {
 				}
 
 			}
-			
+
 			if (ScenePlay.enemies.length == 0) {
 				updateWave();
 			}
@@ -318,30 +331,32 @@ package code {
 
 				//Collision for platforms and everything else.
 				platformCollision(i);
-
+				
 				// Collision for player bullets hitting enemies.
 				bulletEnemyCollision();
-
+				
 				// Collision between player and enemies
 				playerEnemyCollision();
 
-				// Collision bewteen good bullets and bad bullets
-				doubleBulletCollision();
-
-				// Collision between player and badBullets
-				playerBulletBadCollision();
-
-				// Collision between player and coins
-				playerCoinCollision();
-
-				// Collision between the Castle and badBullets
-				castleBulletBadCollision();
-
-				//Collision between the player and the build spot boxes
-				playerBuildSpotCollsion();
-
-
 			} // ends for
+//Keep all of the collisions that don't need to be in the for loop out!
+			// Collision bewteen good bullets and bad bullets
+			doubleBulletCollision();
+
+			// Collision between player and badBullets
+			playerBulletBadCollision();
+
+			// Collision between player and coins
+			playerCoinCollision();
+
+			// Collision between the Castle and badBullets
+			castleBulletBadCollision();
+
+			//Collision between the player and the build spot boxes
+			playerBuildSpotCollsion();
+			
+			//Collision between the player and the far wall
+			playerWallCollision();
 
 		} // ends doCollisionDetection()
 		/*
@@ -481,7 +496,7 @@ package code {
 				spawnRate -= spawnDecrement;
 				spawnRateMin -= spawnDecrement;
 			}
-			
+
 		}
 
 
@@ -696,7 +711,23 @@ package code {
 				}
 			}
 		}
+		/**
+		 * 
+		 */
+		private function playerWallCollision(): void {
+			if(player.collider.checkOverlap(level.playerWall.collider)) {
+				// find the fix:
+				var fix: Point = player.collider.findOverlapFix(level.playerWall.collider);
+				//trace(fix);
+				// apply the fix:
+				player.applyFix(fix);
+			}
+		}
 
+		/**
+		 * 
+		 * @param i 
+		 */
 		private function platformCollision(i: Number): void {
 			// Collision for player hitting platforms.
 			if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
@@ -743,18 +774,20 @@ package code {
 			//trace("playerBuildSpotCollision()");
 			if (player.collider.checkOverlap(level.buildSpot1.collider)) {
 				//trace("If player overlaps with BuildSpot1 ...");
+				level.buildSpot1.buildInstructions.alpha = 1;
 				if (!level.buildSpot1.used) {
 					//trace("If BuildSpot1 hasn't been used ...");
 					buildSpotChooser = 1;
 					spawnTower();
 				}
-			}
+			} else level.buildSpot1.buildInstructions.alpha = 0;
 			if (player.collider.checkOverlap(level.buildSpot2.collider)) {
+				level.buildSpot2.buildInstructions.alpha = 1;
 				if (!level.buildSpot2.used) {
 					buildSpotChooser = 2;
 					spawnTower();
 				}
-			}
+			} else level.buildSpot2.buildInstructions.alpha = 0;
 		}
 
 		private function bulletEnemyCollision(): void {
