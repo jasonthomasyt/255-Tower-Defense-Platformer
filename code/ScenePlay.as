@@ -140,6 +140,15 @@ package code {
 
 			updatePlatforms();
 			castle.update();
+			if (ScenePlay.towers.length > 0) {
+				for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+					ScenePlay.towers[i].update(this);
+					if (ScenePlay.towers[i].isDead) {
+						level.removeChild(ScenePlay.towers[i]);
+						ScenePlay.towers.splice(i, 1);
+					}
+				}
+			}
 			updateTurrets();
 
 			updateParticles();
@@ -329,15 +338,15 @@ package code {
 
 				//Collision for platforms and everything else.
 				platformCollision(i);
-				
+
 				// Collision for player bullets hitting enemies.
 				bulletEnemyCollision();
-				
+
 				// Collision between player and enemies
 				playerEnemyCollision();
 
 			} // ends for
-//Keep all of the collisions that don't need to be in the for loop out!
+			//Keep all of the collisions that don't need to be in the for loop out!
 			// Collision bewteen good bullets and bad bullets
 			doubleBulletCollision();
 
@@ -352,10 +361,10 @@ package code {
 
 			//Collision between the player and the build spot boxes
 			playerBuildSpotCollsion();
-			
+
 			//Collision between the player and the far wall
 			playerWallCollision();
-			
+
 			//Collision between the towers and enemy bullets
 			towerBulletsBadCollision();
 
@@ -701,18 +710,18 @@ package code {
 		}
 
 		/**
-		 * 
+		 *
 		 */
 		private function towerBulletsBadCollision(): void {
 			for (var i: int = 0; i < bulletsBad.length; i++) {
 				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
 					if (ScenePlay.towers[j].colliderSpire.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
-						explodeEnemyBullet[i];
+						explodeEnemyBullet(i);
 					}
 					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
-						explodeEnemyBullet[i];
+						explodeEnemyBullet(i);
 					}
 				}
 			}
@@ -730,10 +739,10 @@ package code {
 			}
 		}
 		/**
-		 * 
+		 *
 		 */
 		private function playerWallCollision(): void {
-			if(player.collider.checkOverlap(level.playerWall.collider)) {
+			if (player.collider.checkOverlap(level.playerWall.collider)) {
 				// find the fix:
 				var fix: Point = player.collider.findOverlapFix(level.playerWall.collider);
 				//trace(fix);
@@ -743,8 +752,8 @@ package code {
 		}
 
 		/**
-		 * 
-		 * @param i 
+		 *
+		 * @param i
 		 */
 		private function platformCollision(i: Number): void {
 			// Collision for player hitting platforms.
