@@ -13,9 +13,9 @@
 			
 			parent.setChildIndex(this, parent.numChildren - 1);
 			
-			scoreboard.text = "score: " + scenePlay.score;
-			coinboard.text = "coin: " + scenePlay.coinCount;
-			bar.scaleX = scenePlay.player.health / scenePlay.player.maxHealth;
+			waveboard.text = "Wave: " + scenePlay.score;
+			coinboard.text = "Coins: " + scenePlay.coinCount;
+			bar.barColor.scaleX = scenePlay.player.health / scenePlay.player.maxHealth;
 			
 			
 			
