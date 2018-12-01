@@ -25,7 +25,7 @@
 		public var angle: Number = 0;
 		
 		/** The amount of time the bullet will stay alive for in seconds. */
-		private var lifeMax: Number = 10;
+		private var lifeMax: Number = 2;
 		/** The current amount of time the bullet has been on screen */
 		private var lifeCurrent: Number = 0;
 		
@@ -38,12 +38,12 @@
 		 */
 		public function BulletBad(e: Enemy) {
 			
-			collider = new AABB(width/2, height/2)
-			collider.calcEdges(x, y);
-			
 			// Set coordinates of bullet to player coordinates. 
 			x = e.x - e.gun.x;
 			y = e.y;
+			
+			collider = new AABB(width/2, height/2)
+			collider.calcEdges(x, y);
 			
 			// Set angle to gun rotation.
 			angle = (e.gun.rotation - 90) * Math.PI /180;

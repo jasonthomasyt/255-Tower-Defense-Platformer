@@ -34,7 +34,7 @@ package code {
 		private var enemyNum: int = 0;
 
 		/** */
-		public var coin: int = 0;
+		//public var coin: int = 20;
 
 		/** */
 		private var shakeTimer: Number = 0;
@@ -44,8 +44,6 @@ package code {
 		static public var platforms: Array = new Array();
 		/** */
 		static public var enemies: Array = new Array();
-		/** */
-		public var towers: Array = new Array();
 
 		public var smokeParticleDelay: Number = 0;
 
@@ -66,10 +64,6 @@ package code {
 
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
-
-		private var buildSound: BuildSound = new BuildSound();
-
-		private var loseSound: LoseSound = new LoseSound();
 
 		public var coinCount: int = 0;
 
@@ -141,12 +135,24 @@ package code {
 			spawnSmokeParticles();
 			spawnEnemy(5);
 			updateEnemies();
-			updateBulletsBad();
+
 			updateCoins();
 
 			updatePlatforms();
 			castle.update();
+			if (ScenePlay.towers.length > 0) {
+				for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+					ScenePlay.towers[i].update(this);
+					if (ScenePlay.towers[i].isDead) {
+						level.removeChild(ScenePlay.towers[i]);
+						ScenePlay.towers.splice(i, 1);
+					}
+				}
+			}
 			updateTurrets();
+
+			updateBullets();
+			updateBulletsBad();
 
 			updateParticles();
 
@@ -185,6 +191,19 @@ package code {
 			//addChild(level);
 			//spawnPlayer();
 			castle = level.castle
+			ScenePlay.platforms.splice(3, 1);
+			level.playerWall.alpha = 0;
+		}
+		/**
+		 *
+		 */
+		private function findIndexInArray(value: Object, arr: Array): Number {
+			for (var i: uint = 0; i < arr.length; i++) {
+				if (arr[i] == value) {
+					return i;
+				}
+			}
+			return NaN;
 		}
 		/**
 		 * If a player is currently valid, nothing will happen. Otherwise, this method spawns us a player at our playerSpawner location.
@@ -217,11 +236,17 @@ package code {
 		/** 
 		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
 		 */
-		private function spawnBullet(): void {
-
-			var b: Bullet = new Bullet(player);
-			level.addChild(b);
-			bullets.push(b);
+		public function spawnBullet(turret: Turret = null): void {
+			if (turret) {
+				var a: Bullet = new Bullet(null, turret);
+				level.addChild(a);
+				bullets.push(a);
+				a.lifeMax = 10;
+			} else {
+				var b: Bullet = new Bullet(player);
+				level.addChild(b);
+				bullets.push(b);
+			}
 
 		} // ends spawnBullet
 		/** 
@@ -333,23 +358,32 @@ package code {
 				// Collision between player and enemies
 				playerEnemyCollision();
 
-				// Collision bewteen good bullets and bad bullets
-				doubleBulletCollision();
-
-				// Collision between player and badBullets
-				playerBulletBadCollision();
-
-				// Collision between player and coins
-				playerCoinCollision();
-
-				// Collision between the Castle and badBullets
-				castleBulletBadCollision();
-
-				//Collision between the player and the build spot boxes
-				playerBuildSpotCollsion();
-
-
 			} // ends for
+			//Keep all of the collisions that don't need to be in the for loop out!
+			// Collision bewteen good bullets and bad bullets
+			doubleBulletCollision();
+
+			// Collision between player and badBullets
+			playerBulletBadCollision();
+
+			// Collision between player and coins
+			playerCoinCollision();
+
+			// Collision between the Castle and badBullets
+			castleBulletBadCollision();
+
+			//Collision between the player and the build spot boxes
+			playerBuildSpotCollsion();
+
+			//Collision between the player and the far wall
+			playerWallCollision();
+
+			bulletWallCollision();
+
+			coinWallCollision();
+
+			//Collision between the towers and enemy bullets
+			towerBulletsBadCollision();
 
 		} // ends doCollisionDetection()
 		/*
@@ -528,12 +562,12 @@ package code {
 				if (buildSpotChooser == 1) {
 					newBasicTower.y = level.buildSpot1.y;
 					newBasicTower.x = level.buildSpot1.x;
-					level.removeChild(level.buildSpot1);
+					level.buildSpot1.alpha = 0;
 					level.buildSpot1.used = true;
 				} else if (buildSpotChooser == 2) {
 					newBasicTower.y = level.buildSpot2.y;
 					newBasicTower.x = level.buildSpot2.x;
-					level.removeChild(level.buildSpot2);
+					level.buildSpot2.alpha = 0;
 					level.buildSpot2.used = true;
 				}
 				newBasicTurret.y = newBasicTower.y - 75;
@@ -701,6 +735,63 @@ package code {
 			}
 		}
 
+		/**
+		 *
+		 */
+		private function towerBulletsBadCollision(): void {
+			for (var i: int = 0; i < bulletsBad.length; i++) {
+				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
+					if (ScenePlay.towers[j].colliderSpire.checkOverlap(bulletsBad[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						explodeEnemyBullet(i);
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+									if (ScenePlay.towers[i].isDead) {
+										if (ScenePlay.towers[i].x <= level.buildSpot1.x + 50) {
+											level.buildSpot1.alpha = 1;
+											level.buildSpot1.used = false;
+										}
+										if (ScenePlay.towers[i].x <= level.buildSpot2.x + 50) {
+											level.buildSpot2.alpha = 1;
+											level.buildSpot2.used = false;
+										}
+										level.removeChild(ScenePlay.towers[i]);
+										ScenePlay.towers.splice(i, 1);
+
+										level.removeChild(turrets[i]);
+										turrets.splice(i, 1);
+
+
+									}
+								}
+							}
+						}
+					}
+					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+									if (ScenePlay.towers[i].isDead) {
+										level.removeChild(ScenePlay.towers[i]);
+										ScenePlay.towers.splice(i, 1);
+
+										level.removeChild(turrets[i]);
+										turrets.splice(i, 1);
+									}
+								}
+							}
+						}
+						explodeEnemyBullet(i);
+					}
+				}
+			}
+		}
 
 		/**
 		 *
@@ -713,7 +804,42 @@ package code {
 				}
 			}
 		}
+		/**
+		 *
+		 */
+		private function playerWallCollision(): void {
+			if (player.collider.checkOverlap(level.playerWall.collider)) {
+				// find the fix:
+				var fix: Point = player.collider.findOverlapFix(level.playerWall.collider);
+				//trace(fix);
+				// apply the fix:
+				player.applyFix(fix);
+			}
+		}
 
+		private function coinWallCollision(): void {
+			for (var i: int = 0; i < ScenePlay.coins.length; i++) {
+				if (ScenePlay.coins[i].collider.checkOverlap(level.playerWall.collider)) {
+					var fix: Point = ScenePlay.coins[i].collider.findOverlapFix(level.playerWall.collider);
+
+					ScenePlay.coins[i].applyFix(fix);
+				}
+			}
+		}
+
+		private function bulletWallCollision(): void {
+			for (var i: int = 0; i < bullets.length; i++) {
+				if (bullets[i].collider.checkOverlap(level.playerWall.collider)) {
+					explodePlayerBullet(i);
+					updateBullets();
+				}
+			}
+		}
+
+		/**
+		 *
+		 * @param i
+		 */
 		private function platformCollision(i: Number): void {
 			// Collision for player hitting platforms.
 			if (player.collider.checkOverlap(ScenePlay.platforms[i].collider)) { // if we are overlapping
@@ -760,18 +886,20 @@ package code {
 			//trace("playerBuildSpotCollision()");
 			if (player.collider.checkOverlap(level.buildSpot1.collider)) {
 				//trace("If player overlaps with BuildSpot1 ...");
+				level.buildSpot1.buildInstructions.alpha = 1;
 				if (!level.buildSpot1.used) {
 					//trace("If BuildSpot1 hasn't been used ...");
 					buildSpotChooser = 1;
 					spawnTower();
 				}
-			}
+			} else level.buildSpot1.buildInstructions.alpha = 0;
 			if (player.collider.checkOverlap(level.buildSpot2.collider)) {
+				level.buildSpot2.buildInstructions.alpha = 1;
 				if (!level.buildSpot2.used) {
 					buildSpotChooser = 2;
 					spawnTower();
 				}
-			}
+			} else level.buildSpot2.buildInstructions.alpha = 0;
 		}
 
 		private function bulletEnemyCollision(): void {
@@ -834,3 +962,10 @@ package code {
 		}
 	} // ends class
 } // ends package
+		private var buildSound: BuildSound = new BuildSound();
+
+		private var loseSound: LoseSound = new LoseSound();
+
+		public var coinCount: int = 0;
+			updateBullets();
+			spawnSmokeParticles();

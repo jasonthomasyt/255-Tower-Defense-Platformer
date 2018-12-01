@@ -72,7 +72,7 @@ package code {
 			collider = new AABB(base.width / 2, base.height / 2);
 			changeState(new EnemyStateIdle());
 			closestTargetDist = sightDistance;
-			x = 2500;
+			x = 3690;
 			y = 80;
 		} // end constructor
 		/**
@@ -195,7 +195,7 @@ package code {
 		 * @param direction If a negative number is passed in, it accelerates left. If positive, it'll accelerate right.
 		 */
 		public function handleWalking(direction: int): void {
-			/**if (direction < 0) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+			if (direction < 0) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
 			if (direction > 0) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
 
 			if (direction == 0) { // left and right not being pressed...
@@ -208,17 +208,18 @@ package code {
 					velocity.x -= HORIZONTAL_DECELERATION * Time.dt; // accelerate left
 					if (velocity.x < 0) velocity.x = 0; // clamp at 0
 				}
-			}**/
-
+			}
+			/*
 			if (this.x > 2000) {
-				trace(this.x);
+				//trace(this.x);
 				velocity.x -= HORIZONTAL_DECELERATION * Time.dt;
 			}
 			if (this.x < 800) {
 				velocity.x = 0;
 
-			} // ends handleWalking
-		}
+			} 
+			*/
+		}// ends handleWalking
 
 		/**
 		 * Handles the jumping action for the player.
@@ -288,7 +289,8 @@ package code {
 		 * Changes the gun's rotation based on where the mouse is pointing.
 		 */
 		public function handleAiming(): void {
-			if (closestTarget <= -1) return
+			trace(closestTarget);
+			if (closestTarget <= -1 || closestTarget <= 0) return;
 			var tx: Number = validTargets[closestTarget].x - x;
 			var ty: Number = validTargets[closestTarget].y - y;
 
