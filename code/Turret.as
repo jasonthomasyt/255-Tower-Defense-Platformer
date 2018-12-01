@@ -14,9 +14,9 @@
 		/** */
 		public var targetsDistances: Array = new Array();
 		/** */
-		public var closestTargetDist: Number = 20000;
+		public var closestTargetDist: Number;
 		/** */
-		public var sightDistance: Number = 500;
+		public var sightDistance: Number = 750;
 		/** How long it takes for this enemy to shoot at it's target in seconds. */
 		private var aimingTimer: Number = 1;
 		
@@ -35,9 +35,13 @@
 			 * Updates the rotation angle of the turret to follow the mouse
 			 * TO DO: Update to follow closest enemy
 			 */
-			handleAiming();
 			findValidTargets();
-			shootTarget();
+			
+			handleAiming();
+			
+			if (closestTarget >= 0) {
+				shootTarget();
+			}
 		}
 		/**
 		 * Changes the gun's rotation based on where the mouse is pointing.
@@ -63,6 +67,7 @@
 			for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
 				//trace("looking for enemy " + i);
 				validTargets.push(ScenePlay.enemies[i]);
+				//trace(validTargets[0]);
 			}
 			if (validTargets.length > 0) {
 				//find the distances between the enemy and the targets.
@@ -89,7 +94,7 @@
 						//trace("No closest Target");
 					}
 				}
-			}
+			} else if (validTargets.length <= 0) closestTarget = -1;
 			//trace("closestTarget: " + closestTarget);
 
 		}
@@ -103,7 +108,9 @@
 			if (aimingTimer <= 0) {
 				aimingTimer = 1;
 				ScenePlay.main.spawnBullet(this);
-			}
+				return
+			} //else aimingTimer += Time.dtScaled;
+			//if (aimingTimer >= 1 ) aimingTimer = 1;
 		}
 	}
 }

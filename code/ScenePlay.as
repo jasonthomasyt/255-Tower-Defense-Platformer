@@ -131,11 +131,11 @@ package code {
 				spawnPlayer();
 			}
 			player.update();
-			updateBullets();
+			
 			spawnSmokeParticles();
 			spawnEnemy(5);
 			updateEnemies();
-			updateBulletsBad();
+			
 			updateCoins();
 
 			updatePlatforms();
@@ -150,7 +150,10 @@ package code {
 				}
 			}
 			updateTurrets();
-
+			
+			updateBullets();
+			updateBulletsBad();
+			
 			updateParticles();
 
 			doCollisionDetection();
@@ -234,6 +237,7 @@ package code {
 				var a: Bullet = new Bullet(null, turret);
 				level.addChild(a);
 				bullets.push(a);
+				a.lifeMax = 10;
 			} else {
 				var b: Bullet = new Bullet(player);
 				level.addChild(b);
