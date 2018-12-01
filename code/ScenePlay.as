@@ -65,6 +65,10 @@ package code {
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
 
+		private var buildSound: BuildSound = new BuildSound();
+
+		private var loseSound: LoseSound = new LoseSound();
+
 		public var coinCount: int = 0;
 
 		static public var coins: Array = new Array();
@@ -441,18 +445,18 @@ package code {
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
 			var offsetY: Number = 4 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
-			level.x += (targetX - level.x) * Time.dt * camEaseMultipler /* + offsetX*/;
-			level.y += (targetY - level.y) * Time.dt * camEaseMultipler /*+ offsetY*/;
+			level.x += (targetX - level.x) * Time.dt * camEaseMultipler /* + offsetX*/ ;
+			level.y += (targetY - level.y) * Time.dt * camEaseMultipler /*+ offsetY*/ ;
 			//if (shakeTimer > 0) {
-				//shakeTimer -= Time.dt;
-				//var shakeIntensity: Number = shakeTimer;
-				//if (shakeIntensity > 1) shakeIntensity = 1;
-				//shakeIntensity = 1 - shakeIntensity;
-				//shakeIntensity *= shakeIntensity;
-				//shakeIntensity = 1 - shakeIntensity;
-				//var shakeAmount: Number = 20 * shakeIntensity;
-				//offsetX = Math.random() * shakeAmount - shakeAmount / 2;
-				//offsetY = Math.random() * shakeAmount - shakeAmount / 2;
+			//shakeTimer -= Time.dt;
+			//var shakeIntensity: Number = shakeTimer;
+			//if (shakeIntensity > 1) shakeIntensity = 1;
+			//shakeIntensity = 1 - shakeIntensity;
+			//shakeIntensity *= shakeIntensity;
+			//shakeIntensity = 1 - shakeIntensity;
+			//var shakeAmount: Number = 20 * shakeIntensity;
+			//offsetX = Math.random() * shakeAmount - shakeAmount / 2;
+			//offsetY = Math.random() * shakeAmount - shakeAmount / 2;
 
 			//}
 		} // ends doCameraMove
@@ -772,6 +776,7 @@ package code {
 					}
 					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
+						explodeEnemyBullet(i);
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
@@ -787,7 +792,6 @@ package code {
 								}
 							}
 						}
-						explodeEnemyBullet(i);
 					}
 				}
 			}
@@ -962,10 +966,3 @@ package code {
 		}
 	} // ends class
 } // ends package
-		private var buildSound: BuildSound = new BuildSound();
-
-		private var loseSound: LoseSound = new LoseSound();
-
-		public var coinCount: int = 0;
-			updateBullets();
-			spawnSmokeParticles();
