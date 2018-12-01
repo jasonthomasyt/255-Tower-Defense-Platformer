@@ -289,7 +289,8 @@ package code {
 		 * Changes the gun's rotation based on where the mouse is pointing.
 		 */
 		public function handleAiming(): void {
-			if (closestTarget <= -1) return;
+			trace(closestTarget);
+			if (closestTarget <= -1 || closestTarget <= 0) return;
 			var tx: Number = validTargets[closestTarget].x - x;
 			var ty: Number = validTargets[closestTarget].y - y;
 

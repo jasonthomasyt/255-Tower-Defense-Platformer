@@ -730,17 +730,18 @@ package code {
 				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
 					if (ScenePlay.towers[j].colliderSpire.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
+						explodeEnemyBullet(i);
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
 							if (ScenePlay.towers.length > 0) {
 								for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
 									if (ScenePlay.towers[i].isDead) {
-										if (ScenePlay.towers[i].x <= level.buildSpot1.x + 10) {
+										if (ScenePlay.towers[i].x <= level.buildSpot1.x + 50) {
 											level.buildSpot1.alpha = 1;
 											level.buildSpot1.used = false;
 										}
-										if (ScenePlay.towers[i].x <= level.buildSpot2.x + 10) {
+										if (ScenePlay.towers[i].x <= level.buildSpot2.x + 50) {
 											level.buildSpot2.alpha = 1;
 											level.buildSpot2.used = false;
 										}
@@ -755,7 +756,6 @@ package code {
 								}
 							}
 						}
-						explodeEnemyBullet(i);
 					}
 					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
