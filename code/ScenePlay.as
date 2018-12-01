@@ -551,12 +551,12 @@ package code {
 				if (buildSpotChooser == 1) {
 					newBasicTower.y = level.buildSpot1.y;
 					newBasicTower.x = level.buildSpot1.x;
-					level.removeChild(level.buildSpot1);
+					level.buildSpot1.alpha = 0;
 					level.buildSpot1.used = true;
 				} else if (buildSpotChooser == 2) {
 					newBasicTower.y = level.buildSpot2.y;
 					newBasicTower.x = level.buildSpot2.x;
-					level.removeChild(level.buildSpot2);
+					level.buildSpot2.alpha = 0;
 					level.buildSpot2.used = true;
 				}
 				newBasicTurret.y = newBasicTower.y - 75;
@@ -736,11 +736,21 @@ package code {
 							if (ScenePlay.towers.length > 0) {
 								for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
 									if (ScenePlay.towers[i].isDead) {
+										if (ScenePlay.towers[i].x <= level.buildSpot1.x + 10) {
+											level.buildSpot1.alpha = 1;
+											level.buildSpot1.used = false;
+										}
+										if (ScenePlay.towers[i].x <= level.buildSpot2.x + 10) {
+											level.buildSpot2.alpha = 1;
+											level.buildSpot2.used = false;
+										}
 										level.removeChild(ScenePlay.towers[i]);
 										ScenePlay.towers.splice(i, 1);
-										
+
 										level.removeChild(turrets[i]);
 										turrets.splice(i, 1);
+
+
 									}
 								}
 							}
@@ -757,7 +767,7 @@ package code {
 									if (ScenePlay.towers[i].isDead) {
 										level.removeChild(ScenePlay.towers[i]);
 										ScenePlay.towers.splice(i, 1);
-										
+
 										level.removeChild(turrets[i]);
 										turrets.splice(i, 1);
 									}
