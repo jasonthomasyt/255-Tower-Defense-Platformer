@@ -407,20 +407,20 @@ package code {
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
 			var offsetY: Number = 4 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
-			level.x += (targetX - level.x) * Time.dt * camEaseMultipler + offsetX;
-			level.y += (targetY - level.y) * Time.dt * camEaseMultipler + offsetY;
-			if (shakeTimer > 0) {
-				shakeTimer -= Time.dt;
-				var shakeIntensity: Number = shakeTimer;
-				if (shakeIntensity > 1) shakeIntensity = 1;
-				shakeIntensity = 1 - shakeIntensity;
-				shakeIntensity *= shakeIntensity;
-				shakeIntensity = 1 - shakeIntensity;
-				var shakeAmount: Number = 20 * shakeIntensity;
-				offsetX = Math.random() * shakeAmount - shakeAmount / 2;
-				offsetY = Math.random() * shakeAmount - shakeAmount / 2;
+			level.x += (targetX - level.x) * Time.dt * camEaseMultipler /* + offsetX*/;
+			level.y += (targetY - level.y) * Time.dt * camEaseMultipler /*+ offsetY*/;
+			//if (shakeTimer > 0) {
+				//shakeTimer -= Time.dt;
+				//var shakeIntensity: Number = shakeTimer;
+				//if (shakeIntensity > 1) shakeIntensity = 1;
+				//shakeIntensity = 1 - shakeIntensity;
+				//shakeIntensity *= shakeIntensity;
+				//shakeIntensity = 1 - shakeIntensity;
+				//var shakeAmount: Number = 20 * shakeIntensity;
+				//offsetX = Math.random() * shakeAmount - shakeAmount / 2;
+				//offsetY = Math.random() * shakeAmount - shakeAmount / 2;
 
-			}
+			//}
 		} // ends doCameraMove
 		/**
 		 * Explodes the player bullet with particles when it hits a wall or the ground.
