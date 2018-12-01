@@ -18,21 +18,21 @@ package code {
 		private var spawnIncrement: int = 0;
 
 		private var enemyCounter: int = 0;
-		
+
 		private var waveStart: Boolean = false;
-		
+
 		private var waveEnd: Boolean = true;
-		
+
 		private var spawnDecrement: int = 5;
-		
+
 		private var spawnRate: int = 2000;
-		
+
 		private var spawnRateMin: int = 900;
-		
+
 		public var enemiesRemainingCount: int = 0;
-		
+
 		private var enemyNum: int = 0;
-		
+
 		/** */
 		public var coin: int = 0;
 
@@ -66,6 +66,10 @@ package code {
 
 		/** The sound for when the bullet hits a wall. */
 		private var hitSound: HitSound = new HitSound();
+
+		private var buildSound: BuildSound = new BuildSound();
+
+		private var loseSound: LoseSound = new LoseSound();
 
 		public var coinCount: int = 0;
 
@@ -158,6 +162,7 @@ package code {
 				//start Game Over Sequence
 				//replace this later for polish
 				gameOver = true;
+				loseSound.play();
 			}
 			if (KeyboardInput.onKeyDown(Keyboard.R)) {
 				// Dubugging Game Overs
@@ -165,7 +170,10 @@ package code {
 				castle.isDead = true;
 			}
 
-			if (gameOver) return new SceneLose();
+			if (gameOver) {
+				return new SceneLose();
+			}
+
 
 			return null
 		} // ends update
@@ -263,7 +271,7 @@ package code {
 				}
 
 			}
-			
+
 			if (ScenePlay.enemies.length == 0) {
 				updateWave();
 			}
@@ -481,7 +489,7 @@ package code {
 				spawnRate -= spawnDecrement;
 				spawnRateMin -= spawnDecrement;
 			}
-			
+
 		}
 
 
@@ -509,6 +517,7 @@ package code {
 			var newBasicTower: BasicTower = new BasicTower();
 			var newBasicTurret: BasicTurret = new BasicTurret();
 			if (coinCount >= 20) {
+				buildSound.play();
 				/* Sets tower/turret x and y positions */
 				if (buildSpotChooser == 1) {
 					newBasicTower.y = level.buildSpot1.y;
@@ -539,6 +548,7 @@ package code {
 			var newRapidTower: RapidTower = new RapidTower();
 			var newRapidTurret: RapidTurret = new RapidTurret();
 			if (coinCount >= 35) {
+				buildSound.play();
 				/* Sets tower/turret x and y positions */
 				if (buildSpotChooser == 1) {
 					newRapidTower.y = level.buildSpot1.y;
@@ -569,6 +579,7 @@ package code {
 			var newBombTower: BombTower = new BombTower();
 			var newBombTurret: BombTurret = new BombTurret();
 			if (coinCount >= 50) {
+				buildSound.play();
 				/* Sets tower/turret x and y positions */
 				if (buildSpotChooser == 1) {
 					newBombTower.y = level.buildSpot1.y;

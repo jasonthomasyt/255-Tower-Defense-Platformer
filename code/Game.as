@@ -2,6 +2,7 @@
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import sounds.*;
 	
 	/**
 	 * This is our Game Class. It runs and rules over all of our app logic.
@@ -21,6 +22,8 @@
 		/** This stores the previous scene */
 		private var gameScenePrevious: GameScene;
 		
+		private var bgMusic: BGMusic = new BGMusic();
+		
 		/**
 		 * This is the constructor code for our game, where we set up some of our Objects and Event Listeners.
 		 */
@@ -28,6 +31,7 @@
 			KeyboardInput.setup(stage);
 			switchScene(new SceneTitle());
 			addEventListener(Event.ENTER_FRAME, gameLoop);
+			bgMusic.play(0, 9999);
 			
 		} // ends Game
 		/**
