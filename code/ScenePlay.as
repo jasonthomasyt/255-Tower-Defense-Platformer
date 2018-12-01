@@ -241,7 +241,7 @@ package code {
 					level.removeChild(ScenePlay.enemies[i]);
 					ScenePlay.enemies.splice(i, 1);
 				}
-				
+
 			}
 		} // ends updateEnemies
 
@@ -408,7 +408,7 @@ package code {
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
-		
+
 		private function spawnSmokeParticles(): void {
 
 			smokeParticleDelay--;
@@ -422,7 +422,7 @@ package code {
 				smokeParticleDelay = Math.random() * 3 + .5;
 			}
 		}
-		
+
 		private function spawnEnemy(): void {
 			// spawn snow:
 			delaySpawn -= Time.dtScaled;
@@ -458,75 +458,93 @@ package code {
 		private function spawnBasicTower(): void {
 			var newBasicTower: BasicTower = new BasicTower();
 			var newBasicTurret: BasicTurret = new BasicTurret();
-			/* Sets tower/turret x and y positions */
-			if (buildSpotChooser == 1) {
-				newBasicTower.y = level.buildSpot1.y;
-				newBasicTower.x = level.buildSpot1.x;
-				level.removeChild(level.buildSpot1);
-				level.buildSpot1.used = true;
-			} else if (buildSpotChooser == 2) {
-				newBasicTower.y = level.buildSpot2.y;
-				newBasicTower.x = level.buildSpot2.x;
-				level.removeChild(level.buildSpot2);
-				level.buildSpot2.used = true;
+			if (coinCount >= 20) {
+				/* Sets tower/turret x and y positions */
+				if (buildSpotChooser == 1) {
+					newBasicTower.y = level.buildSpot1.y;
+					newBasicTower.x = level.buildSpot1.x;
+					level.removeChild(level.buildSpot1);
+					level.buildSpot1.used = true;
+				} else if (buildSpotChooser == 2) {
+					newBasicTower.y = level.buildSpot2.y;
+					newBasicTower.x = level.buildSpot2.x;
+					level.removeChild(level.buildSpot2);
+					level.buildSpot2.used = true;
+				}
+				newBasicTurret.y = newBasicTower.y - 75;
+				newBasicTurret.x = newBasicTower.x;
+				/* Removes build spot from stage and adds tower/turret */
+				level.addChild(newBasicTower);
+				level.addChild(newBasicTurret);
+				/* Adds tower/turret to their respective arrays */
+				towers.push(newBasicTower);
+				turrets.push(newBasicTurret);
+
+				spendCoins(20);
 			}
-			newBasicTurret.y = newBasicTower.y - 75;
-			newBasicTurret.x = newBasicTower.x;
-			/* Removes build spot from stage and adds tower/turret */
-			level.addChild(newBasicTower);
-			level.addChild(newBasicTurret);
-			/* Adds tower/turret to their respective arrays */
-			towers.push(newBasicTower);
-			turrets.push(newBasicTurret);
-		}
+
+		} // ends spawnBasicTower
+
 		private function spawnRapidTower(): void {
 			var newRapidTower: RapidTower = new RapidTower();
 			var newRapidTurret: RapidTurret = new RapidTurret();
-			/* Sets tower/turret x and y positions */
-			if (buildSpotChooser == 1) {
-				newRapidTower.y = level.buildSpot1.y;
-				newRapidTower.x = level.buildSpot1.x;
-				level.removeChild(level.buildSpot1);
-				level.buildSpot1.used = true;
-			} else if (buildSpotChooser == 2) {
-				newRapidTower.y = level.buildSpot2.y;
-				newRapidTower.x = level.buildSpot2.x;
-				level.removeChild(level.buildSpot2);
-				level.buildSpot2.used = true;
+			if (coinCount >= 35) {
+				/* Sets tower/turret x and y positions */
+				if (buildSpotChooser == 1) {
+					newRapidTower.y = level.buildSpot1.y;
+					newRapidTower.x = level.buildSpot1.x;
+					level.removeChild(level.buildSpot1);
+					level.buildSpot1.used = true;
+				} else if (buildSpotChooser == 2) {
+					newRapidTower.y = level.buildSpot2.y;
+					newRapidTower.x = level.buildSpot2.x;
+					level.removeChild(level.buildSpot2);
+					level.buildSpot2.used = true;
+				}
+				newRapidTurret.y = newRapidTower.y - 75;
+				newRapidTurret.x = newRapidTower.x;
+				/* Removes build spot from stage and adds tower/turret */
+				level.addChild(newRapidTower);
+				level.addChild(newRapidTurret);
+				/* Adds tower/turret to their respective arrays */
+				towers.push(newRapidTower);
+				turrets.push(newRapidTurret);
+
+				spendCoins(35);
 			}
-			newRapidTurret.y = newRapidTower.y - 75;
-			newRapidTurret.x = newRapidTower.x;
-			/* Removes build spot from stage and adds tower/turret */
-			level.addChild(newRapidTower);
-			level.addChild(newRapidTurret);
-			/* Adds tower/turret to their respective arrays */
-			towers.push(newRapidTower);
-			turrets.push(newRapidTurret);
-		}
+
+		} // ends spawnRapidTower
+		
 		private function spawnBombTower(): void {
 			var newBombTower: BombTower = new BombTower();
 			var newBombTurret: BombTurret = new BombTurret();
-			/* Sets tower/turret x and y positions */
-			if (buildSpotChooser == 1) {
-				newBombTower.y = level.buildSpot1.y;
-				newBombTower.x = level.buildSpot1.x;
-				level.removeChild(level.buildSpot1);
-				level.buildSpot1.used = true;
-			} else if (buildSpotChooser == 2) {
-				newBombTower.y = level.buildSpot2.y;
-				newBombTower.x = level.buildSpot2.x;
-				level.removeChild(level.buildSpot2);
-				level.buildSpot2.used = true;
+			if (coinCount >= 50) {
+				/* Sets tower/turret x and y positions */
+				if (buildSpotChooser == 1) {
+					newBombTower.y = level.buildSpot1.y;
+					newBombTower.x = level.buildSpot1.x;
+					level.removeChild(level.buildSpot1);
+					level.buildSpot1.used = true;
+				} else if (buildSpotChooser == 2) {
+					newBombTower.y = level.buildSpot2.y;
+					newBombTower.x = level.buildSpot2.x;
+					level.removeChild(level.buildSpot2);
+					level.buildSpot2.used = true;
+				}
+				newBombTurret.y = newBombTower.y - 75;
+				newBombTurret.x = newBombTower.x;
+				/* Removes build spot from stage and adds tower/turret */
+				level.addChild(newBombTower);
+				level.addChild(newBombTurret);
+				/* Adds tower/turret to their respective arrays */
+				towers.push(newBombTower);
+				turrets.push(newBombTurret);
+				
+				spendCoins(50);
 			}
-			newBombTurret.y = newBombTower.y - 75;
-			newBombTurret.x = newBombTower.x;
-			/* Removes build spot from stage and adds tower/turret */
-			level.addChild(newBombTower);
-			level.addChild(newBombTurret);
-			/* Adds tower/turret to their respective arrays */
-			towers.push(newBombTower);
-			turrets.push(newBombTurret);
-		}
+			
+		} // ends spawnBombTower
+		
 		private function spawnCoin(coinNum: int, spawnX: Number, spawnY: Number): void {
 
 			for (var i: int = 0; i < coinNum; i++) {
@@ -536,7 +554,7 @@ package code {
 				updateCoins();
 			}
 		} // ends spawnCoin
-		
+
 		private function updateCoins(): void {
 
 			// update everything:
@@ -736,6 +754,14 @@ package code {
 				var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
 				level.addChild(p);
 				particles.push(p);
+			}
+		}
+
+		private function spendCoins(coinNum: int): void {
+			coinCount -= coinNum;
+
+			if (coinCount <= 0) {
+				coinCount = 0;
 			}
 		}
 	} // ends class
