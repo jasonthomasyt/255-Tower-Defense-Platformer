@@ -53,6 +53,8 @@ package code {
 		public var player: Player;
 		/** This is our array of Bullet Objects. */
 		private var bullets: Array = new Array();
+		/**This is our array of Bomb Objects */
+		private var bombs:Array = new Array();
 		/** The castle object for the game. */
 		public var castle: Castle;
 
@@ -155,8 +157,7 @@ package code {
 			}
 			updateTurrets();
 
-			updateBullets();
-			updateBulletsBad();
+			updateProjectiles();
 
 			updateParticles();
 
@@ -253,6 +254,15 @@ package code {
 			}
 
 		} // ends spawnBullet
+		/**
+		 * Spawns a bomb from the tower.
+		 */
+		public function spawnBomb(turret: Turret = null): void {
+				var a: Bomb = new Bomb(turret);
+				level.addChild(a);
+				bombs.push(a);
+				a.lifeMax = 10;
+		}
 		/** 
 		 * Spawns a bullet from the player everytime the user clicks the left mouse button.
 		 */
@@ -265,11 +275,21 @@ package code {
 		} // ends spawnBulletBad
 
 		/**
+		 * Updates projectiles for every frame.
+		 */
+		private function updateProjectiles(): void {
+			// update everything:
+			//bullets
+			updateBullets();
+			//bombs
+			updateBombs();
+			//enemy bullets
+			updateBulletsBad();
+		} // ends updateProjectiles
+		/**
 		 * Updates bullets for every frame.
 		 */
-		private function updateBullets(): void {
-
-			// update everything:
+		private function updateBullets():void {
 			for (var i: int = bullets.length - 1; i >= 0; i--) {
 				bullets[i].update(); // Update design pattern.
 
@@ -286,7 +306,25 @@ package code {
 					bullets.splice(i, 1);
 				}
 			} // ends for loop updating bullets
-		} // ends updateBullets
+		}
+		private function updateBombs():void{
+			for (var i: int = bombs.length - 1; i >= 0; i--) {
+				bombs[i].update(); // Update design pattern.
+
+				/** If bullet is dead, remove it. */
+				if (bombs[i].isDead) {
+					// remove it!!
+
+					// 1. remove the object from the scene-graph
+					level.removeChild(bombs[i]);
+
+					// 2. nullify any variables pointing to it
+					// if the variable is an array,
+					// remove the object from the array
+					bombs.splice(i, 1);
+				}
+			} // ends for loop updating bullets
+		}
 		/**
 		 *
 		 */

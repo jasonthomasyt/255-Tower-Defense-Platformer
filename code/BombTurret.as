@@ -14,7 +14,7 @@
 			//trace(aimingTimer + "After");
 			if (aimingTimer <= 0) {
 				aimingTimer = 3;
-				ScenePlay.main.spawnBullet(this);
+				ScenePlay.main.spawnBomb(this);
 				return null
 			}
 			return null
