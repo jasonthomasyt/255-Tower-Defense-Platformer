@@ -752,21 +752,21 @@ package code {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
 							if (ScenePlay.towers.length > 0) {
-								for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
-									if (ScenePlay.towers[i].isDead) {
-										if (ScenePlay.towers[i].x <= level.buildSpot1.x + 50) {
+								for (var k: int = ScenePlay.towers.length - 1; k >= 0; i--) {
+									if (ScenePlay.towers[k].isDead) {
+										if (ScenePlay.towers[k].x <= level.buildSpot1.x + 50) {
 											level.buildSpot1.alpha = 1;
 											level.buildSpot1.used = false;
 										}
-										if (ScenePlay.towers[i].x <= level.buildSpot2.x + 50) {
+										if (ScenePlay.towers[k].x <= level.buildSpot2.x + 50) {
 											level.buildSpot2.alpha = 1;
 											level.buildSpot2.used = false;
 										}
-										level.removeChild(ScenePlay.towers[i]);
-										ScenePlay.towers.splice(i, 1);
+										level.removeChild(ScenePlay.towers[k]);
+										ScenePlay.towers.splice(k, 1);
 
-										level.removeChild(turrets[i]);
-										turrets.splice(i, 1);
+										level.removeChild(turrets[k]);
+										turrets.splice(k, 1);
 
 
 									}
@@ -781,13 +781,13 @@ package code {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
 							if (ScenePlay.towers.length > 0) {
-								for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
-									if (ScenePlay.towers[i].isDead) {
-										level.removeChild(ScenePlay.towers[i]);
-										ScenePlay.towers.splice(i, 1);
+								for (var k: int = ScenePlay.towers.length - 1;k >= 0; i--) {
+									if (ScenePlay.towers[k].isDead) {
+										level.removeChild(ScenePlay.towers[k]);
+										ScenePlay.towers.splice(k, 1);
 
-										level.removeChild(turrets[i]);
-										turrets.splice(i, 1);
+										level.removeChild(turrets[k]);
+										turrets.splice(k, 1);
 									}
 								}
 							}
