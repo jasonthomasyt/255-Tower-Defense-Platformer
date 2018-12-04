@@ -440,8 +440,8 @@ package code {
 		 * This handles our camera movement within our level to keep our player in the middle of the screen and lets make our levels bigger.
 		 */
 		private function doCameraMove(): void {
-			var targetX: Number = -player.x + stage.stageWidth / 2;
-			var targetY: Number = -player.y + stage.stageHeight / 2;
+			var targetX: Number = -player.x + stage.stageWidth / 2.5;
+			var targetY:int = -player.y + stage.stageHeight / 1.2;
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
 			var offsetY: Number = 4 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
