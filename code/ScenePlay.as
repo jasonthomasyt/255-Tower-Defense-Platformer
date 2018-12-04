@@ -69,7 +69,7 @@ package code {
 
 		private var loseSound: LoseSound = new LoseSound();
 
-		public var coinCount: int = 0;
+		public var coinCount: int = 100;
 
 		static public var coins: Array = new Array();
 		/** */

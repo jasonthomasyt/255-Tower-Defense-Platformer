@@ -17,8 +17,6 @@
 		public var closestTargetDist: Number;
 		/** */
 		public var sightDistance: Number = 750;
-		/** How long it takes for this enemy to shoot at it's target in seconds. */
-		private var aimingTimer: Number = 1;
 		
 		/**
 		 * Constructor code for the turret class 
@@ -101,16 +99,8 @@
 		/**
 		 *
 		 */
-		public function shootTarget(): void {
-			//trace(aimingTimer + "Before");
-			aimingTimer -= Time.dtScaled;
-			//trace(aimingTimer + "After");
-			if (aimingTimer <= 0) {
-				aimingTimer = 1;
-				ScenePlay.main.spawnBullet(this);
-				return
-			} //else aimingTimer += Time.dtScaled;
-			//if (aimingTimer >= 1 ) aimingTimer = 1;
+		public function shootTarget():Turret{
+			return null;
 		}
 	}
 }
