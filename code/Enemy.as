@@ -195,7 +195,7 @@ package code {
 		 * @param direction If a negative number is passed in, it accelerates left. If positive, it'll accelerate right.
 		 */
 		public function handleWalking(direction: int): void {
-			if (direction < 0) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+			if (this.x > 750 ) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
 			if (direction > 0) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
 
 			if (direction == 0) { // left and right not being pressed...
