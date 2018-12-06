@@ -174,11 +174,6 @@ package code {
 				gameOver = true;
 				loseSound.play();
 			}
-			if (KeyboardInput.onKeyDown(Keyboard.R)) {
-				// Dubugging Game Overs
-				// Remove this for final Project
-				castle.isDead = true;
-			}
 
 			if (gameOver) {
 				return new SceneLose();
