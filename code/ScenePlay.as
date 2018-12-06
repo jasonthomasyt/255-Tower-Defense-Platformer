@@ -68,6 +68,8 @@ package code {
 		private var buildSound: BuildSound = new BuildSound();
 
 		private var loseSound: LoseSound = new LoseSound();
+		
+		private var notEnoughSound: NotEnoughSound = new NotEnoughSound();
 
 		public var coinCount: int = 0;
 
@@ -579,6 +581,8 @@ package code {
 				turrets.push(newBasicTurret);
 
 				spendCoins(20);
+			} else {
+				notEnoughSound.play();
 			}
 
 		} // ends spawnBasicTower
@@ -610,6 +614,8 @@ package code {
 				turrets.push(newRapidTurret);
 
 				spendCoins(35);
+			} else {
+				notEnoughSound.play();
 			}
 
 		} // ends spawnRapidTower
@@ -641,6 +647,8 @@ package code {
 				turrets.push(newBombTurret);
 
 				spendCoins(50);
+			} else {
+				notEnoughSound.play();
 			}
 
 		} // ends spawnBombTower
