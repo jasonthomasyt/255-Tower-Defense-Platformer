@@ -68,7 +68,7 @@ package code {
 		private var buildSound: BuildSound = new BuildSound();
 
 		private var loseSound: LoseSound = new LoseSound();
-		
+
 		private var notEnoughSound: NotEnoughSound = new NotEnoughSound();
 
 		public var coinCount: int = 0;
@@ -146,15 +146,7 @@ package code {
 
 			updatePlatforms();
 			castle.update();
-			if (ScenePlay.towers.length > 0) {
-				for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
-					ScenePlay.towers[i].update(this);
-					if (ScenePlay.towers[i].isDead) {
-						level.removeChild(ScenePlay.towers[i]);
-						ScenePlay.towers.splice(i, 1);
-					}
-				}
-			}
+			updateTowers();
 			updateTurrets();
 
 			updateBullets();
@@ -438,7 +430,7 @@ package code {
 		 */
 		private function doCameraMove(): void {
 			var targetX: Number = -player.x + stage.stageWidth / 2.5;
-			var targetY:int = -player.y + stage.stageHeight / 1.2;
+			var targetY: int = -player.y + stage.stageHeight / 1.2;
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
 			var offsetY: Number = 4 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
@@ -783,22 +775,36 @@ package code {
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
-							if (ScenePlay.towers.length > 0) {
-								for (var k: int = ScenePlay.towers.length - 1;k >= 0; i--) {
-									if (ScenePlay.towers[k].isDead) {
-										level.removeChild(ScenePlay.towers[k]);
-										ScenePlay.towers.splice(k, 1);
-
-										level.removeChild(turrets[k]);
-										turrets.splice(k, 1);
-									}
-								}
-							}
+							updateTowers();
 						}
 					}
 				}
 			}
 		}
+
+		private function updateTowers(): void {
+			if (ScenePlay.towers.length > 0) {
+				for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+					ScenePlay.towers[i].update(this);
+					if (ScenePlay.towers[i].isDead) {
+						if (ScenePlay.towers[i].x <= level.buildSpot1.x + 50) {
+							level.buildSpot1.alpha = 1;
+							level.buildSpot1.used = false;
+						}
+						if (ScenePlay.towers[i].x <= level.buildSpot2.x + 50) {
+							level.buildSpot2.alpha = 1;
+							level.buildSpot2.used = false;
+						}
+
+						level.removeChild(ScenePlay.towers[i]);
+						ScenePlay.towers.splice(i, 1);
+
+						level.removeChild(turrets[i]);
+						turrets.splice(i, 1);
+					}
+				}
+			}
+		} // ends updateTowers
 
 		/**
 		 *
