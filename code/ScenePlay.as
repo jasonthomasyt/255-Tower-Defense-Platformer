@@ -44,6 +44,10 @@ package code {
 		static public var platforms: Array = new Array();
 		/** */
 		static public var enemies: Array = new Array();
+		/** */
+		static public var flyingEnemies: Array = new Array();
+		/** */
+		static public var toughEnemies: Array = new Array();
 
 		public var smokeParticleDelay: Number = 0;
 
@@ -138,6 +142,8 @@ package code {
 			updateBullets();
 			spawnSmokeParticles();
 			spawnEnemy(5);
+			spawnFlyingEnemy(5);
+			spawnToughEnemy(5);
 			updateEnemies();
 
 			updateCoins();
@@ -298,10 +304,25 @@ package code {
 					ScenePlay.enemies.splice(i, 1);
 					enemiesRemainingCount--;
 				}
-
+			}
+			for (var i: int = ScenePlay.flyingEnemies.length - 1; i >= 0; i--) {
+				ScenePlay.flyingEnemies[i].update();
+				if (ScenePlay.flyingEnemies[i].isDead) {
+					level.removeChild(ScenePlay.flyingEnemies[i]);
+					ScenePlay.flyingEnemies.splice(i, 1);
+					enemiesRemainingCount--;
+				}
+			}
+			for (var i: int = ScenePlay.toughEnemies.length - 1; i >= 0; i--) {
+				ScenePlay.toughEnemies[i].update();
+				if (ScenePlay.toughEnemies[i].isDead) {
+					level.removeChild(ScenePlay.toughEnemies[i]);
+					ScenePlay.toughEnemies.splice(i, 1);
+					enemiesRemainingCount--;
+				}
 			}
 
-			if (ScenePlay.enemies.length == 0) {
+			if (ScenePlay.enemies.length == 0 && ScenePlay.flyingEnemies.length == 0 && ScenePlay.toughEnemies.length == 0) {
 				updateWave();
 			}
 		} // ends updateEnemies
@@ -441,7 +462,7 @@ package code {
 		 */
 		private function doCameraMove(): void {
 			var targetX: Number = -player.x + stage.stageWidth / 2.5;
-			var targetY:int = -player.y + stage.stageHeight / 1.2;
+			var targetY: int = -player.y + stage.stageHeight / 1.2;
 			var offsetX: Number = 0 //Math.random() * 20 - 10;
 			var offsetY: Number = 4 //Math.random() * 20 - 10;
 			var camEaseMultipler: Number = 5;
@@ -508,7 +529,7 @@ package code {
 			}
 		}
 
-		private function spawnEnemy(spawnCount: int): void {
+		private function spawnEnemy(spawnCount: int, enemyType: int = 0): void {
 			// spawn snow:
 			spawnCount += spawnIncrement;
 			enemyNum = spawnCount;
@@ -536,7 +557,61 @@ package code {
 
 		}
 
+		private function spawnFlyingEnemy(spawnCount: int, enemyType: int = 0): void {
+			// spawn snow:
+			spawnCount += spawnIncrement;
+			enemyNum = spawnCount;
+			if (enemyCounter < spawnCount && waveStart == true) {
+				for (var i: int = 0; i < spawnCount; i++) {
+					delaySpawn -= Time.dtScaled;
+					if (delaySpawn <= 0) {
+						var e: EnemyFlyer = new EnemyFlyer();
+						level.addChild(e);
+						ScenePlay.flyingEnemies.push(e);
+						enemyCounter++;
+						delaySpawn = (int)(Math.random() * spawnRate + spawnRateMin);
+					}
+				}
+			}
 
+			if (enemyCounter == spawnCount) {
+				waveStart = false;
+				waveEnd = true;
+				enemyCounter = 0;
+				spawnIncrement += 5;
+				spawnRate -= spawnDecrement;
+				spawnRateMin -= spawnDecrement;
+			}
+
+		}
+
+		private function spawnToughEnemy(spawnCount: int, enemyType: int = 0): void {
+			// spawn snow:
+			spawnCount += spawnIncrement;
+			enemyNum = spawnCount;
+			if (enemyCounter < spawnCount && waveStart == true) {
+				for (var i: int = 0; i < spawnCount; i++) {
+					delaySpawn -= Time.dtScaled;
+					if (delaySpawn <= 0) {
+						var e: EnemyTough = new EnemyTough();
+						level.addChild(e);
+						ScenePlay.toughEnemies.push(e);
+						enemyCounter++;
+						delaySpawn = (int)(Math.random() * spawnRate + spawnRateMin);
+					}
+				}
+			}
+
+			if (enemyCounter == spawnCount) {
+				waveStart = false;
+				waveEnd = true;
+				enemyCounter = 0;
+				spawnIncrement += 5;
+				spawnRate -= spawnDecrement;
+				spawnRateMin -= spawnDecrement;
+			}
+
+		}
 		/**
 		 *
 		 */
@@ -752,7 +827,7 @@ package code {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
 							if (ScenePlay.towers.length > 0) {
-								for (var k: int = ScenePlay.towers.length - 1; k >= 0; i--) {
+								for (var k: int = ScenePlay.towers.length - 1; k >= 0; k--) {
 									if (ScenePlay.towers[k].isDead) {
 										if (ScenePlay.towers[k].x <= level.buildSpot1.x + 50) {
 											level.buildSpot1.alpha = 1;
@@ -781,13 +856,13 @@ package code {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
 							if (ScenePlay.towers.length > 0) {
-								for (var k: int = ScenePlay.towers.length - 1;k >= 0; i--) {
-									if (ScenePlay.towers[k].isDead) {
-										level.removeChild(ScenePlay.towers[k]);
-										ScenePlay.towers.splice(k, 1);
+								for (var m: int = ScenePlay.towers.length - 1; m >= 0; m--) {
+									if (ScenePlay.towers[m].isDead) {
+										level.removeChild(ScenePlay.towers[m]);
+										ScenePlay.towers.splice(m, 1);
 
-										level.removeChild(turrets[k]);
-										turrets.splice(k, 1);
+										level.removeChild(turrets[m]);
+										turrets.splice(m, 1);
 									}
 								}
 							}
@@ -910,11 +985,33 @@ package code {
 			for (var i: int = 0; i < bullets.length; i++) {
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
 					if (bullets[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
-						killEnemy(j);
+						killEnemy(j, 1);
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
 						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
-						updateEnemies();
+					}
+				} // ends for
+
+				for (var j: int = 0; j < ScenePlay.flyingEnemies.length; j++) {
+					//trace("finding distance between me and " + validTargets[j]);
+					var distX: Number = bullets[i].x - ScenePlay.flyingEnemies[j].x;
+					var distY: Number = bullets[i].y - ScenePlay.flyingEnemies[j].y;
+					//trace("pushing Distance");
+					var dist: Number = Math.sqrt(distX * distX + distY * distY)
+					if (bullets[i].radius + ScenePlay.flyingEnemies[j].radius <= dist) {
+						killEnemy(j, 2);
+						explodePlayerBullet(i);
+						explodePlayerBullet(i);
+						spawnCoin(3, ScenePlay.flyingEnemies[j].x, ScenePlay.flyingEnemies[j].y);
+					}
+				} // ends for
+
+				for (var j: int = 0; j < ScenePlay.toughEnemies.length; j++) {
+					if (bullets[i].collider.checkOverlap(ScenePlay.toughEnemies[j].collider)) {
+						killEnemy(j, 3);
+						explodePlayerBullet(i);
+						explodePlayerBullet(i);
+						spawnCoin(3, ScenePlay.toughEnemies[j].x, ScenePlay.toughEnemies[j].y);
 					}
 				} // ends for
 			} // ends for
@@ -946,15 +1043,35 @@ package code {
 			coinCount++;
 		}
 
-		private function killEnemy(index: int): void {
+		private function killEnemy(index: int, array: int): void {
 			enemyDieSound.play();
-			ScenePlay.enemies[index].isDead = true;
-
-			for (var i: int = 0; i < 10; i++) {
-				var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
-				level.addChild(p);
-				particles.push(p);
+			switch (array) {
+				case 1:
+					ScenePlay.enemies[index].isDead = true;
+					for (var i: int = 0; i < 10; i++) {
+						var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
+						level.addChild(p);
+						particles.push(p);
+					}
+					break;
+				case 2:
+					ScenePlay.flyingEnemies[index].isDead = true;
+					for (var i: int = 0; i < 10; i++) {
+						var p: Particle = new ParticleBlood(ScenePlay.flyingEnemies[index].x, ScenePlay.flyingEnemies[index].y);
+						level.addChild(p);
+						particles.push(p);
+					}
+					break;
+				case 3:
+					ScenePlay.toughEnemies[index].isDead = true;
+					for (var i: int = 0; i < 10; i++) {
+						var p: Particle = new ParticleBlood(ScenePlay.toughEnemies[index].x, ScenePlay.toughEnemies[index].y);
+						level.addChild(p);
+						particles.push(p);
+					}
+					break;
 			}
+
 		}
 
 		private function spendCoins(coinNum: int): void {

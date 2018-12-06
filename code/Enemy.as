@@ -1,5 +1,4 @@
-﻿﻿
-package code {
+﻿package code {
 
 	import flash.display.MovieClip;
 	import flash.geom.Point;
@@ -290,7 +289,7 @@ package code {
 		 */
 		public function handleAiming(): void {
 			trace(closestTarget);
-			if (closestTarget <= -1 || closestTarget <= 0) return;
+			if (closestTarget <= -1) return;
 			var tx: Number = validTargets[closestTarget].x - x;
 			var ty: Number = validTargets[closestTarget].y - y;
 

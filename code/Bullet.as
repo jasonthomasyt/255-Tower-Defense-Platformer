@@ -32,6 +32,7 @@
 		/** The AABB collision for this object. */
 		public var collider:AABB;
 		
+		
 		/**
 		 * Bullet constructor function.
 		 * @param p The player object of the game.
