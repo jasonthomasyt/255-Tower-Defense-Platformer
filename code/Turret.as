@@ -100,10 +100,10 @@
 					if (currentTarget.length > 0) {
 						// if the current tracked target's distance is greater than sight distance,
 						// stop tracking target (out of range).
-						for (var i: int = currentTarget.length - 1; i >= 0; i--) {
-							if (targetsDistances[currentTarget[i]] > sightDistance) {
+						for (var l: int = currentTarget.length - 1; l >= 0; l--) {
+							if (targetsDistances[currentTarget[l]] > sightDistance) {
 								closestTarget = -1;
-								currentTarget.splice(i, 1);
+								currentTarget.splice(l, 1);
 							}
 						}
 					}
