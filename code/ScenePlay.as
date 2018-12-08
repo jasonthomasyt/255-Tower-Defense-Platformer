@@ -71,7 +71,7 @@ package code {
 
 		private var notEnoughSound: NotEnoughSound = new NotEnoughSound();
 
-		public var coinCount: int = 10;
+		public var coinCount: int = 50;
 
 		static public var coins: Array = new Array();
 		/** */
@@ -84,7 +84,7 @@ package code {
 		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
 
 		private var coinSound: CoinSound = new CoinSound();
-		
+
 		private var sellSound: SellSound = new SellSound();
 
 		/** */
@@ -99,6 +99,8 @@ package code {
 			// constructor code
 			ScenePlay.main = this;
 
+			hud.sellText.alpha = 0;
+
 			loadLevel();
 			spawnPlayer();
 		}
@@ -107,8 +109,6 @@ package code {
 		 */
 		override public function onBegin(): void {
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, handleClick);
-			
-			hud.sellText.alpha = 0;
 		} // end onBegin
 		/**
 		 * Removes our EventListeners to the stage when this scene is created.
@@ -889,24 +889,36 @@ package code {
 					buildSpotChooser = 1;
 					spawnTower();
 				} else if (level.buildSpot1.used) {
+					changeSellText();
 					hud.sellText.alpha = 1;
-					if (KeyboardInput.onKeyDown(Keyboard.E)){
+					if (KeyboardInput.onKeyDown(Keyboard.E)) {
 						sellTower();
 					}
 				}
 			} else {
 				level.buildSpot1.buildInstructions.alpha = 0;
-				hud.sellText.alpha = 0;
+				if (!player.collider.checkOverlap(level.buildSpot2.collider)){
+					hud.sellText.alpha = 0;
+				}
 			}
 			if (player.collider.checkOverlap(level.buildSpot2.collider)) {
 				level.buildSpot2.buildInstructions.alpha = 1;
 				if (!level.buildSpot2.used) {
 					buildSpotChooser = 2;
 					spawnTower();
-				} else if (level.buildSpot2.used && KeyboardInput.onKeyDown(Keyboard.E)) {
-					sellTower();
+				} else if (level.buildSpot2.used) {
+					changeSellText();
+					hud.sellText.alpha = 1;
+					if (KeyboardInput.onKeyDown(Keyboard.E)) {
+						sellTower();
+					}
 				}
-			} else level.buildSpot2.buildInstructions.alpha = 0;
+			} else {
+				level.buildSpot2.buildInstructions.alpha = 0;
+				if (!player.collider.checkOverlap(level.buildSpot1.collider)){
+					hud.sellText.alpha = 0;
+				}
+			}
 		}
 
 		private function bulletEnemyCollision(): void {
@@ -981,6 +993,18 @@ package code {
 					}
 					ScenePlay.towers[i].isDead = true;
 					updateTowers();
+				}
+			}
+		}
+
+		private function changeSellText(): void {
+			for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+				if (towers[i].isBasicTower) {
+					hud.sellText.text = "Press 'E' to sell (+10 coins)";
+				} else if (towers[i].isRapidTower) {
+					hud.sellText.text = "Press 'E' to sell (+15 coins)";
+				} else if (towers[i].isBombTower) {
+					hud.sellText.text = "Press 'E' to sell (+20 coins)";
 				}
 			}
 		}
