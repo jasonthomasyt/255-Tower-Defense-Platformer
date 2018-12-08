@@ -71,7 +71,7 @@ package code {
 
 		private var notEnoughSound: NotEnoughSound = new NotEnoughSound();
 
-		public var coinCount: int = 0;
+		public var coinCount: int = 10;
 
 		static public var coins: Array = new Array();
 		/** */
@@ -84,6 +84,8 @@ package code {
 		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
 
 		private var coinSound: CoinSound = new CoinSound();
+		
+		private var sellSound: SellSound = new SellSound();
 
 		/** */
 		private var gameOver: Boolean = false;
@@ -105,6 +107,8 @@ package code {
 		 */
 		override public function onBegin(): void {
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, handleClick);
+			
+			hud.sellText.alpha = 0;
 		} // end onBegin
 		/**
 		 * Removes our EventListeners to the stage when this scene is created.
@@ -588,12 +592,12 @@ package code {
 				if (buildSpotChooser == 1) {
 					newRapidTower.y = level.buildSpot1.y;
 					newRapidTower.x = level.buildSpot1.x;
-					level.removeChild(level.buildSpot1);
+					level.buildSpot1.alpha = 0;
 					level.buildSpot1.used = true;
 				} else if (buildSpotChooser == 2) {
 					newRapidTower.y = level.buildSpot2.y;
 					newRapidTower.x = level.buildSpot2.x;
-					level.removeChild(level.buildSpot2);
+					level.buildSpot2.alpha = 0;
 					level.buildSpot2.used = true;
 				}
 				newRapidTurret.y = newRapidTower.y - 75;
@@ -621,12 +625,12 @@ package code {
 				if (buildSpotChooser == 1) {
 					newBombTower.y = level.buildSpot1.y;
 					newBombTower.x = level.buildSpot1.x;
-					level.removeChild(level.buildSpot1);
+					level.buildSpot1.alpha = 0;
 					level.buildSpot1.used = true;
 				} else if (buildSpotChooser == 2) {
 					newBombTower.y = level.buildSpot2.y;
 					newBombTower.x = level.buildSpot2.x;
-					level.removeChild(level.buildSpot2);
+					level.buildSpot2.alpha = 0;
 					level.buildSpot2.used = true;
 				}
 				newBombTurret.y = newBombTower.y - 75;
@@ -746,27 +750,7 @@ package code {
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
-							if (ScenePlay.towers.length > 0) {
-								for (var k: int = ScenePlay.towers.length - 1; k >= 0; i--) {
-									if (ScenePlay.towers[k].isDead) {
-										if (ScenePlay.towers[k].x <= level.buildSpot1.x + 50) {
-											level.buildSpot1.alpha = 1;
-											level.buildSpot1.used = false;
-										}
-										if (ScenePlay.towers[k].x <= level.buildSpot2.x + 50) {
-											level.buildSpot2.alpha = 1;
-											level.buildSpot2.used = false;
-										}
-										level.removeChild(ScenePlay.towers[k]);
-										ScenePlay.towers.splice(k, 1);
-
-										level.removeChild(turrets[k]);
-										turrets.splice(k, 1);
-
-
-									}
-								}
-							}
+							updateTowers();
 						}
 					}
 					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
@@ -787,11 +771,11 @@ package code {
 				for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
 					ScenePlay.towers[i].update(this);
 					if (ScenePlay.towers[i].isDead) {
-						if (ScenePlay.towers[i].x <= level.buildSpot1.x + 50) {
+						if (ScenePlay.towers[i].x <= level.buildSpot1.x + 100) {
 							level.buildSpot1.alpha = 1;
 							level.buildSpot1.used = false;
 						}
-						if (ScenePlay.towers[i].x <= level.buildSpot2.x + 50) {
+						if (ScenePlay.towers[i].x <= level.buildSpot2.x + 100) {
 							level.buildSpot2.alpha = 1;
 							level.buildSpot2.used = false;
 						}
@@ -904,13 +888,23 @@ package code {
 					//trace("If BuildSpot1 hasn't been used ...");
 					buildSpotChooser = 1;
 					spawnTower();
+				} else if (level.buildSpot1.used) {
+					hud.sellText.alpha = 1;
+					if (KeyboardInput.onKeyDown(Keyboard.E)){
+						sellTower();
+					}
 				}
-			} else level.buildSpot1.buildInstructions.alpha = 0;
+			} else {
+				level.buildSpot1.buildInstructions.alpha = 0;
+				hud.sellText.alpha = 0;
+			}
 			if (player.collider.checkOverlap(level.buildSpot2.collider)) {
 				level.buildSpot2.buildInstructions.alpha = 1;
 				if (!level.buildSpot2.used) {
 					buildSpotChooser = 2;
 					spawnTower();
+				} else if (level.buildSpot2.used && KeyboardInput.onKeyDown(Keyboard.E)) {
+					sellTower();
 				}
 			} else level.buildSpot2.buildInstructions.alpha = 0;
 		}
@@ -971,6 +965,23 @@ package code {
 
 			if (coinCount <= 0) {
 				coinCount = 0;
+			}
+		}
+
+		private function sellTower(): void {
+			for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
+				if (player.x <= ScenePlay.towers[i].x + 50) {
+					sellSound.play();
+					if (ScenePlay.towers[i].isBasicTower) {
+						coinCount += 10;
+					} else if (ScenePlay.towers[i].isRapidTower) {
+						coinCount += 15;
+					} else if (ScenePlay.towers[i].isBombTower) {
+						coinCount += 20;
+					}
+					ScenePlay.towers[i].isDead = true;
+					updateTowers();
+				}
 			}
 		}
 	} // ends class

@@ -10,6 +10,12 @@
 		/** The collider for the player. */
 		public var colliderBase: AABB;
 		
+		public var isBasicTower = true;
+		
+		public var isRapidTower = false;
+		
+		public var isBombTower = false;
+		
 		/**
 		 * 
 		 */
@@ -23,7 +29,7 @@
 		 * 
 		 */
 		public override function update(scenePlay: ScenePlay): void {
-			towerHealth.scaleX = health / maxHealth;
+			towerHealth.barColor.scaleX = health / maxHealth;
 			
 			colliderSpire.calcEdges(x, y);
 			colliderBase.calcEdges(x, y);
