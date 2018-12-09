@@ -42,6 +42,8 @@ package code {
 
 		/** This is our array of Platform Objects. */
 		static public var platforms: Array = new Array();
+
+		static public var floatingPlatforms: Array = new Array();
 		/** */
 		static public var enemies: Array = new Array();
 
@@ -116,6 +118,7 @@ package code {
 		override public function onEnd(): void {
 			stage.removeEventListener(MouseEvent.MOUSE_DOWN, handleClick);
 			platforms = new Array();
+			floatingPlatforms = new Array();
 			enemies = new Array();
 			towers = new Array();
 			waveCount = 0;
@@ -149,6 +152,7 @@ package code {
 			updateCoins();
 
 			updatePlatforms();
+			updateFloatingPlatforms();
 			castle.update();
 			updateTowers();
 			updateTurrets();
@@ -304,10 +308,16 @@ package code {
 		 * However, because it is an update function, we can add some more functionality to our platforms if we so wish.
 		 */
 		private function updatePlatforms(): void {
-			for (var i: int = platforms.length - 1; i >= 0; i--) {
-				//addChild(level);
+			for (var i: int = ScenePlay.platforms.length - 1; i >= 0; i--) {
+				ScenePlay.platforms[i].update();
 			}
 		} // ends updatePlatforms
+
+		private function updateFloatingPlatforms(): void {
+			for (var i: int = ScenePlay.floatingPlatforms.length - 1; i >= 0; i--) {
+				ScenePlay.floatingPlatforms[i].update();
+			}
+		}
 		/**
 		 * Updates particles for every frame.
 		 */
@@ -356,6 +366,10 @@ package code {
 				playerEnemyCollision();
 
 			} // ends for
+			
+			// Collision for floating platforms.
+			floatingPlatformCollision();
+			
 			//Keep all of the collisions that don't need to be in the for loop out!
 			// Collision bewteen good bullets and bad bullets
 			doubleBulletCollision();
@@ -879,6 +893,49 @@ package code {
 			} // ends for 
 		} // ends platformCollision
 
+		/**
+		 * Handles collision for all floating platform objects.
+		 * Bullets do not collide with these platforms, and the player can fall through them if they hold 'down'.
+		 */
+		private function floatingPlatformCollision(): void {
+			for (var i: int = 0; i < ScenePlay.floatingPlatforms.length; i++) {
+
+				// Collision for player hitting platforms.
+				if (player.collider.checkOverlap(ScenePlay.floatingPlatforms[i].collider)) { // if we are overlapping
+
+					if (!KeyboardInput.onKeyDown(Keyboard.S)) {
+						// find the fix:
+						var fix: Point = player.collider.findOverlapFix(ScenePlay.floatingPlatforms[i].collider);
+
+						// apply the fix:
+						// only if the player is not jumping.  
+						// allows the player to jump upwards through the bottom of the platform.
+						if (!player.isJumping) {
+							player.applyFix(fix);
+						}
+					}
+
+				} // ends if
+
+				// Collision for enemies hitting platforms.
+				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
+					if (ScenePlay.enemies[j].collider.checkOverlap(ScenePlay.floatingPlatforms[i].collider)) {
+						var enemyFix: Point = ScenePlay.enemies[j].collider.findOverlapFix(ScenePlay.floatingPlatforms[i].collider);
+						ScenePlay.enemies[j].applyFix(enemyFix);
+					}
+				}
+
+				// Collision for coins hitting platforms.
+				for (var k: int = 0; k < coins.length; k++) {
+					if (ScenePlay.coins[k].collider.checkOverlap(ScenePlay.floatingPlatforms[i].collider)) {
+						var coinFix: Point = ScenePlay.coins[k].collider.findOverlapFix(ScenePlay.floatingPlatforms[i].collider);
+						ScenePlay.coins[k].applyFix(coinFix);
+					}
+				} // ends for 
+
+			} // ends for
+		} // ends floatingPlatformCollision
+
 		private function playerBuildSpotCollsion(): void {
 			//trace("playerBuildSpotCollision()");
 			if (player.collider.checkOverlap(level.buildSpot1.collider)) {
@@ -897,7 +954,7 @@ package code {
 				}
 			} else {
 				level.buildSpot1.buildInstructions.alpha = 0;
-				if (!player.collider.checkOverlap(level.buildSpot2.collider)){
+				if (!player.collider.checkOverlap(level.buildSpot2.collider)) {
 					hud.sellText.alpha = 0;
 				}
 			}
@@ -915,7 +972,7 @@ package code {
 				}
 			} else {
 				level.buildSpot2.buildInstructions.alpha = 0;
-				if (!player.collider.checkOverlap(level.buildSpot1.collider)){
+				if (!player.collider.checkOverlap(level.buildSpot1.collider)) {
 					hud.sellText.alpha = 0;
 				}
 			}

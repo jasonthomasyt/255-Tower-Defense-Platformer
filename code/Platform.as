@@ -3,7 +3,7 @@
 	import flash.display.MovieClip;
 	
 	/**
-	 * This Object is what the player will be staning on as floors and running into as walls.
+	 * This Object is what the player will be standing on as floors and running into as walls.
 	 */
 	public class Platform extends MovieClip {
 		

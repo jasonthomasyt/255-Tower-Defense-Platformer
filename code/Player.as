@@ -32,7 +32,7 @@
 		private var isGrounded:Boolean = false;
 		
 		/** Whether or not the player is moving upward in a jump.  This affects gravity. */
-		private var isJumping:Boolean = false;
+		public var isJumping:Boolean = false;
 		
 		/** How many times the player can currently jump in the air. */
 		private var airJumpsLeft:int = 1;
