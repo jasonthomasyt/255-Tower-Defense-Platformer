@@ -57,7 +57,8 @@
 		public function EnemyTough() {
 			// constructor code
 			collider = new AABB(base.width / 2, base.height / 2);
-			x = 690;
+			collider.calcEdges(x, y);
+			x = 1690;
 			y = 80;
 		} // ends constructor
 		/**
@@ -91,11 +92,11 @@
 		 *
 		 */
 		private function isCollidingWithStructure(): void {
-			trace("Am I colliding with a structure?");
+			//trace("Am I colliding with a structure?");
 			if (ScenePlay.towers.length > 0) {
-				trace("Well there is at least one tower on the map.");
+				//trace("Well there is at least one tower on the map.");
 				for (var i: int = 0; i < ScenePlay.towers.length; i++) {
-					trace("Well there are " + i + " towers for me to collide with");
+					//trace("Well there are " + i + " towers for me to collide with");
 					if (this.collider.checkOverlap(ScenePlay.towers[i].colliderSpire)) {
 						handleWalking(0);
 						return
@@ -129,7 +130,7 @@
 		public function handleWalking(direction: int): void {
 			//if (this.x > 750) velocity.x -= HORIZONTAL_ACCELERATION * Time.dtScaled;
 			//if (direction > 0) velocity.x += HORIZONTAL_ACCELERATION * Time.dtScaled;
-			velocity.x += HORIZONTAL_ACCELERATION * Time.dtScaled;
+			velocity.x -= HORIZONTAL_ACCELERATION * Time.dtScaled;
 			if (direction == 0) { // left and right not being pressed...
 				if (velocity.x < 0) { // moving left
 					velocity.x += HORIZONTAL_DECELERATION * Time.dt; // accelerate right
