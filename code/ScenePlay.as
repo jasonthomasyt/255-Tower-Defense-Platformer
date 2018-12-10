@@ -1021,7 +1021,8 @@ package code {
 					//trace("pushing Distance");
 					var dist1: Number = Math.sqrt(distX1 * distX1 + distY1 * distY1)
 					if (bullets[i].radius + ScenePlay.toughEnemies[m].radius <= dist1) {
-						killEnemy(m, 3);
+						ScenePlay.toughEnemies[m].takeDamage(10);
+						if (ScenePlay.toughEnemies[m].isDead)killEnemy(m, 3);
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
 						spawnCoin(3, ScenePlay.toughEnemies[m].x, ScenePlay.toughEnemies[m].y);

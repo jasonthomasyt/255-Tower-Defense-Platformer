@@ -50,6 +50,10 @@
 		private var isJumping: Boolean = false;
 		/** The player's jump velocity. */
 		private var jumpVelocity: Number = 500;
+		/** */
+		public var health: int = 100;
+		/** */
+		private var maxHealth: int = 100;
 
 		/**
 		 *
@@ -61,6 +65,14 @@
 			x = 1690;
 			y = 80;
 		} // ends constructor
+		/**
+		 * 
+		 */
+		public function takeDamage(d:int): void {
+			health -= d;
+			bar.barColor.scaleX = health / maxHealth;
+			if (health <= 0) isDead = true;
+		}
 		/**
 		 *
 		 */
