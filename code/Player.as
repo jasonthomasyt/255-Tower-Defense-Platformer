@@ -9,10 +9,12 @@
 	 * The class for the Player object.
 	 */
 	public class Player extends MovieClip {
-		/** */
+		/** The current health of the player.*/
 		public var health: int = 100; 
-		/** */
+		
+		/** The max health of the player.*/
 		public var maxHealth: int = 100;
+		
 		/** Sets the gravity for the player. */
 		private var gravity: Point = new Point(0, 1000);
 		
@@ -55,8 +57,10 @@
 		/** Whether or not This object should be dead. */
 		public var isDead:Boolean = false;
 		
+		/** The sound that is played when the player jumps. */
 		private var jumpSound: JumpSound = new JumpSound();
 		
+		/** The sound that is played when the player double jumps. */
 		private var doubleJumpSound: DoubleJumpSound = new DoubleJumpSound();
 		
 		/**

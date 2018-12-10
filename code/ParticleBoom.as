@@ -1,7 +1,13 @@
 ﻿package code {
 	
+	/** The particle effect that happens when the player bullet explodes. */
 	public class ParticleBoom extends Particle {
 
+		/**
+		 * The constructor function for the particle boom effect.
+		 * @param spawnX The X spawn location.
+		 * @param spawnY The Y spawn location.
+		 */
 		public function ParticleBoom(spawnX: Number, spawnY: Number) {
 			
 			super(spawnX, spawnY);
@@ -18,8 +24,8 @@
 			scaleY = scaleX;
 
 			lifeSpan = Math.random() * 1.5 + .5;
-		}
+		} // ends ParticleBoom
 
-	}
+	} // ends class
 	
-}
+} // ends package

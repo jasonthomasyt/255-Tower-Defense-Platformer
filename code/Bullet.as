@@ -12,6 +12,7 @@
 
 		/** The X Velocity of the bullet. */
 		public var velocityX: Number = 0;
+		
 		/** The Y Velocity of the bullet. */
 		public var velocityY: Number = -10;
 
@@ -26,6 +27,7 @@
 		
 		/** The amount of time the bullet will stay alive for in seconds. */
 		public var lifeMax: Number = 2;
+		
 		/** The current amount of time the bullet has been on screen */
 		private var lifeCurrent: Number = 0;
 		

@@ -23,10 +23,6 @@
 		
 		/** The maximum y value of the object's width. */
 		public var yMax: Number;
-		
-		public var moveD:Number;
-		
-		public var moveU:Number;
 
 		/**
 		 * The constructor for AABB.
@@ -87,8 +83,8 @@
 		public function findOverlapFix(other:AABB): Point {
 			var moveL:Number = other.xMin - this.xMax;
 			var moveR:Number = other.xMax - this.xMin;
-			moveU = other.yMin - this.yMax;
-			moveD = other.yMax - this.yMin;
+			var moveU:Number = other.yMin - this.yMax;
+			var moveD:Number = other.yMax - this.yMin;
 			
 			var fix:Point = new Point();
 			

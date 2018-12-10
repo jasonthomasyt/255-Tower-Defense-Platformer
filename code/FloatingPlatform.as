@@ -12,19 +12,23 @@
 		/** The AABB collision for this object. */
 		public var collider:AABB;
 		
+		/** 
+		 * The constructor function for the Floating Platform game object.
+		 */
 		public function FloatingPlatform() {
-			// constructor code
+
 			collider = new AABB(width/2, height/2)
 			collider.calcEdges(x, y);
 			
-			// add to platforms array...
+			// add to floating platforms array...
 			ScenePlay.floatingPlatforms.push(this);
 			stop();
-		}
+		} // ends FloatingPlatform
 		
 		public function update(): void {
 			collider.calcEdges(x, y);
 		} // ends update
+		
 	} // ends class
 	
 } // ends package

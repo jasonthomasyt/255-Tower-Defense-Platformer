@@ -3,7 +3,7 @@
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 
-
+	/** This object is for all coins in the game. */
 	public class Coin extends MovieClip {
 
 		/** The collider for the coin. */
@@ -12,6 +12,7 @@
 		/** Sets the gravity for the coin. */
 		private var gravity: Point = new Point(0, 500);
 
+		/** The velocity for each coin. */
 		private var velocity: Point = new Point(0, 10);
 
 		/** Determines if the coin should be removed from the stage. */
@@ -26,7 +27,9 @@
 		/** Angular velocity for the coin. */
 		private var angularVelocity: Number = 0;
 
-
+		/**
+		 * The constructor function for the coin game object. 
+		 */
 		public function Coin(spawnX: Number, spawnY: Number) {
 
 			collider = new AABB(width / 2, height / 2);
@@ -41,7 +44,7 @@
 			
 			angularVelocity = Math.random() * 270 - 180;
 
-		}
+		} // ends Coin
 
 		/**
 		 * The update design pattern for the coin.
@@ -55,7 +58,7 @@
 
 			collider.calcEdges(x, y);
 
-		}
+		} // ends update
 
 		/**
 		 * Handles deceleration of the coin when it is on the ground.
