@@ -96,7 +96,11 @@
 				trace("Well there is at least one tower on the map.");
 				for (var i: int = 0; i < ScenePlay.towers.length; i++) {
 					trace("Well there are " + i + " towers for me to collide with");
-					if (this.collider.checkOverlap(ScenePlay.towers[i].collider)) {
+					if (this.collider.checkOverlap(ScenePlay.towers[i].colliderSpire)) {
+						handleWalking(0);
+						return
+					}
+					if (this.collider.checkOverlap(ScenePlay.towers[i].colliderBase)) {
 						handleWalking(0);
 						return
 					}
@@ -104,6 +108,14 @@
 			}
 
 			if (this.collider.checkOverlap(ScenePlay.main.castle.colliderCenter)) {
+				handleWalking(0);
+				return
+			}
+			if (this.collider.checkOverlap(ScenePlay.main.castle.colliderRight)) {
+				handleWalking(0);
+				return
+			}
+			if (this.collider.checkOverlap(ScenePlay.main.castle.colliderLeft)) {
 				handleWalking(0);
 				return
 			}
