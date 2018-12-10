@@ -937,6 +937,13 @@ package code {
 
 				}
 			}
+			for (var n: int = 0; n < ScenePlay.toughEnemies.length; n++) {
+				if (ScenePlay.toughEnemies[n].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					var enemyFix2: Point = ScenePlay.toughEnemies[n].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					ScenePlay.toughEnemies[n].applyFix(enemyFix2);
+
+				}
+			}
 			// Collision for player bullets hitting platforms.
 			for (var j: int = 0; j < bullets.length; j++) {
 				if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
