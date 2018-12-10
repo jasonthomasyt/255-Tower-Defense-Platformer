@@ -305,19 +305,19 @@ package code {
 					enemiesRemainingCount--;
 				}
 			}
-			for (var i: int = ScenePlay.flyingEnemies.length - 1; i >= 0; i--) {
-				ScenePlay.flyingEnemies[i].update();
-				if (ScenePlay.flyingEnemies[i].isDead) {
-					level.removeChild(ScenePlay.flyingEnemies[i]);
-					ScenePlay.flyingEnemies.splice(i, 1);
+			for (var j: int = ScenePlay.flyingEnemies.length - 1; j >= 0; j--) {
+				ScenePlay.flyingEnemies[j].update();
+				if (ScenePlay.flyingEnemies[j].isDead) {
+					level.removeChild(ScenePlay.flyingEnemies[j]);
+					ScenePlay.flyingEnemies.splice(j, 1);
 					enemiesRemainingCount--;
 				}
 			}
-			for (var i: int = ScenePlay.toughEnemies.length - 1; i >= 0; i--) {
-				ScenePlay.toughEnemies[i].update();
-				if (ScenePlay.toughEnemies[i].isDead) {
-					level.removeChild(ScenePlay.toughEnemies[i]);
-					ScenePlay.toughEnemies.splice(i, 1);
+			for (var k: int = ScenePlay.toughEnemies.length - 1; k >= 0; k--) {
+				ScenePlay.toughEnemies[k].update();
+				if (ScenePlay.toughEnemies[k].isDead) {
+					level.removeChild(ScenePlay.toughEnemies[k]);
+					ScenePlay.toughEnemies.splice(k, 1);
 					enemiesRemainingCount--;
 				}
 			}
@@ -983,6 +983,7 @@ package code {
 
 		private function bulletEnemyCollision(): void {
 			for (var i: int = 0; i < bullets.length; i++) {
+				trace("Enemies Array Length: " + ScenePlay.enemies.length);
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
 					if (bullets[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
 						killEnemy(j, 1);
@@ -991,27 +992,32 @@ package code {
 						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
 					}
 				} // ends for
-
-				for (var j: int = 0; j < ScenePlay.flyingEnemies.length; j++) {
+				trace("Flyers Array Length: " + ScenePlay.flyingEnemies.length);
+				for (var k: int = 0; k < ScenePlay.flyingEnemies.length; k++) {
 					//trace("finding distance between me and " + validTargets[j]);
-					var distX: Number = bullets[i].x - ScenePlay.flyingEnemies[j].x;
-					var distY: Number = bullets[i].y - ScenePlay.flyingEnemies[j].y;
+					var distX: Number = bullets[i].x - ScenePlay.flyingEnemies[k].x;
+					var distY: Number = bullets[i].y - ScenePlay.flyingEnemies[k].y;
 					//trace("pushing Distance");
 					var dist: Number = Math.sqrt(distX * distX + distY * distY)
-					if (bullets[i].radius + ScenePlay.flyingEnemies[j].radius <= dist) {
-						killEnemy(j, 2);
+					if (bullets[i].radius + ScenePlay.flyingEnemies[k].radius <= dist) {
+						killEnemy(k, 2);
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
-						spawnCoin(3, ScenePlay.flyingEnemies[j].x, ScenePlay.flyingEnemies[j].y);
+						spawnCoin(3, ScenePlay.flyingEnemies[k].x, ScenePlay.flyingEnemies[k].y);
 					}
 				} // ends for
-
-				for (var j: int = 0; j < ScenePlay.toughEnemies.length; j++) {
-					if (bullets[i].collider.checkOverlap(ScenePlay.toughEnemies[j].collider)) {
-						killEnemy(j, 3);
+				trace("Toughies Array Length: " + ScenePlay.toughEnemies.length);
+				for (var m: int = 0; m < ScenePlay.toughEnemies.length; m++) {
+					//trace("finding distance between me and " + validTargets[j]);
+					var distX1: Number = bullets[i].x - ScenePlay.toughEnemies[m].x;
+					var distY1: Number = bullets[i].y - ScenePlay.toughEnemies[m].y;
+					//trace("pushing Distance");
+					var dist1: Number = Math.sqrt(distX1 * distX1 + distY1 * distY1)
+					if (bullets[i].radius + ScenePlay.toughEnemies[m].radius <= dist1) {
+						killEnemy(m, 3);
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
-						spawnCoin(3, ScenePlay.toughEnemies[j].x, ScenePlay.toughEnemies[j].y);
+						spawnCoin(3, ScenePlay.toughEnemies[m].x, ScenePlay.toughEnemies[m].y);
 					}
 				} // ends for
 			} // ends for
@@ -1056,18 +1062,18 @@ package code {
 					break;
 				case 2:
 					ScenePlay.flyingEnemies[index].isDead = true;
-					for (var i: int = 0; i < 10; i++) {
-						var p: Particle = new ParticleBlood(ScenePlay.flyingEnemies[index].x, ScenePlay.flyingEnemies[index].y);
-						level.addChild(p);
-						particles.push(p);
+					for (var j: int = 0; j < 10; j++) {
+						var p1: Particle = new ParticleBlood(ScenePlay.flyingEnemies[index].x, ScenePlay.flyingEnemies[index].y);
+						level.addChild(p1);
+						particles.push(p1);
 					}
 					break;
 				case 3:
 					ScenePlay.toughEnemies[index].isDead = true;
-					for (var i: int = 0; i < 10; i++) {
-						var p: Particle = new ParticleBlood(ScenePlay.toughEnemies[index].x, ScenePlay.toughEnemies[index].y);
-						level.addChild(p);
-						particles.push(p);
+					for (var k: int = 0; k < 10; k++) {
+						var p2: Particle = new ParticleBlood(ScenePlay.toughEnemies[index].x, ScenePlay.toughEnemies[index].y);
+						level.addChild(p2);
+						particles.push(p2);
 					}
 					break;
 			}

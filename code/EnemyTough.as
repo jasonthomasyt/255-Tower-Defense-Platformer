@@ -10,6 +10,10 @@
 		
 		/** Whether or not This object should be dead. */
 		public var isDead: Boolean = false;
+		/** The collider for the player. */
+		public var collider: AABB;
+		
+		public var radius: Number = 80;
 		
 		/**
 		 * 
