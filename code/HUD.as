@@ -11,10 +11,7 @@
 		var index: int = 1;
 		public function HUD() {
 			// constructor code
-			arrowD.visible = false;
-			arrowU.visible = false;
-			arrowL.visible = false;
-			arrowR.visible = false;
+		
 		}
 		/**
 		 *sets up all the visual indicators of health, waves, coins, and directional arrows based on enmeys location.
