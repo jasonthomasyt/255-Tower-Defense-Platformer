@@ -54,7 +54,7 @@ package code {
 		/** This is our array of Bullet Objects. */
 		private var bullets: Array = new Array();
 		/**This is our array of Bomb Objects */
-		private var bombs:Array = new Array();
+		public var bombs:Array = new Array();
 		/** The castle object for the game. */
 		public var castle: Castle;
 
@@ -399,6 +399,8 @@ package code {
 
 				// Collision between player and enemies
 				playerEnemyCollision();
+				
+				bombEnemyCollision();
 
 			} // ends for
 			//Keep all of the collisions that don't need to be in the for loop out!
@@ -426,16 +428,20 @@ package code {
 
 			//Collision between the towers and enemy bullets
 			towerBulletsBadCollision();
+			
+			bombWallCollision();
+			
+			
 
 		} // ends doCollisionDetection()
 		/*
 			for (var k: int = 0; k < bullets.length; k++) {
 				if (bullets[k].y > 700) { // If bullet hits ground...
-					explodePlayerBullet(k);
+					explodeBullets(k);
 				}
 
 				if (bullets[k].collider.checkOverlap(castle.collider)) {
-					explodePlayerBullet(k);
+					explodeBullets(k);
 				}
 			} // ends for
 		} // ends playerEnemyCollision
@@ -502,35 +508,36 @@ package code {
 		 * Explodes the player bullet with particles when it hits a wall or the ground.
 		 * @param index The index of the bullet in the bullets array.
 		 */
-		private function explodePlayerBullet(index: int): void {
-
+		
+		private function explodeBullets(index:int):void {			
 			hitSound.play();
-
+			
 			bullets[index].isDead = true;
 
-			for (var i: int = 0; i < 5; i++) {
-				var p: Particle = new ParticleBoom(bullets[index].x, bullets[index].y);
-				level.addChild(p);
-				particles.push(p);
-			} // ends for
-		} // ends explodePlayerBullet
+				for (var i: int = 0; i < 5; i++) {
+					var p: Particle = new ParticleBoom(bullets[index].x, bullets[index].y);
+					level.addChild(p);
+					particles.push(p);
+				} // ends for
+		}
+		private function explodeBombs(index:int):void {
+			bombs[index].isDead = true;
 
-		/**
-		 * Explodes the enemy bullet with particles when it hits a wall or the ground.
-		 * @param index The index of the bullet in the bullets array.
-		 */
-		private function explodeEnemyBullet(index: int): void {
-
-			hitSound.play();
-
+				for (var i: int = 0; i < 5; i++) {
+					var p: Particle = new ParticleBoom(bombs[index].x, bombs[index].y);
+					level.addChild(p);
+					particles.push(p);
+				} // ends for
+		}
+		private function explodeBulletsBad(index:int):void {
 			bulletsBad[index].isDead = true;
 
-			for (var i: int = 0; i < 5; i++) {
-				var p: Particle = new ParticleBoom(bulletsBad[index].x, bulletsBad[index].y);
-				level.addChild(p);
-				particles.push(p);
-			} // ends for
-		} // ends explodePlayerBullet
+				for (var i: int = 0; i < 5; i++) {
+					var p: Particle = new ParticleBoom(bulletsBad[index].x, bulletsBad[index].y);
+					level.addChild(p);
+					particles.push(p);
+				} // ends for
+		}
 
 		private function spawnSmokeParticles(): void {
 
@@ -751,8 +758,8 @@ package code {
 			for (var j: int = 0; j < bullets.length; j++) {
 				for (var i: int = 0; i < bulletsBad.length; i++) {
 					if (bullets[j].collider.checkOverlap(bulletsBad[i].collider)) {
-						explodePlayerBullet(j);
-						explodeEnemyBullet(i);
+						explodeBullets(j);
+						explodeBulletsBad(i);
 					}
 				}
 			}
@@ -764,15 +771,15 @@ package code {
 			for (var i: int = 0; i < bulletsBad.length; i++) {
 				if (castle.colliderCenter.checkOverlap(bulletsBad[i].collider)) {
 					damageCastle();
-					explodeEnemyBullet(i);
+					explodeBulletsBad(i);
 				}
 				if (castle.colliderRight.checkOverlap(bulletsBad[i].collider)) {
 					damageCastle();
-					explodeEnemyBullet(i);
+					explodeBulletsBad(i);
 				}
 				if (castle.colliderLeft.checkOverlap(bulletsBad[i].collider)) {
 					damageCastle();
-					explodeEnemyBullet(i);
+					explodeBulletsBad(i);
 				}
 			}
 		}
@@ -785,7 +792,7 @@ package code {
 				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
 					if (ScenePlay.towers[j].colliderSpire.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
-						explodeEnemyBullet(i);
+						explodeBulletsBad(i);
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
@@ -814,7 +821,7 @@ package code {
 					}
 					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
 						ScenePlay.towers[j].health -= 10;
-						explodeEnemyBullet(i);
+						explodeBulletsBad(i);
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
@@ -842,7 +849,7 @@ package code {
 			for (var i: int = 0; i < bulletsBad.length; i++) {
 				if (player.collider.checkOverlap(bulletsBad[i].collider)) {
 					damagePlayer();
-					explodeEnemyBullet(i);
+					explodeBulletsBad(i);
 				}
 			}
 		}
@@ -872,8 +879,17 @@ package code {
 		private function bulletWallCollision(): void {
 			for (var i: int = 0; i < bullets.length; i++) {
 				if (bullets[i].collider.checkOverlap(level.playerWall.collider)) {
-					explodePlayerBullet(i);
+					explodeBullets(i);
 					updateBullets();
+				}
+			}
+		}
+		
+		private function bombWallCollision():void{
+			for (var i:int = 0; i < bombs.length; i++) {
+				if (bombs[i].collider.checkOverlap(level.playerWall.collider)) {
+					explodeBombs(i);
+					updateBombs();
 				}
 			}
 		}
@@ -904,7 +920,7 @@ package code {
 			for (var j: int = 0; j < bullets.length; j++) {
 				if (bullets[j].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
 					//trace(player.collider.checkOverlap(platforms[i].collider));
-					explodePlayerBullet(j);
+					explodeBullets(j);
 				}
 			} // ends for
 
@@ -912,7 +928,7 @@ package code {
 			for (var m: int = 0; m < bulletsBad.length; m++) {
 				if (bulletsBad[m].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
 					//trace(player.collider.checkOverlap(platforms[i].collider));
-					explodeEnemyBullet(m);
+					explodeBulletsBad(m);
 				}
 			} // ends for
 			// Collision for coins hitting platforms.
@@ -949,14 +965,26 @@ package code {
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
 					if (bullets[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
 						killEnemy(j);
-						explodePlayerBullet(i);
-						explodePlayerBullet(i);
+						explodeBullets(i);
 						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
 						updateEnemies();
 					}
 				} // ends for
 			} // ends for
 		} // ends bulletEnemyCollision
+		
+		private function bombEnemyCollision():void {
+			for(var i: int = 0; i < bombs.length; i++){
+				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
+					if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
+						trace("boom");
+						bombs[i].handleExplosions();
+						explodeBombs(i);
+						
+					}
+				}
+			}
+		}
 
 		private function playerEnemyCollision(): void {
 			for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
@@ -984,7 +1012,7 @@ package code {
 			coinCount++;
 		}
 
-		private function killEnemy(index: int): void {
+		public function killEnemy(index: int): void {
 			enemyDieSound.play();
 			ScenePlay.enemies[index].isDead = true;
 

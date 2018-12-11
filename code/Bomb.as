@@ -67,5 +67,16 @@
 			if (lifeCurrent > lifeMax) isDead = true;
 			
 		} // ends update
+		
+		public function handleExplosions():void {
+			collider.calcEdges(2 * x, 2 * y);
+			for(var i: int = 0; i < ScenePlay.main.bombs.length; i++){
+				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
+					if (ScenePlay.main.bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
+						ScenePlay.main.killEnemy(j);
+					}
+				}
+			}
+		}
 	}
 }
