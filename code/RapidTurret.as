@@ -13,7 +13,7 @@
 			aimingTimer -= Time.dtScaled;
 			//trace(aimingTimer + "After");
 			if (aimingTimer <= 0) {
-				aimingTimer = .3;
+				aimingTimer = .2;
 				ScenePlay.main.spawnBullet(this);
 			}
 		}
