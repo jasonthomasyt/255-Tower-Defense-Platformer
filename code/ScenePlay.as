@@ -1101,27 +1101,7 @@ package code {
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
-							if (ScenePlay.towers.length > 0) {
-								for (var k: int = ScenePlay.towers.length - 1; k >= 0; k--) {
-									if (ScenePlay.towers[k].isDead) {
-										if (ScenePlay.towers[k].x <= level.buildSpot1.x + 50) {
-											level.buildSpot1.alpha = 1;
-											level.buildSpot1.used = false;
-										}
-										if (ScenePlay.towers[k].x <= level.buildSpot2.x + 50) {
-											level.buildSpot2.alpha = 1;
-											level.buildSpot2.used = false;
-										}
-										level.removeChild(ScenePlay.towers[k]);
-										ScenePlay.towers.splice(k, 1);
-
-										level.removeChild(turrets[k]);
-										turrets.splice(k, 1);
-
-
-									}
-								}
-							}
+							updateTowers();
 						}
 					}
 				}
@@ -1140,17 +1120,7 @@ package code {
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
-							if (ScenePlay.towers.length > 0) {
-								for (var m: int = ScenePlay.towers.length - 1; m >= 0; m--) {
-									if (ScenePlay.towers[m].isDead) {
-										level.removeChild(ScenePlay.towers[m]);
-										ScenePlay.towers.splice(m, 1);
-
-										level.removeChild(turrets[m]);
-										turrets.splice(m, 1);
-									}
-								}
-							}
+							updateTowers();
 						}
 					}
 				}
