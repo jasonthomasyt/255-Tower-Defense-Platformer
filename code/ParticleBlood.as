@@ -2,10 +2,14 @@
 	
 	import flash.display.MovieClip;
 	
-	
+	/** This object is for blood particles that come out of enemies. */
 	public class ParticleBlood extends Particle {
 		
-		
+		/**
+		 * The blood particle constructor function. 
+		 * @param spawnX The X spawn location.
+		 * @param spawnY The Y spawn location.
+		 */
 		public function ParticleBlood(spawnX: Number, spawnY: Number) {
 			
 			super(spawnX, spawnY);
@@ -23,7 +27,7 @@
 
 			lifeSpan = Math.random() * 1.5 + .5;
 			
-		}
-	}
+		} // ends ParticleBlood
+	} // ends class
 	
-}
+} // ends package

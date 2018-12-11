@@ -9,15 +9,13 @@
 			// constructor code
 		}
 		
-		override public function shootTarget():Turret {
+		override public function shootTarget():void {
 			aimingTimer -= Time.dtScaled;
 			//trace(aimingTimer + "After");
 			if (aimingTimer <= 0) {
 				aimingTimer = 3;
 				ScenePlay.main.spawnBomb(this);
-				return null
 			}
-			return null
 		}
 
 	}

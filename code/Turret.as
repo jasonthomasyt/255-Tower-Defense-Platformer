@@ -1,14 +1,17 @@
-﻿package  code {
-	
+﻿package code {
+
 	import flash.display.MovieClip;
-	
+
 	/* This is the class for the turret */
 	public class Turret extends MovieClip {
-		
+
 		/** */
 		public var closestTarget: int = -1;
 		/** */
 		public var validTargets: Array = new Array();
+
+		/** Only the target that the turret is within the turret's sight distance should be held in this array. */
+		public var currentTarget: Array = new Array();
 		/** The angle that the gun is pointed. */
 		public var angle: Number = 0;
 		/** */
@@ -17,9 +20,11 @@
 		public var closestTargetDist: Number;
 		/** */
 		public var sightDistance: Number = 750;
-		
+		/** How long it takes for this enemy to shoot at it's target in seconds. */
+		private var aimingTimer: Number = 1;
+
 		/**
-		 * Constructor code for the turret class 
+		 * Constructor code for the turret class
 		 */
 		public function Turret() {
 			// constructor code
@@ -27,19 +32,21 @@
 		/**
 		 * Update function for the turret
 		 */
-		public function update():void {
-			
+		public function update(): void {
+
 			/*
 			 * Updates the rotation angle of the turret to follow the mouse
 			 * TO DO: Update to follow closest enemy
 			 */
+			trace(closestTarget);
 			findValidTargets();
-			
+
 			handleAiming();
-			
+
 			if (closestTarget >= 0) {
 				shootTarget();
 			}
+
 		}
 		/**
 		 * Changes the gun's rotation based on where the mouse is pointing.
@@ -79,28 +86,46 @@
 					targetsDistances.push(dist);
 
 				}
-				//get the clostest target
+				//get the closest target
 				for (var k: int = 0; k < targetsDistances.length; k++) {
 					//trace(targetsDistances[k] + " ? " + closestTargetDist);
-					if (targetsDistances[k] < closestTargetDist) {
+					if (targetsDistances[k] <= closestTargetDist) {
 						//trace("if ClosestTarget");
 						closestTargetDist = targetsDistances[k];
 						closestTarget = k;
+						currentTarget.push(k);
 						//trace("Closest Target: #" + k + validTargets[k] + " Distance: " + targetsDistances[k]);
-					} else if (closestTarget <= -1) {
-						closestTarget = -1;
-						//trace("No closest Target");
+					} else if (closestTarget <= -1) closestTarget = -1;
+
+					if (currentTarget.length > 0) {
+						// if the current tracked target's distance is greater than sight distance,
+						// stop tracking target (out of range).
+						for (var l: int = currentTarget.length - 1; l >= 0; l--) {
+							if (targetsDistances[currentTarget[l]] > sightDistance) {
+								closestTarget = -1;
+								currentTarget.splice(l, 1);
+							}
+						}
 					}
 				}
-			} else if (validTargets.length <= 0) closestTarget = -1;
+			} else closestTarget = -1;
 			//trace("closestTarget: " + closestTarget);
 
 		}
 		/**
 		 *
 		 */
-		public function shootTarget():Turret{
-			return null;
+		public function shootTarget(): void {
+			//trace(aimingTimer + "Before");
+			aimingTimer -= Time.dtScaled;
+			//trace(aimingTimer + "After");
+			if (aimingTimer <= 0) {
+				aimingTimer = 1;
+				ScenePlay.main.spawnBullet(this);
+				findValidTargets();
+				return
+			} //else aimingTimer += Time.dtScaled;
+			//if (aimingTimer >= 1 ) aimingTimer = 1;
 		}
 	}
 }
