@@ -1682,11 +1682,11 @@ package code {
 		 */
 		private function changeSellText(): void {
 			for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
-				if (towers[i].isBasicTower) {
+				if (ScenePlay.towers[i].isBasicTower) {
 					hud.sellText.text = "Press 'E' to sell (+10 coins)";
-				} else if (towers[i].isRapidTower) {
+				} else if (ScenePlay.towers[i].isRapidTower) {
 					hud.sellText.text = "Press 'E' to sell (+15 coins)";
-				} else if (towers[i].isBombTower) {
+				} else if (ScenePlay.towers[i].isBombTower) {
 					hud.sellText.text = "Press 'E' to sell (+20 coins)";
 				}
 			}

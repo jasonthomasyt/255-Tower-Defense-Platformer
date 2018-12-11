@@ -10,6 +10,12 @@
 		/** The collider for the player. */
 		public var colliderBase: AABB;
 		
+		public var isBasicTower: Boolean = true;
+		
+		public var isRapidTower: Boolean = false;
+		
+		public var isBombTower: Boolean = false;
+		
 		/**
 		 * 
 		 */
