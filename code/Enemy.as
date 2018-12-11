@@ -28,7 +28,7 @@
 		/** The player's jump velocity. */
 		private var jumpVelocity: Number = 500;
 
-		/** The collider for the player. */
+		/** The collider for the enemy. */
 		public var collider: AABB;
 
 		/** */

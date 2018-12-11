@@ -384,8 +384,8 @@ package code {
 				playerEnemyCollision();
 
 			} // ends for
-			
-			
+
+
 			//Keep all of the collisions that don't need to be in the for loop out!
 			// Collision bewteen good bullets and bad bullets
 			doubleBulletCollision();
@@ -1003,35 +1003,22 @@ package code {
 				} // ends for
 				//trace("Flyers Array Length: " + ScenePlay.flyingEnemies.length);
 				for (var k: int = 0; k < ScenePlay.flyingEnemies.length; k++) {
-					//trace("finding distance between me and " + validTargets[j]);
-					var distX: Number = bullets[i].x - ScenePlay.flyingEnemies[k].x;
-					var distY: Number = bullets[i].y - ScenePlay.flyingEnemies[k].y;
-					//trace("pushing Distance");
-					var dist: Number = Math.sqrt(distX * distX + distY * distY)
-					var test: int = bullets[i].radius + ScenePlay.flyingEnemies[k].radius;
-					trace(test);
-					//trace("distance between bullet and flyer is: " + dist);
-					if (dist <= test) {
+					if (bullets[i].collider.checkOverlap(ScenePlay.flyingEnemies[k].collider)) {
 						killEnemy(k, 2);
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
+						spawnCoin(3, ScenePlay.flyingEnemies[k].x, ScenePlay.flyingEnemies[k].y);
 					}
 				} // ends for
 				//trace("Toughies Array Length: " + ScenePlay.toughEnemies.length);
 				for (var m: int = 0; m < ScenePlay.toughEnemies.length; m++) {
-					//trace("finding distance between me and " + validTargets[j]);
-					var distX1: Number = bullets[i].x - ScenePlay.toughEnemies[m].x;
-					var distY1: Number = bullets[i].y - ScenePlay.toughEnemies[m].y;
-					//trace("pushing Distance");
-					var dist1: Number = Math.sqrt(distX1 * distX1 + distY1 * distY1)
-					//trace("distance between bullet and toughie is: " + dist1);
-					if (dist1 <= bullets[i].radius + ScenePlay.toughEnemies[m].radius) {
+					if (bullets[i].collider.checkOverlap(ScenePlay.toughEnemies[m].collider)) {
 						ScenePlay.toughEnemies[m].takeDamage(1);
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
-						if (ScenePlay.toughEnemies[m].isDead){
+						if (ScenePlay.toughEnemies[m].isDead) {
 							killEnemy(m, 3);
-							spawnCoin(1, ScenePlay.toughEnemies[m].x, ScenePlay.toughEnemies[m].y);
+							spawnCoin(5, ScenePlay.toughEnemies[m].x, ScenePlay.toughEnemies[m].y);
 						}
 					}
 				} // ends for

@@ -50,12 +50,16 @@
 		public const SPEED: Number = 420;
 		
 		public var radius: Number = 30;
+		
+		/** The collider for the flying enemy. */
+		public var collider: AABB;
 
 		/**
 		 *
 		 */
 		public function EnemyFlyer() {
-			// constructor code
+			collider = new AABB(base.width / 2, base.height / 2);
+			collider.calcEdges(x, y);
 			closestTargetDist = sightDistance;
 			x = 690;
 			y = 80;
@@ -78,9 +82,11 @@
 			findTargetsDistances();
 			getClosestTarget();
 			moveToClosestTarget();
+			collider.calcEdges(x, y);
 			shouldIExplode();
 			
 			detectDeathGround();
+		
 			//collider.calcEdges(x, y);
 			//trace(y);
 		} // ends update
