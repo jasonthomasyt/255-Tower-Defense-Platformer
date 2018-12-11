@@ -21,7 +21,7 @@
 		private var velocity: Point = new Point(1, 5);
 
 		/** Sets the horizontal acceleration constant for the player. */
-		private const HORIZONTAL_ACCELERATION: Number = 800;
+		private const HORIZONTAL_ACCELERATION: Number = 400;
 		/** Sets the horizontal deceleration constant for the player. */
 		private const HORIZONTAL_DECELERATION: Number = 800;
 

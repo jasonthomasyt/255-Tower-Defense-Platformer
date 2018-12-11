@@ -142,8 +142,12 @@ package code {
 			updateBullets();
 			spawnSmokeParticles();
 			spawnEnemy(5);
-			spawnFlyingEnemy(5);
-			spawnToughEnemy(5);
+			if (waveCount >= 5) {
+				spawnFlyingEnemy(5);
+			}
+			if (waveCount >= 10) {
+				spawnToughEnemy(5);
+			}
 			updateEnemies();
 
 			updateCoins();
@@ -398,6 +402,18 @@ package code {
 
 			// Collision between the Castle and badBullets
 			castleBulletBadCollision();
+
+			// Collision between the Castle and flying enemies
+			castleFlyingEnemyCollision();
+
+			// Collision between the player and flying enemies
+			playerFlyingEnemyCollision();
+			
+			// Collision between flying enemies and tower spires
+			flyingEnemyTowerSpireCollision();
+			
+			// Collision between flying enemies and tower bases
+			flyingEnemyTowerBaseCollision();
 
 			//Collision between the player and the build spot boxes
 			playerBuildSpotCollsion();
@@ -817,6 +833,114 @@ package code {
 		}
 
 		/**
+		 * Handles collision between the castle and flying enemies.
+		 * When a flying enemy collides with the castle, they explode and damage the castle.
+		 */
+		private function castleFlyingEnemyCollision(): void {
+			for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+				if (castle.colliderCenter.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+					damageCastle();
+					killEnemy(i, 2);
+				}
+				if (castle.colliderRight.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+					damageCastle();
+					killEnemy(i, 2);
+				}
+				if (castle.colliderLeft.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+					damageCastle();
+					killEnemy(i, 2);
+				}
+
+				updateEnemies();
+			}
+		} // ends castleFlyingEnemyCollision
+
+		/**
+		 * Handles collision detection between the player and flying enemies.
+		 * Flying enemies explode on contact with the player, and damages them.
+		 */
+		private function playerFlyingEnemyCollision(): void {
+			for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+				if (player.collider.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+					damagePlayer();
+					killEnemy(i, 2);
+				}
+
+				updateEnemies();
+			}
+		} // ends playerFlyingEnemyCollision
+
+		/**
+		 * Handles collision between flying enemies and the tower spire.
+		 * Damages the tower and explodes the enemy.
+		 */
+		private function flyingEnemyTowerSpireCollision(): void {
+			for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
+					if (ScenePlay.towers[j].colliderSpire.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						killEnemy(i, 2);
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var k: int = ScenePlay.towers.length - 1; k >= 0; k--) {
+									if (ScenePlay.towers[k].isDead) {
+										if (ScenePlay.towers[k].x <= level.buildSpot1.x + 50) {
+											level.buildSpot1.alpha = 1;
+											level.buildSpot1.used = false;
+										}
+										if (ScenePlay.towers[k].x <= level.buildSpot2.x + 50) {
+											level.buildSpot2.alpha = 1;
+											level.buildSpot2.used = false;
+										}
+										level.removeChild(ScenePlay.towers[k]);
+										ScenePlay.towers.splice(k, 1);
+
+										level.removeChild(turrets[k]);
+										turrets.splice(k, 1);
+
+
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} // ends flyingEnemyTowerSpireCollision
+		
+		/**
+		 * Handles collision between flying enemies and the tower base.
+		 * The tower gets damaged and the flying enemy explodes.
+		 */
+		private function flyingEnemyTowerBaseCollision(): void {
+			for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
+					if (ScenePlay.towers[j].colliderBase.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						killEnemy(i, 2);
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var m: int = ScenePlay.towers.length - 1; m >= 0; m--) {
+									if (ScenePlay.towers[m].isDead) {
+										level.removeChild(ScenePlay.towers[m]);
+										ScenePlay.towers.splice(m, 1);
+
+										level.removeChild(turrets[m]);
+										turrets.splice(m, 1);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} // ends flyingEnemyTowerBaseCollision
+
+		/**
 		 *
 		 */
 		private function towerBulletsBadCollision(): void {
@@ -846,8 +970,8 @@ package code {
 										turrets.splice(k, 1);
 
 
-									} 
-								} 
+									}
+								}
 							}
 						}
 					}

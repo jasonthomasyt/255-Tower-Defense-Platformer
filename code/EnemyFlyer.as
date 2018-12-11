@@ -9,7 +9,7 @@
 	public class EnemyFlyer extends MovieClip {
 
 		/** Sets the X max speed for the player. */
-		private var maxSpeedX: Number = 200;
+		private var maxSpeedX: Number = 100;
 		/** Sets the velocity for the player. */
 		private var velocity: Point = new Point(1, 5);
 
@@ -46,8 +46,8 @@
 		/** Checks if the player is on the ground. */
 		private var isGrounded: Boolean = false;
 		
-		/** Speed of the bullet. */
-		public const SPEED: Number = 420;
+		/** Speed of the enemy. */
+		public const SPEED: Number = 100;
 		
 		public var radius: Number = 30;
 		
@@ -83,23 +83,13 @@
 			getClosestTarget();
 			moveToClosestTarget();
 			collider.calcEdges(x, y);
-			shouldIExplode();
 			
 			detectDeathGround();
 		
 			//collider.calcEdges(x, y);
 			//trace(y);
 		} // ends update
-		public function explode():void {
-			// TODO: check for all damageable targets within range and damage them.
-			isDead = true;
-		}
-		/**
-		 * 
-		 */
-		public function shouldIExplode(): void {
-			if (closestTargetDist <= 30) explode();
-		}
+
 		/**
 		 * 
 		 */
@@ -109,9 +99,9 @@
 			velocity.x = SPEED * Math.cos(angle);
 			velocity.y = SPEED * Math.sin(angle);
 			
-			// Moves bullet according to velocity.
-			x += velocity.x * Time.dtScaled;
-			y += velocity.y * Time.dtScaled;
+			// Moves enemy according to velocity.
+			x += velocity.x * Time.dt;
+			y += velocity.y * Time.dt;
 		}
 		/**
 		 *

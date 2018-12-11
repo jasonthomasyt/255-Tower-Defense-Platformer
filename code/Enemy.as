@@ -12,7 +12,7 @@
 		/** Sets the gravity for the player. */
 		private var gravity: Point = new Point(0, 1000);
 		/** Sets the X max speed for the player. */
-		private var maxSpeedX: Number = 200;
+		private var maxSpeedX: Number = 100;
 		/** Sets the velocity for the player. */
 		private var velocity: Point = new Point(1, 5);
 
