@@ -9,7 +9,7 @@
 	public class EnemyFlyer extends MovieClip {
 
 		/** Sets the X max speed for the player. */
-		private var maxSpeedX: Number = 100;
+		private var maxSpeedX: Number = 200;
 		/** Sets the velocity for the player. */
 		private var velocity: Point = new Point(1, 5);
 
@@ -47,7 +47,7 @@
 		private var isGrounded: Boolean = false;
 		
 		/** Speed of the enemy. */
-		public const SPEED: Number = 100;
+		public const SPEED: Number = 400;
 		
 		public var radius: Number = 30;
 		
@@ -98,6 +98,10 @@
 			
 			velocity.x = SPEED * Math.cos(angle);
 			velocity.y = SPEED * Math.sin(angle);
+			
+			// constrain to maxSpeed:
+			if (velocity.x > maxSpeedX) velocity.x = maxSpeedX; // clamp going right
+			if (velocity.x < -maxSpeedX) velocity.x = -maxSpeedX; // clamp going left
 			
 			// Moves enemy according to velocity.
 			x += velocity.x * Time.dt;

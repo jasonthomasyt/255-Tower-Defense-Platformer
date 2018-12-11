@@ -16,7 +16,7 @@
 		public var radius: Number = 80;
 
 		/** Sets the X max speed for the player. */
-		private var maxSpeedX: Number = 100;
+		private var maxSpeedX: Number = 50;
 		/** Sets the velocity for the player. */
 		private var velocity: Point = new Point(1, 5);
 
@@ -62,7 +62,7 @@
 			// constructor code
 			collider = new AABB(base.width / 2, base.height / 2);
 			collider.calcEdges(x, y);
-			x = 1690;
+			x = 3690;
 			y = 80;
 		} // ends constructor
 		/**

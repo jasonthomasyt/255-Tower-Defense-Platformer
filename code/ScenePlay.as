@@ -144,13 +144,14 @@ package code {
 			player.update();
 			updateBullets();
 			spawnSmokeParticles();
-			
+			spawnEnemy(5);
+			spawnFlyingEnemy(5);
 			spawnToughEnemy(5);
 			if (waveCount >= 5) {
-				spawnFlyingEnemy(5);
+				
 			}
 			if (waveCount >= 10) {
-				spawnEnemy(5);
+				
 			}
 			updateEnemies();
 
@@ -1127,6 +1128,7 @@ package code {
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
 						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
+						updateEnemies();
 					}
 				} // ends for
 				//trace("Flyers Array Length: " + ScenePlay.flyingEnemies.length);
@@ -1135,8 +1137,8 @@ package code {
 						killEnemy(k, 2);
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
-						spawnCoin(3, ScenePlay.flyingEnemies[k].x, ScenePlay.flyingEnemies[k].y);
-						//updateEnemies();
+						spawnCoin(1, ScenePlay.flyingEnemies[k].x, ScenePlay.flyingEnemies[k].y);
+						updateEnemies();
 					}
 				} // ends for
 				//trace("Toughies Array Length: " + ScenePlay.toughEnemies.length);
@@ -1148,7 +1150,7 @@ package code {
 						if (ScenePlay.toughEnemies[m].isDead) {
 							killEnemy(m, 3);
 							spawnCoin(5, ScenePlay.toughEnemies[m].x, ScenePlay.toughEnemies[m].y);
-							//updateEnemies();
+							updateEnemies();
 						}
 					}
 				} // ends for
