@@ -116,16 +116,7 @@
 		 *
 		 */
 		public function shootTarget(): void {
-			//trace(aimingTimer + "Before");
-			aimingTimer -= Time.dtScaled;
-			//trace(aimingTimer + "After");
-			if (aimingTimer <= 0) {
-				aimingTimer = 1;
-				ScenePlay.main.spawnBullet(this);
-				findValidTargets();
-				return
-			} //else aimingTimer += Time.dtScaled;
-			//if (aimingTimer >= 1 ) aimingTimer = 1;
+			
 		}
 	}
 }
