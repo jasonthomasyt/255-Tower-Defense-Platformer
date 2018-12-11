@@ -21,7 +21,7 @@
 		private var velocity: Point = new Point(1, 5);
 
 		/** Sets the horizontal acceleration constant for the player. */
-		private const HORIZONTAL_ACCELERATION: Number = 400;
+		private const HORIZONTAL_ACCELERATION: Number = 800;
 		/** Sets the horizontal deceleration constant for the player. */
 		private const HORIZONTAL_DECELERATION: Number = 800;
 
@@ -62,13 +62,13 @@
 			// constructor code
 			collider = new AABB(base.width / 2, base.height / 2);
 			collider.calcEdges(x, y);
-			x = 1690;
+			x = 3690;
 			y = 80;
 		} // ends constructor
 		/**
-		 * 
+		 *
 		 */
-		public function takeDamage(d:int): void {
+		public function takeDamage(d: int): void {
 			health -= d;
 			bar.barColor.scaleX = health / maxHealth;
 			if (health <= 0) isDead = true;
@@ -77,6 +77,7 @@
 		 *
 		 */
 		public function update(): void {
+
 			parent.setChildIndex(this, parent.numChildren - 2);
 			/*
 			DESIRED BEHAVIOR:
@@ -140,9 +141,9 @@
 		 * @param direction If a negative number is passed in, it accelerates left. If positive, it'll accelerate right.
 		 */
 		public function handleWalking(direction: int): void {
-			//if (this.x > 750) velocity.x -= HORIZONTAL_ACCELERATION * Time.dtScaled;
-			//if (direction > 0) velocity.x += HORIZONTAL_ACCELERATION * Time.dtScaled;
-			velocity.x -= HORIZONTAL_ACCELERATION * Time.dtScaled;
+			if (this.x > 750) velocity.x -= HORIZONTAL_ACCELERATION * Time.dt;
+			if (direction > 0) velocity.x += HORIZONTAL_ACCELERATION * Time.dt;
+
 			if (direction == 0) { // left and right not being pressed...
 				if (velocity.x < 0) { // moving left
 					velocity.x += HORIZONTAL_DECELERATION * Time.dt; // accelerate right
@@ -154,16 +155,6 @@
 					if (velocity.x < 0) velocity.x = 0; // clamp at 0
 				}
 			}
-			/*
-			if (this.x > 2000) {
-				//trace(this.x);
-				velocity.x -= HORIZONTAL_DECELERATION * Time.dt;
-			}
-			if (this.x < 800) {
-				velocity.x = 0;
-
-			} 
-			*/
 		} // ends handleWalking
 		/**
 		 *
@@ -284,7 +275,7 @@
 				velocity.y = 0;
 			}
 
-			if (fix.y < 0) { // we moved the player up, so they are on the ground.
+			if (fix.y < 0) { // we moved the enemy up, so they are on the ground.
 				isGrounded = true;
 			}
 

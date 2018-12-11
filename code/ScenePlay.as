@@ -846,8 +846,8 @@ package code {
 										turrets.splice(k, 1);
 
 
-									}
-								}
+									} 
+								} 
 							}
 						}
 					}
@@ -1008,6 +1008,7 @@ package code {
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
 						spawnCoin(3, ScenePlay.flyingEnemies[k].x, ScenePlay.flyingEnemies[k].y);
+						updateEnemies();
 					}
 				} // ends for
 				//trace("Toughies Array Length: " + ScenePlay.toughEnemies.length);
@@ -1019,6 +1020,7 @@ package code {
 						if (ScenePlay.toughEnemies[m].isDead) {
 							killEnemy(m, 3);
 							spawnCoin(5, ScenePlay.toughEnemies[m].x, ScenePlay.toughEnemies[m].y);
+							updateEnemies();
 						}
 					}
 				} // ends for

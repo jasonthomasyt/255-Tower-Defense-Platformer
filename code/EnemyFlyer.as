@@ -13,9 +13,9 @@
 		/** Sets the velocity for the player. */
 		private var velocity: Point = new Point(1, 5);
 
-		/** Sets the horizontal acceleration constant for the player. */
-		private const HORIZONTAL_ACCELERATION: Number = 800;
-		/** Sets the horizontal deceleration constant for the player. */
+		/** Sets the horizontal acceleration constant for the flying enemy. */
+		private const HORIZONTAL_ACCELERATION: Number = 500;
+		/** Sets the horizontal deceleration constant for the flying enemy. */
 		private const HORIZONTAL_DECELERATION: Number = 800;
 
 		/** */
@@ -61,7 +61,7 @@
 			collider = new AABB(base.width / 2, base.height / 2);
 			collider.calcEdges(x, y);
 			closestTargetDist = sightDistance;
-			x = 690;
+			x = 3690;
 			y = 80;
 		} // ends constructor
 		/**
