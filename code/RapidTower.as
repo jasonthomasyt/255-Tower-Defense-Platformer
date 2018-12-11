@@ -17,6 +17,9 @@
 			// constructor code
 			colliderSpire = new AABB(rapidTowerSpire.width / 2, rapidTowerSpire.height / 2);
 			colliderBase = new AABB(rapidTowerBase.width / 2, rapidTowerBase.height / 2);
+			
+			colliderSpire.calcEdges(x, y);
+			colliderBase.calcEdges(x, y);
 		}
 		/**
 		 * 

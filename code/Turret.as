@@ -1,10 +1,10 @@
-﻿package  code {
-	
+﻿package code {
+
 	import flash.display.MovieClip;
-	
+
 	/* This is the class for the turret */
 	public class Turret extends MovieClip {
-		
+
 		/** */
 		public var closestTarget: int = -1;
 		/** */
@@ -19,9 +19,9 @@
 		public var sightDistance: Number = 750;
 		/** How long it takes for this enemy to shoot at it's target in seconds. */
 		private var aimingTimer: Number = 1;
-		
+
 		/**
-		 * Constructor code for the turret class 
+		 * Constructor code for the turret class
 		 */
 		public function Turret() {
 			// constructor code
@@ -29,16 +29,16 @@
 		/**
 		 * Update function for the turret
 		 */
-		public function update():void {
-			
+		public function update(): void {
+
 			/*
 			 * Updates the rotation angle of the turret to follow the mouse
 			 * TO DO: Update to follow closest enemy
 			 */
 			findValidTargets();
-			
+
 			handleAiming();
-			
+
 			if (closestTarget >= 0) {
 				shootTarget();
 			}
@@ -64,11 +64,28 @@
 			if (validTargets.length > 0) validTargets.length = 0;
 			closestTargetDist = sightDistance;
 			//trace(validTargets[0]);
-			for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
-				//trace("looking for enemy " + i);
-				validTargets.push(ScenePlay.enemies[i]);
-				//trace(validTargets[0]);
+			if (ScenePlay.enemies.length > 0) {
+				for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
+					//trace("looking for enemy " + i);
+					validTargets.push(ScenePlay.enemies[i]);
+					//trace(validTargets[0]);
+				}
 			}
+			if (ScenePlay.flyingEnemies.length > 0) {
+				for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+					//trace("looking for enemy " + i);
+					validTargets.push(ScenePlay.flyingEnemies[i]);
+					//trace(validTargets[0]);
+				}
+			}
+			if (ScenePlay.toughEnemies.length > 0) {
+				for (var i: int = 0; i < ScenePlay.toughEnemies.length; i++) {
+					//trace("looking for enemy " + i);
+					validTargets.push(ScenePlay.toughEnemies[i]);
+					//trace(validTargets[0]);
+				}
+			}
+			
 			if (validTargets.length > 0) {
 				//find the distances between the enemy and the targets.
 				for (var j: int = 0; j < validTargets.length; j++) {

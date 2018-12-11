@@ -113,6 +113,7 @@
 				for (var i: int = 0; i < ScenePlay.towers.length; i++) {
 					//trace("Well there are " + i + " towers for me to collide with");
 					if (this.collider.checkOverlap(ScenePlay.towers[i].colliderSpire)) {
+						
 						handleWalking(0);
 						return
 					}
