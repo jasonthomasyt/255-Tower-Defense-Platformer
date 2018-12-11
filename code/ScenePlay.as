@@ -95,8 +95,6 @@ package code {
 		/** The sound for when the player loses the game. */
 		private var loseSound: LoseSound = new LoseSound();
 
-		public var coinCount: int = 0;
-
 		static public var coins: Array = new Array();
 
 		/** Identifier variable for the build spots. */
@@ -121,7 +119,8 @@ package code {
 		/** */
 		private var gameOver: Boolean = false;
 
-
+		/** The sound played when the player doesn't have enough money to purchase a tower. */
+		private var notEnoughSound: NotEnoughSound = new NotEnoughSound();
 
 		/**
 		 * This is our constructor script. It loads us our level.
@@ -476,6 +475,9 @@ package code {
 			//Keep all of the collisions that don't need to be in the for loop out!
 			// Collision between good bullets and bad bullets
 			doubleBulletCollision();
+			
+			// Collision for floating platforms.
+			floatingPlatformCollision();
 
 			// Collision between player and badBullets
 			playerBulletBadCollision();
@@ -626,7 +628,8 @@ package code {
 			}
 		} // ends spawnSmokeParticles
 
-		private function spawnEnemy(spawnCount: int): void {
+		private function spawnEnemy(spawnCount: int, enemyType: int = 0): void {
+			// spawn snow:
 			// spawn snow:
 			spawnCount += spawnIncrement;
 			enemyNum = spawnCount;
@@ -1498,7 +1501,43 @@ package code {
 						// Re-check for collision.
 						if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {// If explosion radius hits an enemy...
 							// Kill that enemy
-							killEnemy(j);
+							killEnemy(j, 1);
+						}
+						// Destroy the bomb
+						explodeBombs(i);
+					}// ends ifs
+				}// ends for
+				for (var j: int = 0; j < ScenePlay.flyingEnemies.length; j++) {
+					if (bombs[i].collider.checkOverlap(ScenePlay.flyingEnemies[j].collider)) {// If a bomb hits an enemy...
+						// Expand the AABB
+						bombs[i].collider.xMin = x - width;
+						bombs[i].collider.xMax = x + width;
+						bombs[i].collider.yMin = y - height;
+						bombs[i].collider.yMax = y + height;
+						// Recalculate AABB's edges
+						bombs[i].collider.calcEdges(x, y);
+						// Re-check for collision.
+						if (bombs[i].collider.checkOverlap(ScenePlay.flyingEnemies[j].collider)) {// If explosion radius hits an enemy...
+							// Kill that enemy
+							killEnemy(j, 2);
+						}
+						// Destroy the bomb
+						explodeBombs(i);
+					}// ends ifs
+				}// ends for
+				for (var j: int = 0; j < ScenePlay.toughEnemies.length; j++) {
+					if (bombs[i].collider.checkOverlap(ScenePlay.toughEnemies[j].collider)) {// If a bomb hits an enemy...
+						// Expand the AABB
+						bombs[i].collider.xMin = x - width;
+						bombs[i].collider.xMax = x + width;
+						bombs[i].collider.yMin = y - height;
+						bombs[i].collider.yMax = y + height;
+						// Recalculate AABB's edges
+						bombs[i].collider.calcEdges(x, y);
+						// Re-check for collision.
+						if (bombs[i].collider.checkOverlap(ScenePlay.toughEnemies[j].collider)) {// If explosion radius hits an enemy...
+							// Kill that enemy
+							killEnemy(j, 3);
 						}
 						// Destroy the bomb
 						explodeBombs(i);
@@ -1558,8 +1597,11 @@ package code {
 			updateCoins();
 			coinCount++;
 		} // ends collectCoin
-
-		private function killEnemy(index: int): void {
+		/**
+		 * Handles killing an enemy whenever the player kills them.
+		 * @param index The current index of the enemy in the enemies array.
+		 */
+		private function killEnemy(index: int, array: int): void {
 			enemyDieSound.play();
 			switch (array) {
 				case 1:
@@ -1651,25 +1693,3 @@ package code {
 		} // ends changeSellText
 	} // ends class
 } // ends package
-		/** The sound played when the player doesn't have enough money to purchase a tower. */
-		private var notEnoughSound: NotEnoughSound = new NotEnoughSound();
-		public var coinCount: int = 20;
-
-			// Collision for floating platforms.
-			floatingPlatformCollision();
-
-		private function spawnEnemy(spawnCount: int, enemyType: int = 0): void {
-			// spawn snow:
-							updateTowers();
-							updateTowers();
-		/**
-		 * Handles killing an enemy whenever the player kills them.
-		 * @param index The current index of the enemy in the enemies array.
-		 */
-		private function killEnemy(index: int): void {
-			for (var i: int = 0; i < 10; i++) {
-				var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
-				level.addChild(p);
-				particles.push(p);
-			}
-		} // ends killEnemy

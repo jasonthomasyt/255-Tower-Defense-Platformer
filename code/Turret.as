@@ -140,22 +140,3 @@
 		}// ends shootTarget
 	}// ends class
 }// ends package
-			
-﻿package code {
-	import flash.display.MovieClip;
-	
-	/**
-	 * This is the parent class for turrets.
-	 */
-		/* Variable identifying the closest target */
-		/* How long it takes for this enemy to shoot at it's target in seconds. */
-		private var aimingTimer: Number = 1;
-		
-		public function update(): void {
-			// Finds targets within tower's sight range
-			// Aims the turret
-			// If closest target is in range, shoot that target
-				shootTarget();
-			}// ends if
-		}// ends update
-		
