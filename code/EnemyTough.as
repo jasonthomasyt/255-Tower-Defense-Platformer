@@ -62,7 +62,7 @@
 			// constructor code
 			collider = new AABB(base.width / 2, base.height / 2);
 			collider.calcEdges(x, y);
-			x = 3690;
+			x = 1690;
 			y = 80;
 		} // ends constructor
 		/**
@@ -100,6 +100,8 @@
 
 			collider.calcEdges(x, y);
 			isGrounded = false;
+			trace("Cuurent Location: " + x);
+			trace("Current Velocity: " + velocity.x);
 		} // ends update
 		/**
 		 *
@@ -250,15 +252,15 @@
 
 			// apply gravity to velocity:
 			//velocity.x += gravity.x * Time.dt * gravityMultiplier;
-			velocity.y += gravity.y * Time.dt * gravityMultiplier;
+			velocity.y += gravity.y * Time.dtScaled * gravityMultiplier;
 
 			// constrain to maxSpeed:
 			if (velocity.x > maxSpeedX) velocity.x = maxSpeedX; // clamp going right
 			if (velocity.x < -maxSpeedX) velocity.x = -maxSpeedX; // clamp going left
 
 			// apply velocity to position:
-			x += velocity.x * Time.dt;
-			y += velocity.y * Time.dt;
+			x += velocity.x * Time.dtScaled;
+			y += velocity.y * Time.dtScaled;
 		} // ends doPhysics
 		/**
 		 * Applies the overlap fix detected by the collider.

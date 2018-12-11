@@ -44,7 +44,7 @@
 		private var jumpVelocity:Number = 500;
 		
 		/** Detects the ground in the game. */
-		var ground: Number = 700.45;
+		var ground: Number = 1000;
 		
 		/** The angle that the gun is pointed. */
 		public var angle: Number = 0;

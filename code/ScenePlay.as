@@ -115,6 +115,8 @@ package code {
 			stage.removeEventListener(MouseEvent.MOUSE_DOWN, handleClick);
 			platforms = new Array();
 			enemies = new Array();
+			flyingEnemies = new Array();
+			toughEnemies = new Array();
 			towers = new Array();
 			waveCount = 0;
 		} // end onEnd
@@ -134,6 +136,7 @@ package code {
 		 * @return This returns null every frame, unless it is time to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
 		 */
 		override public function update(previousScene: GameScene = null): GameScene {
+			trace(ScenePlay.platforms.length);
 			if (player.isDead) {
 				killPlayer();
 				spawnPlayer();
@@ -141,12 +144,13 @@ package code {
 			player.update();
 			updateBullets();
 			spawnSmokeParticles();
-			spawnEnemy(5);
+			
+			spawnToughEnemy(5);
 			if (waveCount >= 5) {
 				spawnFlyingEnemy(5);
 			}
 			if (waveCount >= 10) {
-				spawnToughEnemy(5);
+				spawnEnemy(5);
 			}
 			updateEnemies();
 
@@ -851,7 +855,7 @@ package code {
 					killEnemy(i, 2);
 				}
 
-				updateEnemies();
+				//updateEnemies();
 			}
 		} // ends castleFlyingEnemyCollision
 
@@ -866,7 +870,7 @@ package code {
 					killEnemy(i, 2);
 				}
 
-				updateEnemies();
+				//updateEnemies();
 			}
 		} // ends playerFlyingEnemyCollision
 
@@ -1132,7 +1136,7 @@ package code {
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
 						spawnCoin(3, ScenePlay.flyingEnemies[k].x, ScenePlay.flyingEnemies[k].y);
-						updateEnemies();
+						//updateEnemies();
 					}
 				} // ends for
 				//trace("Toughies Array Length: " + ScenePlay.toughEnemies.length);
@@ -1144,7 +1148,7 @@ package code {
 						if (ScenePlay.toughEnemies[m].isDead) {
 							killEnemy(m, 3);
 							spawnCoin(5, ScenePlay.toughEnemies[m].x, ScenePlay.toughEnemies[m].y);
-							updateEnemies();
+							//updateEnemies();
 						}
 					}
 				} // ends for
