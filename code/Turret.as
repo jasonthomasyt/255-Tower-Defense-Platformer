@@ -1,68 +1,64 @@
 ﻿package code {
-
 	import flash.display.MovieClip;
-
-	/* This is the class for the turret */
+	
+	/**
+	 * This is the parent class for turrets.
+	 */
 	public class Turret extends MovieClip {
-
-		/** */
+		/* Variable identifying the closest target */
 		public var closestTarget: int = -1;
-		/** */
+		/* Variable holding the tower's valid targets */
 		public var validTargets: Array = new Array();
-
-		/** Only the target that the turret is within the turret's sight distance should be held in this array. */
+		/* Only the target that the turret is within the turret's sight distance should be held in this array. */
 		public var currentTarget: Array = new Array();
-		/** The angle that the gun is pointed. */
+		/* The angle that the gun is pointed. */
 		public var angle: Number = 0;
-		/** */
+		/* Array holding targets' distances */
 		public var targetsDistances: Array = new Array();
-		/** */
+		/* Variable holding the distance of the closest target */
 		public var closestTargetDist: Number;
-		/** */
+		/* Variable for the tower's aggro range */
 		public var sightDistance: Number = 750;
-		/** How long it takes for this enemy to shoot at it's target in seconds. */
+		/* How long it takes for this enemy to shoot at it's target in seconds. */
 		private var aimingTimer: Number = 1;
-
+		
 		/**
 		 * Constructor code for the turret class
 		 */
 		public function Turret() {
-			// constructor code
-		}
+			
+		}// ends Turret
+		
 		/**
 		 * Update function for the turret
 		 */
 		public function update(): void {
-
-			/*
-			 * Updates the rotation angle of the turret to follow the mouse
-			 * TO DO: Update to follow closest enemy
-			 */
-			trace(closestTarget);
+			// Finds targets within tower's sight range
 			findValidTargets();
-
+			// Aims the turret
 			handleAiming();
-
+			// If closest target is in range, shoot that target
 			if (closestTarget >= 0) {
 				shootTarget();
-			}
-
-		}
+			}// ends if
+		}// ends update
+		
 		/**
 		 * Changes the gun's rotation based on where the mouse is pointing.
 		 */
 		public function handleAiming(): void {
-			if (closestTarget <= -1) return
+			if (closestTarget <= -1) return // If target is in sight range...
+			// Find vector to the target
 			var tx: Number = validTargets[closestTarget].x - x;
 			var ty: Number = validTargets[closestTarget].y - y;
-
+			//Determine angle of rotation based on that vector
 			angle = Math.atan2(ty, tx);
 			angle *= 180 / Math.PI;
 			rotation = angle + 90;
 		} // end handleAiming
 
 		/**
-		 *
+		 * Function for finding valid targets.
 		 */
 		public function findValidTargets(): void {
 			if (targetsDistances.length > 0) targetsDistances.length = 0;
@@ -95,8 +91,7 @@
 						closestTarget = k;
 						currentTarget.push(k);
 						//trace("Closest Target: #" + k + validTargets[k] + " Distance: " + targetsDistances[k]);
-					} else if (closestTarget <= -1) closestTarget = -1;
-
+					} else if (closestTarget <= -1) closestTarget = -1; // ends if
 					if (currentTarget.length > 0) {
 						// if the current tracked target's distance is greater than sight distance,
 						// stop tracking target (out of range).
@@ -104,28 +99,28 @@
 							if (targetsDistances[currentTarget[l]] > sightDistance) {
 								closestTarget = -1;
 								currentTarget.splice(l, 1);
-							}
-						}
-					}
-				}
-			} else closestTarget = -1;
-			//trace("closestTarget: " + closestTarget);
-
-		}
+							}// ends if
+						}// ends for
+					}// ends if
+				}// ends for
+			} else closestTarget = -1; // ends if
+		}// ends findValidTargets
+		
 		/**
-		 *
+		 * Function handling shooting of targets.
+		 * This function holds base values to be overridden by individual towers.
 		 */
 		public function shootTarget(): void {
-			//trace(aimingTimer + "Before");
+			// De-increment aiming timer
 			aimingTimer -= Time.dtScaled;
-			//trace(aimingTimer + "After");
-			if (aimingTimer <= 0) {
+			if (aimingTimer <= 0) {// If aiming timer runs out...
+				// Reset aiming timer
 				aimingTimer = 1;
+				// Spawn a bullet
 				ScenePlay.main.spawnBullet(this);
 				return
-			} //else aimingTimer += Time.dtScaled;
-			//if (aimingTimer >= 1 ) aimingTimer = 1;
-		}
-	}
-}
+			}// ends ifs
+		}// ends shootTarget
+	}// ends class
+}// ends package
 			

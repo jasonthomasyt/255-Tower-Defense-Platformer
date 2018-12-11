@@ -1058,40 +1058,49 @@ package code {
 		 * Function handling player/build spot collision
 		 */
 		private function playerBuildSpotCollsion(): void {
-			//trace("playerBuildSpotCollision()");
-			if (player.collider.checkOverlap(level.buildSpot1.collider)) {
-				//trace("If player overlaps with BuildSpot1 ...");
+			if (player.collider.checkOverlap(level.buildSpot1.collider)) {// If player is on build spot 1...
+				// Show build instructions
 				level.buildSpot1.buildInstructions.alpha = 1;
-				if (!level.buildSpot1.used) {
-					//trace("If BuildSpot1 hasn't been used ...");
+				if (!level.buildSpot1.used) {// If build spot 1 hasn't been used...
+					// Sets buildSpotChooser variable
 					buildSpotChooser = 1;
+					// Runs spawnTower
 					spawnTower();
-				} else if (level.buildSpot1.used) {
+				} else if (level.buildSpot1.used) {// If build spot 1 is used...
+					// Shows sell text
 					changeSellText();
 					hud.sellText.alpha = 1;
+					// Sells tower if player presses E
 					if (KeyboardInput.onKeyDown(Keyboard.E)) {
 						sellTower();
 					}
 				}
-			} else {
+			} else {// If player is not on build spot 1...
+				// Hide build instructions
 				level.buildSpot1.buildInstructions.alpha = 0;
 				if (!player.collider.checkOverlap(level.buildSpot2.collider)) {
 					hud.sellText.alpha = 0;
 				}
-			}
-			if (player.collider.checkOverlap(level.buildSpot2.collider)) {
+			}// ends ifs
+			if (player.collider.checkOverlap(level.buildSpot2.collider)) {// If player is on build spot 2...
+				// Show build instructions
 				level.buildSpot2.buildInstructions.alpha = 1;
-				if (!level.buildSpot2.used) {
+				if (!level.buildSpot2.used) {// If build spot hasn't been used...
+					// Sets buildSpotChooser
 					buildSpotChooser = 2;
+					// Runs spawnTower
 					spawnTower();
-				} else if (level.buildSpot2.used) {
+				} else if (level.buildSpot2.used) {// If build spot is used...
+					// Show sell text
 					changeSellText();
 					hud.sellText.alpha = 1;
+					// Sell tower if player presses E
 					if (KeyboardInput.onKeyDown(Keyboard.E)) {
 						sellTower();
 					}
 				}
-			} else {
+			} else {// If player is not on build spot 2...
+				// Hide build instructions
 				level.buildSpot2.buildInstructions.alpha = 0;
 				if (!player.collider.checkOverlap(level.buildSpot1.collider)) {
 					hud.sellText.alpha = 0;
@@ -1115,24 +1124,32 @@ package code {
 				} // ends for
 			} // ends for
 		} // ends bulletEnemyCollision
-
+		
+		/** 
+		 * Handles collision between bombs and enemies.
+		 */
 		private function bombEnemyCollision(): void {
 			for (var i: int = 0; i < bombs.length; i++) {
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
-					if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
+					if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {// If a bomb hits an enemy...
+						// Expand the AABB
 						bombs[i].collider.xMin = x - width;
 						bombs[i].collider.xMax = x + width;
 						bombs[i].collider.yMin = y - height;
 						bombs[i].collider.yMax = y + height;
+						// Recalculate AABB's edges
 						bombs[i].collider.calcEdges(x, y);
-						if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
+						// Re-check for collision.
+						if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {// If explosion radius hits an enemy...
+							// Kill that enemy
 							killEnemy(j);
 						}
+						// Destroy the bomb
 						explodeBombs(i);
-					}
-				}
-			}
-		}
+					}// ends ifs
+				}// ends for
+			}// ends for
+		}// ends bombEnemyCollision
 
 		/**
 		 * Handles collision between the player and the enemy.
@@ -1159,14 +1176,19 @@ package code {
 				}
 			}
 		} // ends playerCoinCollision
-
+		
+		/**
+		 * Handles collision between the bombs and the invisible wall.
+		 */
 		private function bombWallCollision(): void {
 			for (var i: int = 0; i < bombs.length; i++) {
-				if (bombs[i].collider.checkOverlap(level.playerWall.collider)) {
+				if (bombs[i].collider.checkOverlap(level.playerWall.collider)) {// If bombs hit the wall...
+					// Kill the bomb
 					explodeBombs(i);
+					// Update the bomb array
 					updateBombs();
-				}
-			}
+				}// ends if
+			}// ends for
 		} // ends bombWallCollision
 
 		/**
@@ -1214,19 +1236,25 @@ package code {
 		 */
 		private function sellTower(): void {
 			for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
-				if (player.x <= ScenePlay.towers[i].x + 50) {
+				if (player.x <= ScenePlay.towers[i].x + 50) {// If player is near the tower...
+					// Play the sell sound
 					sellSound.play();
-					if (ScenePlay.towers[i].isBasicTower) {
+					if (ScenePlay.towers[i].isBasicTower) {// If tower is basic...
+						// Give 10 coins
 						coinCount += 10;
-					} else if (ScenePlay.towers[i].isRapidTower) {
+					} else if (ScenePlay.towers[i].isRapidTower) {// If tower is rapid-fire...
+						// Give 15 coins
 						coinCount += 15;
-					} else if (ScenePlay.towers[i].isBombTower) {
+					} else if (ScenePlay.towers[i].isBombTower) {// If tower is bomb...
+						// Give 20 coins
 						coinCount += 20;
 					}
+					// Remove tower.
 					ScenePlay.towers[i].isDead = true;
+					// Update tower array.
 					updateTowers();
-				}
-			}
+				}// ends ifs
+			}// ends for
 		} // ends sellTower
 
 		/**
