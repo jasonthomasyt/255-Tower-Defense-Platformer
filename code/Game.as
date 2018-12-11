@@ -21,7 +21,7 @@
 		
 		/** This stores the previous scene */
 		private var gameScenePrevious: GameScene;
-		
+		/** This stores our BackGround Music so that we only ever have one playing at a time, never more than once. */
 		private var bgMusic: BGMusic = new BGMusic();
 		
 		/**

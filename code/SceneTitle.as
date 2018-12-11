@@ -9,11 +9,11 @@
 	 */
 	public class SceneTitle extends GameScene {
 		
-		/** */
+		/** This boolean keeps track of wether or not we should switch to our ScenePlay or not. */
 		private var switchToPlay:Boolean = false;
-		/** */
+		/** How long it takes the aditional Click To Play text to appear on-screen. */
 		private var textTimer:Number = 5;
-		/** */
+		/** A true or false statement to keep track of if we want to fade in or fade out the Click text. */
 		private var textFadeInOrOut:Boolean = true;
 		
 		/**

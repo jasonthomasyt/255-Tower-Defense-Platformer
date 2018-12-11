@@ -46,8 +46,8 @@ package code {
 		public var coinCount: int = 35;
 
 		/** */
-		private var shakeTimer: Number = 0;
-
+		//private var shakeTimer: Number = 0;
+		/** How long the game should wait until spawning a new Enemy. */
 		private var delaySpawn: int = 0;
 
 		/** This is our array of Platform Objects. */
@@ -56,16 +56,16 @@ package code {
 		/** This is our array of floating platform objects. */
 		static public var floatingPlatforms: Array = new Array();
 
-		/** */
+		/** An Array that keeps track of all of our basic enemies. */
 		static public var enemies: Array = new Array();
-		/** */
+		/** An Array that keeps track of all of our flying enemies. */
 		static public var flyingEnemies: Array = new Array();
-		/** */
+		/** An Array that keeps track of all of our tough enemies. */
 		static public var toughEnemies: Array = new Array();
 
 		/** The delay between spawning smoke particles. */
 		public var smokeParticleDelay: Number = 0;
-
+		/** A SINGLETON reference to this ScenePlay Object so other objects can see every other object in this GameScene. */
 		static public var main: ScenePlay; // singleton
 
 		/** The player object for the game. */
@@ -99,7 +99,7 @@ package code {
 
 		/** Identifier variable for the build spots. */
 		private var buildSpotChooser: int = 0;
-
+		/** An Array for all of the EnemyBullet Objects. */
 		private var bulletsBad: Array = new Array();
 
 		/** The array for towers. */
@@ -107,7 +107,7 @@ package code {
 
 		/** The array for turrets. */
 		static public var turrets: Array = new Array();
-
+		/** The sound that should get played whenever any enemy dies. */
 		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
 
 		/** The sound played whenever a coin is picked up. */
@@ -116,7 +116,7 @@ package code {
 		/** The sound played whenever the player sells a tower. */
 		private var sellSound: SellSound = new SellSound();
 
-		/** */
+		/** The condition that must be set to true for this GameScene to switch to a SceneLose. */
 		private var gameOver: Boolean = false;
 
 		/** The sound played when the player doesn't have enough money to purchase a tower. */
@@ -222,18 +222,6 @@ package code {
 			castle = level.castle
 			ScenePlay.platforms.splice(3, 1);
 			level.playerWall.alpha = 0;
-		}
-
-		/**
-		 *
-		 */
-		private function findIndexInArray(value: Object, arr: Array): Number {
-			for (var i: uint = 0; i < arr.length; i++) {
-				if (arr[i] == value) {
-					return i;
-				}
-			}
-			return NaN;
 		}
 
 		/**
@@ -363,7 +351,7 @@ package code {
 			} // ends for loop updating bullets
 		} // ends updateBombs
 		/**
-		 *
+		 * Loops through all three of our enemy arrays and calls all of their update functions.
 		 */
 		private function updateEnemies(): void {
 			for (var i: int = ScenePlay.enemies.length - 1; i >= 0; i--) {
@@ -525,7 +513,7 @@ package code {
 		} // ends doCollisionDetection()
 
 		/**
-		 *
+		 * A function that deals damage to the player.
 		 */
 		private function damagePlayer(): void {
 			player.health -= 5;
@@ -535,7 +523,8 @@ package code {
 		}
 
 		/**
-		 *
+		 * A function that deals damage to the castle.
+		 * @param d The amount of damage we want to get done to the castle.
 		 */
 		private function damageCastle(d: int): void {
 			castle.health -= d;
@@ -576,6 +565,7 @@ package code {
 
 		/**
 		 * Function handling the destruction of bombs.
+		 * @param index The index of the bomb in the bombs array.
 		 */
 		private function explodeBombs(index: int): void {
 			// Plays a hitsound.
@@ -626,6 +616,11 @@ package code {
 			}
 		} // ends spawnSmokeParticles
 
+		/**
+		 * This function handles spawning our basic enemies and pushing them into their array.
+		 * @param spawnCount How many Enemies to spawn
+		 * @param enemyType What type of enemies to spawn (this feature has been broken up into different functions)
+		 */
 		private function spawnEnemy(spawnCount: int, enemyType: int = 0): void {
 			// spawn snow:
 			// spawn snow:
@@ -655,7 +650,11 @@ package code {
 			}
 
 		}
-
+		/**
+		 * This function handles spawning our flying enemies and pushing them into their array.
+		 * @param spawnCount How many Enemies to spawn
+		 * @param enemyType What type of enemies to spawn (this feature has been broken up into different functions)
+		 */
 		private function spawnFlyingEnemy(spawnCount: int, enemyType: int = 0): void {
 			// spawn snow:
 			spawnCount += spawnIncrement;
@@ -683,7 +682,11 @@ package code {
 			}
 
 		}
-
+		/**
+		 * This function handles spawning our tough enemies and pushing them into their array.
+		 * @param spawnCount How many Enemies to spawn
+		 * @param enemyType What type of enemies to spawn (this feature has been broken up into different functions)
+		 */
 		private function spawnToughEnemy(spawnCount: int, enemyType: int = 0): void {
 			// spawn snow:
 			spawnCount += spawnIncrement;
@@ -927,7 +930,7 @@ package code {
 		} // ends for loop updating bullets
 
 		/**
-		 *
+		 * Handles detecting collision between good and bad bullets.
 		 */
 		private function doubleBulletCollision(): void {
 			for (var j: int = 0; j < bullets.length; j++) {
@@ -940,7 +943,7 @@ package code {
 			}
 		}
 		/**
-		 *
+		 * Handles detecting collision between the castle and bad bullets.
 		 */
 		private function castleBulletBadCollision(): void {
 			for (var i: int = 0; i < bulletsBad.length; i++) {
@@ -1128,7 +1131,7 @@ package code {
 		} // ends flyingEnemyTowerBaseCollision
 
 		/**
-		 *
+		 *  Handles detecting collision between the towers and bad bullets.
 		 */
 		private function towerBulletsBadCollision(): void {
 			for (var i: int = 0; i < bulletsBad.length; i++) {
@@ -1213,7 +1216,7 @@ package code {
 		} // ends updateTowers
 
 		/**
-		 *
+		 *  Handles detecting collision between the player and bad bullets.
 		 */
 		private function playerBulletBadCollision(): void {
 			for (var i: int = 0; i < bulletsBad.length; i++) {
@@ -1224,7 +1227,7 @@ package code {
 			}
 		}
 		/**
-		 *
+		 *  Handles detecting collision between the player and the invisable wall.
 		 */
 		private function playerWallCollision(): void {
 			if (player.collider.checkOverlap(level.playerWall.collider)) {
@@ -1555,8 +1558,7 @@ package code {
 		} // ends bombWallCollision
 
 		/**
-		 * Increments the coin counter everytime the player collides with a coin.
-		 * Removes coins from the scene as well.
+		 * Increments the coin counter everytime the player collides with a coin. Removes coins from the scene as well.
 		 * @param index The index of the coin in the coins array.
 		 */
 		private function collectCoin(index: int) {
@@ -1568,6 +1570,7 @@ package code {
 		/**
 		 * Handles killing an enemy whenever the player kills them.
 		 * @param index The current index of the enemy in the enemies array.
+		 * @param array The array of the Enemy you want to get rid of is in.
 		 */
 		private function killEnemy(index: int, array: int): void {
 			enemyDieSound.play();
@@ -1618,8 +1621,7 @@ package code {
 		} // ends spendCoins
 
 		/** 
-		 * Handles selling towers.
-		 * The player gains coins depending on which tower they sell.
+		 * Handles selling towers. The player gains coins depending on which tower they sell.
 		 */
 		private function sellTower(): void {
 			for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {

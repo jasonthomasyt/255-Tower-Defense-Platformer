@@ -1,20 +1,20 @@
 ﻿package code {
 	
 	/**
-	 * 
+	 * Our ABSTRACT class for our Basic Enemy idle state behavior.
 	 */
 	public class EnemyStateIdle extends EnemyState {
 
 		/**
-		 * 
+		 * Our constructor code for our EnemyStateIdle
 		 */
 		public function EnemyStateIdle() {
 			// constructor code
 		} // ends constructor
 		/**
-		 * 
-		 * 
-		 * 
+		 * This is our update method that overrides it's perent class..
+		 * @param enemy A reference to the specific Enemy that this state is controlling.
+		 * @return The next EnemyState we want to switch to. Will return null if we don't want to change.
 		 */
 		override public function update(enemy:Enemy):EnemyState {
 			/*

@@ -58,7 +58,7 @@
 		/** How long it takes for this enemy to shoot at it's target in seconds. */
 		private var aimingTimer: Number = 1;
 
-		/** The array index of which target is the closest and should focus on. */
+		/** The array index of which target is the closest and should focus on. If it is -1 or less, it won't focus on anything. */
 		public var closestTarget: int = -1;
 		/** Thie total distance of the closest target. */
 		public var closestTargetDist: Number = 20000;

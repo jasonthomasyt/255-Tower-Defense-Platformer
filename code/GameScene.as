@@ -14,13 +14,15 @@
 			return null;
 		} // end update
 		/**
-		 * 
+		 * This should get called right after this object is created.
+		 * Each game scene should OVERRIDE this method and add specific implementation.
 		 */
 		public function onBegin():void {
 			
 		} // end onBegin
 		/**
-		 * 
+		 * This should get called right before this object is destroyed.
+		 * Each game scene should OVERRIDE this method and add specific implementation.
 		 */
 		public function onEnd():void {
 			

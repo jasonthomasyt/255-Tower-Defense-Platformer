@@ -4,7 +4,7 @@
 	import flash.geom.Point;
 
 	/**
-	 *
+	 * The class for the EnemyTough Object.
 	 */
 	public class EnemyTough extends MovieClip {
 
@@ -12,7 +12,7 @@
 		public var isDead: Boolean = false;
 		/** The collider for the player. */
 		public var collider: AABB;
-
+		/** The radius of this object, sometimes used for collision detection. */
 		public var radius: Number = 80;
 
 		/** Sets the X max speed for the player. */
@@ -25,19 +25,19 @@
 		/** Sets the horizontal deceleration constant for the player. */
 		private const HORIZONTAL_DECELERATION: Number = 800;
 
-		/** */
+		/** How far can this Enemy "see" other Objects it can move towards */
 		public var sightDistance: Number = 50000;
 
 		/** Detects the ground in the game. */
 		var ground: Number = 2000;
-		/** */
+		/** An array of all possible targets this any could attack. */
 		public var validTargets: Array = new Array();
 
-		/** */
+		/** An array of how far away all of the Valid targets are. */
 		public var targetsDistances: Array = new Array();
-		/** */
+		/** The array index of which target is the closest and should focus on. */
 		public var closestTarget: int = -1;
-		/** */
+		/** Thie total distance of the closest target. */
 		public var closestTargetDist: Number = 20000;
 		/** Checks if the player is on the ground. */
 		private var isGrounded: Boolean = false;
@@ -50,13 +50,13 @@
 		private var isJumping: Boolean = false;
 		/** The player's jump velocity. */
 		private var jumpVelocity: Number = 500;
-		/** */
+		/** The current amount of damage this Enemy can take before it is considered dead. */
 		public var health: int = 100;
-		/** */
+		/** The maximum amount of health this Enemy can have. It is used for our health-bar scaling. */
 		private var maxHealth: int = 100;
 
 		/**
-		 *
+		 * The constructor code for our EnemyTough Object
 		 */
 		public function EnemyTough() {
 			// constructor code
@@ -66,7 +66,8 @@
 			y = 80;
 		} // ends constructor
 		/**
-		 *
+		 * This function that can get called from ScenePlay takes care of lowering this Object's health when damaged,
+		 * setting the health bar's scele and checking if this Enemy's health is low enough (zero) to be considered dead.
 		 */
 		public function takeDamage(d: int): void {
 			health -= d;
@@ -74,7 +75,7 @@
 			if (health <= 0) isDead = true;
 		}
 		/**
-		 *
+		 *  The update design pattern for the enemy. Handles moving and calculating our collision box.
 		 */
 		public function update(): void {
 
@@ -100,11 +101,12 @@
 
 			collider.calcEdges(x, y);
 			isGrounded = false;
-			trace("Cuurent Location: " + x);
-			trace("Current Velocity: " + velocity.x);
+			//trace("Cuurent Location: " + x);
+			//trace("Current Velocity: " + velocity.x);
 		} // ends update
 		/**
-		 *
+		 * This function checks wether or not it is colliding with a castle collider or not.
+		 * If it is, it'll stop. If it is not toutching anything, it will go to the left.
 		 */
 		private function isCollidingWithStructure(): void {
 			//trace("Am I colliding with a structure?");
@@ -160,7 +162,7 @@
 			}
 		} // ends handleWalking
 		/**
-		 *
+		 * This function currently doesn't do anything.
 		 */
 		public function moveToClosestTarget(): void {
 			/*
@@ -173,7 +175,7 @@
 			*/
 		}
 		/**
-		 *
+		 * This gets called at the beginning of every update to clear out all values left over from last frame.
 		 */
 		public function clearValidTargetsArrays(): void {
 			if (targetsDistances.length > 0) targetsDistances.length = 0;
@@ -181,7 +183,7 @@
 			closestTargetDist = sightDistance;
 		}
 		/**
-		 *
+		 * This function fills the validTargets array with everything this Enemy can damage.
 		 */
 		public function findValidTargets(): void {
 			//trace("looking for castle");
@@ -195,7 +197,7 @@
 			validTargets.push(ScenePlay.main.player);
 		}
 		/**
-		 *
+		 * This function takes every Object in the validTargets Array and finds their total distances between them and this Object.
 		 */
 		public function findTargetsDistances(): void {
 			if (validTargets.length > 0) {
@@ -212,7 +214,8 @@
 			}
 		}
 		/**
-		 *
+		 * This function looks at every value in our targetDistances Array, picks the closest target, and sets it's closestTarget 
+		 * to that array index. If no targets are within it's sight range, it sets closestTarget to -1.
 		 */
 		public function getClosestTarget(): void {
 			if (validTargets.length > 0) {
@@ -232,7 +235,7 @@
 			}
 		}
 		/**
-		 * Detects when the player has hit the death plane.
+		 * Detects when the enemy has hit the death plane.
 		 */
 		private function detectDeathGround(): void {
 			// look at y position
@@ -241,8 +244,7 @@
 			}
 		} // ends detectGround
 		/**
-		 * Handles physics for the player.
-		 * Sets the velocity to the gravity and max speed.
+		 * Handles physics for the enemy. Sets the velocity to the gravity and max speed.
 		 */
 		public function doPhysics(): void {
 
@@ -264,8 +266,7 @@
 			y += velocity.y * Time.dtScaled;
 		} // ends doPhysics
 		/**
-		 * Applies the overlap fix detected by the collider.
-		 * Adjusts the player position according to the fix.
+		 * Applies the overlap fix detected by the collider. Adjusts the enemy position according to the fix.
 		 */
 		public function applyFix(fix: Point): void {
 			if (fix.x != 0) {

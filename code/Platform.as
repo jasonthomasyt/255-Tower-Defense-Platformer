@@ -23,7 +23,7 @@
 			stop();
 		} // end constructor
 		/**
-		 * 
+		 * This function should get called every frame to update it's collider Object.
 		 */
 		public function update(): void {
 			collider.calcEdges(x, y);
