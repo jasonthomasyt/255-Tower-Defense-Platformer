@@ -55,7 +55,7 @@ package code {
 
 		/** This is our array of floating platform objects. */
 		static public var floatingPlatforms: Array = new Array();
-		
+
 		/** */
 		static public var enemies: Array = new Array();
 		/** */
@@ -70,13 +70,13 @@ package code {
 
 		/** The player object for the game. */
 		public var player: Player;
-		
+
 		/** This is our array of Bullet Objects. */
 		private var bullets: Array = new Array();
-		
+
 		/** This is our array of Bomb Objects. */
 		private var bombs: Array = new Array();
-		
+
 		/** The castle object for the game. */
 		public var castle: Castle;
 
@@ -99,15 +99,15 @@ package code {
 
 		/** Identifier variable for the build spots. */
 		private var buildSpotChooser: int = 0;
-		
+
 		private var bulletsBad: Array = new Array();
-		
+
 		/** The array for towers. */
 		static public var towers: Array = new Array();
-		
+
 		/** The array for turrets. */
 		static public var turrets: Array = new Array();
-		
+
 		private var enemyDieSound: EnemyDieSound = new EnemyDieSound();
 
 		/** The sound played whenever a coin is picked up. */
@@ -181,13 +181,11 @@ package code {
 			updateBullets();
 			spawnSmokeParticles();
 			spawnEnemy(5);
-			spawnFlyingEnemy(5);
-			spawnToughEnemy(5);
 			if (waveCount >= 5) {
-
+				spawnFlyingEnemy(5);
 			}
 			if (waveCount >= 10) {
-
+				spawnToughEnemy(5);
 			}
 			updateEnemies();
 			updateCoins();
@@ -294,7 +292,7 @@ package code {
 			level.addChild(a);
 			bombs.push(a);
 			a.lifeMax = 10;
-		}// ends spawnBomb
+		} // ends spawnBomb
 
 		/** 
 		 * Spawns a bullet from the enemy.
@@ -342,7 +340,7 @@ package code {
 				}
 			} // ends for loop updating bullets
 		} // ends updateBullets
-		
+
 		/**
 		 * Updates bombs for every frame.
 		 */
@@ -361,9 +359,9 @@ package code {
 					// if the variable is an array,
 					// remove the object from the array
 					bombs.splice(i, 1);
-				}// ends if
+				} // ends if
 			} // ends for loop updating bullets
-		}// ends updateBombs
+		} // ends updateBombs
 		/**
 		 *
 		 */
@@ -437,7 +435,7 @@ package code {
 		private function updateTurrets(): void {
 			for (var i: int = turrets.length - 1; i >= 0; i--) {
 				turrets[i].update();
-			}// ends for
+			} // ends for
 		} // ends updateTurrets
 
 		/** 
@@ -467,7 +465,7 @@ package code {
 
 				// Collision between player and enemies
 				playerEnemyCollision();
-				
+
 				// Collision between bombs and enemies
 				bombEnemyCollision();
 
@@ -475,7 +473,7 @@ package code {
 			//Keep all of the collisions that don't need to be in the for loop out!
 			// Collision between good bullets and bad bullets
 			doubleBulletCollision();
-			
+
 			// Collision for floating platforms.
 			floatingPlatformCollision();
 
@@ -490,7 +488,7 @@ package code {
 
 			// Collision between the Castle and flying enemies
 			castleFlyingEnemyCollision();
-			
+
 			castleToughEnemyCollision();
 
 			// Collision between the player and flying enemies
@@ -520,7 +518,7 @@ package code {
 
 			//Collision between the towers and enemy bullets
 			towerBulletsBadCollision();
-			
+
 			//Collision between the bombs and the invisible wall.
 			bombWallCollision();
 
@@ -575,7 +573,7 @@ package code {
 				particles.push(p);
 			} // ends for
 		} // ends explodePlayerBullet
-		
+
 		/**
 		 * Function handling the destruction of bombs.
 		 */
@@ -590,7 +588,7 @@ package code {
 				level.addChild(p);
 				particles.push(p);
 			} // ends for
-		}// ends explodeBombs
+		} // ends explodeBombs
 
 		/**
 		 * Explodes the enemy bullet with particles when it hits a wall, ground, or the player.
@@ -733,7 +731,7 @@ package code {
 
 			}
 		}
-		
+
 		/**
 		 * Function for spawning a basic tower.
 		 */
@@ -741,17 +739,17 @@ package code {
 			// Insantiates tower + turret.
 			var newBasicTower: BasicTower = new BasicTower();
 			var newBasicTurret: BasicTurret = new BasicTurret();
-			if (coinCount >= 20) {// If you have enough money...
+			if (coinCount >= 20) { // If you have enough money...
 				//Plays the build sound.
 				buildSound.play();
-				if (buildSpotChooser == 1) {// If at build spot 1...
+				if (buildSpotChooser == 1) { // If at build spot 1...
 					//Sets tower's x/y position
 					newBasicTower.y = level.buildSpot1.y;
 					newBasicTower.x = level.buildSpot1.x;
 					// Makes build spot unusable
 					level.buildSpot1.alpha = 0;
 					level.buildSpot1.used = true;
-				} else if (buildSpotChooser == 2) {// If at build spot 2...
+				} else if (buildSpotChooser == 2) { // If at build spot 2...
 					//Sets tower's x/y position
 					newBasicTower.y = level.buildSpot2.y;
 					newBasicTower.x = level.buildSpot2.x;
@@ -770,7 +768,7 @@ package code {
 				turrets.push(newBasicTurret);
 				// Spends coins
 				spendCoins(20);
-			} else {// If player doesn't have enough money...
+			} else { // If player doesn't have enough money...
 				// Play not enough money sound/Do nothing
 				notEnoughSound.play();
 			} // ends ifs
@@ -784,24 +782,24 @@ package code {
 			// Insantiates tower + turret.
 			var newRapidTower: RapidTower = new RapidTower();
 			var newRapidTurret: RapidTurret = new RapidTurret();
-			if (coinCount >= 35) {// If you have enough money...
+			if (coinCount >= 35) { // If you have enough money...
 				// Plays build sound.
 				buildSound.play();
-				if (buildSpotChooser == 1) {// If at build spot 1...
+				if (buildSpotChooser == 1) { // If at build spot 1...
 					//Set tower's x/y position.
 					newRapidTower.y = level.buildSpot1.y;
 					newRapidTower.x = level.buildSpot1.x;
 					// Makes build spot unusable.
 					level.buildSpot1.alpha = 0;
 					level.buildSpot1.used = true;
-				} else if (buildSpotChooser == 2) {// If at build spot 2...
+				} else if (buildSpotChooser == 2) { // If at build spot 2...
 					// Set tower's x/y position
 					newRapidTower.y = level.buildSpot2.y;
 					newRapidTower.x = level.buildSpot2.x;
 					// Makes build spot unusable.
 					level.buildSpot2.alpha = 0;
 					level.buildSpot2.used = true;
-				}// ends ifs
+				} // ends ifs
 				// Set turret's x/y position
 				newRapidTurret.y = newRapidTower.y - 75;
 				newRapidTurret.x = newRapidTower.x;
@@ -813,10 +811,10 @@ package code {
 				turrets.push(newRapidTurret);
 				// Spends coins
 				spendCoins(35);
-			} else {// If player doesn't have enough money...
+			} else { // If player doesn't have enough money...
 				// Play not enough money sound/Do nothing
 				notEnoughSound.play();
-			}// ends ifs
+			} // ends ifs
 
 		} // ends spawnRapidTower
 
@@ -830,21 +828,21 @@ package code {
 			if (coinCount >= 50) { // If player has enough money...
 				// Plays build sound.
 				buildSound.play();
-				if (buildSpotChooser == 1) {// If player is at build spot 1...
+				if (buildSpotChooser == 1) { // If player is at build spot 1...
 					// Sets tower's x/y coordinates
 					newBombTower.y = level.buildSpot1.y;
 					newBombTower.x = level.buildSpot1.x;
 					// Makes build spot unusable.
 					level.buildSpot1.alpha = 0;
 					level.buildSpot1.used = true;
-				} else if (buildSpotChooser == 2) {// If player is at build spot 2...
+				} else if (buildSpotChooser == 2) { // If player is at build spot 2...
 					// Sets tower's x/y coordinates
 					newBombTower.y = level.buildSpot2.y;
 					newBombTower.x = level.buildSpot2.x;
 					// Makes build spot unusable.
 					level.buildSpot2.alpha = 0;
 					level.buildSpot2.used = true;
-				}// ends ifs
+				} // ends ifs
 				// Sets turret's x/y positon.
 				newBombTurret.y = newBombTower.y - 75;
 				newBombTurret.x = newBombTower.x;
@@ -856,10 +854,10 @@ package code {
 				turrets.push(newBombTurret);
 				// Spends money
 				spendCoins(50);
-			} else {// If player does not have enough money...
+			} else { // If player does not have enough money...
 				//Plays not enough money sound/Do nothing.
 				notEnoughSound.play();
-			}// ends ifs
+			} // ends ifs
 
 		} // ends spawnBombTower
 
@@ -1201,7 +1199,7 @@ package code {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
 							if (ScenePlay.towers.length > 0) {
-								for (var k: int = ScenePlay.towers.length - 1;k >= 0; i--) {
+								for (var k: int = ScenePlay.towers.length - 1; k >= 0; i--) {
 									if (ScenePlay.towers[k].isDead) {
 										level.removeChild(ScenePlay.towers[k]);
 										ScenePlay.towers.splice(k, 1);
@@ -1388,20 +1386,20 @@ package code {
 
 			} // ends for
 		} // ends floatingPlatformCollision
-		
+
 		/**
 		 * Function handling player/build spot collision
 		 */
 		private function playerBuildSpotCollsion(): void {
-			if (player.collider.checkOverlap(level.buildSpot1.collider)) {// If player is on build spot 1...
+			if (player.collider.checkOverlap(level.buildSpot1.collider)) { // If player is on build spot 1...
 				// Show build instructions
 				level.buildSpot1.buildInstructions.alpha = 1;
-				if (!level.buildSpot1.used) {// If build spot 1 hasn't been used...
+				if (!level.buildSpot1.used) { // If build spot 1 hasn't been used...
 					// Sets buildSpotChooser variable
 					buildSpotChooser = 1;
 					// Runs spawnTower
 					spawnTower();
-				} else if (level.buildSpot1.used) {// If build spot 1 is used...
+				} else if (level.buildSpot1.used) { // If build spot 1 is used...
 					// Shows sell text
 					changeSellText();
 					hud.sellText.alpha = 1;
@@ -1410,22 +1408,22 @@ package code {
 						sellTower();
 					}
 				}
-			} else {// If player is not on build spot 1...
+			} else { // If player is not on build spot 1...
 				// Hide build instructions
 				level.buildSpot1.buildInstructions.alpha = 0;
 				if (!player.collider.checkOverlap(level.buildSpot2.collider)) {
 					hud.sellText.alpha = 0;
 				}
-			}// ends ifs
-			if (player.collider.checkOverlap(level.buildSpot2.collider)) {// If player is on build spot 2...
+			} // ends ifs
+			if (player.collider.checkOverlap(level.buildSpot2.collider)) { // If player is on build spot 2...
 				// Show build instructions
 				level.buildSpot2.buildInstructions.alpha = 1;
-				if (!level.buildSpot2.used) {// If build spot hasn't been used...
+				if (!level.buildSpot2.used) { // If build spot hasn't been used...
 					// Sets buildSpotChooser
 					buildSpotChooser = 2;
 					// Runs spawnTower
 					spawnTower();
-				} else if (level.buildSpot2.used) {// If build spot is used...
+				} else if (level.buildSpot2.used) { // If build spot is used...
 					// Show sell text
 					changeSellText();
 					hud.sellText.alpha = 1;
@@ -1434,14 +1432,14 @@ package code {
 						sellTower();
 					}
 				}
-			} else {// If player is not on build spot 2...
+			} else { // If player is not on build spot 2...
 				// Hide build instructions
 				level.buildSpot2.buildInstructions.alpha = 0;
 				if (!player.collider.checkOverlap(level.buildSpot1.collider)) {
 					hud.sellText.alpha = 0;
 				}
-			}// ends ifs
-		}// ends playerBuildSpotCollsion
+			} // ends ifs
+		} // ends playerBuildSpotCollsion
 
 		/**
 		 * Handles collision between player bullets and enemies.
@@ -1483,14 +1481,14 @@ package code {
 				} // ends for
 			} // ends for
 		} // ends bulletEnemyCollision
-		
+
 		/** 
 		 * Handles collision between bombs and enemies.
 		 */
 		private function bombEnemyCollision(): void {
 			for (var i: int = 0; i < bombs.length; i++) {
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
-					if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {// If a bomb hits an enemy...
+					if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) { // If a bomb hits an enemy...
 						// Expand the AABB
 						bombs[i].collider.xMin = x - width;
 						bombs[i].collider.xMax = x + width;
@@ -1499,16 +1497,16 @@ package code {
 						// Recalculate AABB's edges
 						bombs[i].collider.calcEdges(x, y);
 						// Re-check for collision.
-						if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {// If explosion radius hits an enemy...
+						if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) { // If explosion radius hits an enemy...
 							// Kill that enemy
 							killEnemy(j, 1);
 						}
 						// Destroy the bomb
 						explodeBombs(i);
-					}// ends ifs
-				}// ends for
+					} // ends ifs
+				} // ends for
 				for (var j: int = 0; j < ScenePlay.flyingEnemies.length; j++) {
-					if (bombs[i].collider.checkOverlap(ScenePlay.flyingEnemies[j].collider)) {// If a bomb hits an enemy...
+					if (bombs[i].collider.checkOverlap(ScenePlay.flyingEnemies[j].collider)) { // If a bomb hits an enemy...
 						// Expand the AABB
 						bombs[i].collider.xMin = x - width;
 						bombs[i].collider.xMax = x + width;
@@ -1517,16 +1515,16 @@ package code {
 						// Recalculate AABB's edges
 						bombs[i].collider.calcEdges(x, y);
 						// Re-check for collision.
-						if (bombs[i].collider.checkOverlap(ScenePlay.flyingEnemies[j].collider)) {// If explosion radius hits an enemy...
+						if (bombs[i].collider.checkOverlap(ScenePlay.flyingEnemies[j].collider)) { // If explosion radius hits an enemy...
 							// Kill that enemy
 							killEnemy(j, 2);
 						}
 						// Destroy the bomb
 						explodeBombs(i);
-					}// ends ifs
-				}// ends for
+					} // ends ifs
+				} // ends for
 				for (var j: int = 0; j < ScenePlay.toughEnemies.length; j++) {
-					if (bombs[i].collider.checkOverlap(ScenePlay.toughEnemies[j].collider)) {// If a bomb hits an enemy...
+					if (bombs[i].collider.checkOverlap(ScenePlay.toughEnemies[j].collider)) { // If a bomb hits an enemy...
 						// Expand the AABB
 						bombs[i].collider.xMin = x - width;
 						bombs[i].collider.xMax = x + width;
@@ -1535,16 +1533,16 @@ package code {
 						// Recalculate AABB's edges
 						bombs[i].collider.calcEdges(x, y);
 						// Re-check for collision.
-						if (bombs[i].collider.checkOverlap(ScenePlay.toughEnemies[j].collider)) {// If explosion radius hits an enemy...
+						if (bombs[i].collider.checkOverlap(ScenePlay.toughEnemies[j].collider)) { // If explosion radius hits an enemy...
 							// Kill that enemy
 							killEnemy(j, 3);
 						}
 						// Destroy the bomb
 						explodeBombs(i);
-					}// ends ifs
-				}// ends for
-			}// ends for
-		}// ends bombEnemyCollision
+					} // ends ifs
+				} // ends for
+			} // ends for
+		} // ends bombEnemyCollision
 
 		/**
 		 * Handles collision between the player and the enemy.
@@ -1571,19 +1569,19 @@ package code {
 				}
 			}
 		} // ends playerCoinCollision
-		
+
 		/**
 		 * Handles collision between the bombs and the invisible wall.
 		 */
 		private function bombWallCollision(): void {
 			for (var i: int = 0; i < bombs.length; i++) {
-				if (bombs[i].collider.checkOverlap(level.playerWall.collider)) {// If bombs hit the wall...
+				if (bombs[i].collider.checkOverlap(level.playerWall.collider)) { // If bombs hit the wall...
 					// Kill the bomb
 					explodeBombs(i);
 					// Update the bomb array
 					updateBombs();
-				}// ends if
-			}// ends for
+				} // ends if
+			} // ends for
 		} // ends bombWallCollision
 
 		/**
@@ -1655,16 +1653,16 @@ package code {
 		 */
 		private function sellTower(): void {
 			for (var i: int = ScenePlay.towers.length - 1; i >= 0; i--) {
-				if (player.x <= ScenePlay.towers[i].x + 50) {// If player is near the tower...
+				if (player.x <= ScenePlay.towers[i].x + 50) { // If player is near the tower...
 					// Play the sell sound
 					sellSound.play();
-					if (ScenePlay.towers[i].isBasicTower) {// If tower is basic...
+					if (ScenePlay.towers[i].isBasicTower) { // If tower is basic...
 						// Give 10 coins
 						coinCount += 10;
-					} else if (ScenePlay.towers[i].isRapidTower) {// If tower is rapid-fire...
+					} else if (ScenePlay.towers[i].isRapidTower) { // If tower is rapid-fire...
 						// Give 15 coins
 						coinCount += 15;
-					} else if (ScenePlay.towers[i].isBombTower) {// If tower is bomb...
+					} else if (ScenePlay.towers[i].isBombTower) { // If tower is bomb...
 						// Give 20 coins
 						coinCount += 20;
 					}
@@ -1672,8 +1670,8 @@ package code {
 					ScenePlay.towers[i].isDead = true;
 					// Update tower array.
 					updateTowers();
-				}// ends ifs
-			}// ends for
+				} // ends ifs
+			} // ends for
 		} // ends sellTower
 
 		/**
