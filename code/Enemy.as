@@ -1,5 +1,4 @@
-﻿﻿
-package code {
+﻿package code {
 
 	import flash.display.MovieClip;
 	import flash.geom.Point;
@@ -13,7 +12,7 @@ package code {
 		/** Sets the gravity for the player. */
 		private var gravity: Point = new Point(0, 1000);
 		/** Sets the X max speed for the player. */
-		private var maxSpeedX: Number = 200;
+		private var maxSpeedX: Number = 100;
 		/** Sets the velocity for the player. */
 		private var velocity: Point = new Point(1, 5);
 
@@ -29,7 +28,7 @@ package code {
 		/** The player's jump velocity. */
 		private var jumpVelocity: Number = 500;
 
-		/** The collider for the player. */
+		/** The collider for the enemy. */
 		public var collider: AABB;
 
 		/** */
@@ -289,8 +288,7 @@ package code {
 		 * Changes the gun's rotation based on where the mouse is pointing.
 		 */
 		public function handleAiming(): void {
-			trace(closestTarget);
-			if (closestTarget <= -1 || closestTarget <= 0) return;
+			if (closestTarget <= -1) return;
 			var tx: Number = validTargets[closestTarget].x - x;
 			var ty: Number = validTargets[closestTarget].y - y;
 

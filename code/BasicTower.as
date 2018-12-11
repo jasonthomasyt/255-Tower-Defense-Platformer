@@ -18,7 +18,7 @@
 			// Insantiates the tower's colliders.
 			colliderSpire = new AABB(basicTowerSpire.width / 2, basicTowerSpire.height / 2);
 			colliderBase = new AABB(basicTowerBase.width / 2, basicTowerBase.height / 2);
-		}// ends RapidTower
+		}
 		/**
 		 * The update function for the rapid-fire towers.
 		 */
@@ -31,3 +31,7 @@
 		}// ends update
 	}// ends class
 }// ends package
+			
+			colliderSpire.calcEdges(x, y);
+			colliderBase.calcEdges(x, y);
+		}

@@ -65,11 +65,28 @@
 			if (validTargets.length > 0) validTargets.length = 0;
 			closestTargetDist = sightDistance;
 			//trace(validTargets[0]);
-			for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
-				//trace("looking for enemy " + i);
-				validTargets.push(ScenePlay.enemies[i]);
-				//trace(validTargets[0]);
+			if (ScenePlay.enemies.length > 0) {
+				for (var i: int = 0; i < ScenePlay.enemies.length; i++) {
+					//trace("looking for enemy " + i);
+					validTargets.push(ScenePlay.enemies[i]);
+					//trace(validTargets[0]);
+				}
 			}
+			if (ScenePlay.flyingEnemies.length > 0) {
+				for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+					//trace("looking for enemy " + i);
+					validTargets.push(ScenePlay.flyingEnemies[i]);
+					//trace(validTargets[0]);
+				}
+			}
+			if (ScenePlay.toughEnemies.length > 0) {
+				for (var i: int = 0; i < ScenePlay.toughEnemies.length; i++) {
+					//trace("looking for enemy " + i);
+					validTargets.push(ScenePlay.toughEnemies[i]);
+					//trace(validTargets[0]);
+				}
+			}
+			
 			if (validTargets.length > 0) {
 				//find the distances between the enemy and the targets.
 				for (var j: int = 0; j < validTargets.length; j++) {
@@ -124,3 +141,21 @@
 	}// ends class
 }// ends package
 			
+﻿package code {
+	import flash.display.MovieClip;
+	
+	/**
+	 * This is the parent class for turrets.
+	 */
+		/* Variable identifying the closest target */
+		/* How long it takes for this enemy to shoot at it's target in seconds. */
+		private var aimingTimer: Number = 1;
+		
+		public function update(): void {
+			// Finds targets within tower's sight range
+			// Aims the turret
+			// If closest target is in range, shoot that target
+				shootTarget();
+			}// ends if
+		}// ends update
+		

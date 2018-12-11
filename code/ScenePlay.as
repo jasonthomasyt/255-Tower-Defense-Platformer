@@ -58,6 +58,10 @@ package code {
 		
 		/** */
 		static public var enemies: Array = new Array();
+		/** */
+		static public var flyingEnemies: Array = new Array();
+		/** */
+		static public var toughEnemies: Array = new Array();
 
 		/** The delay between spawning smoke particles. */
 		public var smokeParticleDelay: Number = 0;
@@ -91,8 +95,7 @@ package code {
 		/** The sound for when the player loses the game. */
 		private var loseSound: LoseSound = new LoseSound();
 
-		/** The sound played when the player doesn't have enough money to purchase a tower. */
-		private var notEnoughSound: NotEnoughSound = new NotEnoughSound();
+		public var coinCount: int = 0;
 
 		static public var coins: Array = new Array();
 
@@ -147,6 +150,8 @@ package code {
 			platforms = new Array();
 			floatingPlatforms = new Array();
 			enemies = new Array();
+			flyingEnemies = new Array();
+			toughEnemies = new Array();
 			towers = new Array();
 			waveCount = 0;
 		} // end onEnd
@@ -168,6 +173,7 @@ package code {
 		 * @return This returns null every frame, unless it is time to switch scenes. Then we pass in a new GameScene Object we wish to switch to.
 		 */
 		override public function update(previousScene: GameScene = null): GameScene {
+			trace(ScenePlay.platforms.length);
 			if (player.isDead) {
 				killPlayer();
 				spawnPlayer();
@@ -176,6 +182,14 @@ package code {
 			updateBullets();
 			spawnSmokeParticles();
 			spawnEnemy(5);
+			spawnFlyingEnemy(5);
+			spawnToughEnemy(5);
+			if (waveCount >= 5) {
+
+			}
+			if (waveCount >= 10) {
+
+			}
 			updateEnemies();
 			updateCoins();
 			updatePlatforms();
@@ -362,10 +376,25 @@ package code {
 					ScenePlay.enemies.splice(i, 1);
 					enemiesRemainingCount--;
 				}
-
+			}
+			for (var j: int = ScenePlay.flyingEnemies.length - 1; j >= 0; j--) {
+				ScenePlay.flyingEnemies[j].update();
+				if (ScenePlay.flyingEnemies[j].isDead) {
+					level.removeChild(ScenePlay.flyingEnemies[j]);
+					ScenePlay.flyingEnemies.splice(j, 1);
+					enemiesRemainingCount--;
+				}
+			}
+			for (var k: int = ScenePlay.toughEnemies.length - 1; k >= 0; k--) {
+				ScenePlay.toughEnemies[k].update();
+				if (ScenePlay.toughEnemies[k].isDead) {
+					level.removeChild(ScenePlay.toughEnemies[k]);
+					ScenePlay.toughEnemies.splice(k, 1);
+					enemiesRemainingCount--;
+				}
 			}
 
-			if (ScenePlay.enemies.length == 0) {
+			if (ScenePlay.enemies.length == 0 && ScenePlay.flyingEnemies.length == 0 && ScenePlay.toughEnemies.length == 0) {
 				updateWave();
 			}
 		} // ends updateEnemies
@@ -444,10 +473,6 @@ package code {
 				bombEnemyCollision();
 
 			} // ends for
-
-			// Collision for floating platforms.
-			floatingPlatformCollision();
-
 			//Keep all of the collisions that don't need to be in the for loop out!
 			// Collision between good bullets and bad bullets
 			doubleBulletCollision();
@@ -460,6 +485,24 @@ package code {
 
 			// Collision between the Castle and badBullets
 			castleBulletBadCollision();
+
+			// Collision between the Castle and flying enemies
+			castleFlyingEnemyCollision();
+			
+			castleToughEnemyCollision();
+
+			// Collision between the player and flying enemies
+			playerFlyingEnemyCollision();
+
+			// Collision between flying enemies and tower spires
+			flyingEnemyTowerSpireCollision();
+
+			// Collision between flying enemies and tower bases
+			flyingEnemyTowerBaseCollision();
+
+			toughEnemyTowerSpireCollision();
+
+			toughEnemyTowerBaseCollision();
 
 			//Collision between the player and the build spot boxes
 			playerBuildSpotCollsion();
@@ -494,8 +537,8 @@ package code {
 		/**
 		 *
 		 */
-		private function damageCastle(): void {
-			castle.health -= 5;
+		private function damageCastle(d: int): void {
+			castle.health -= d;
 			if (castle.health <= 0) {
 				castle.health = 0;
 			}
@@ -584,7 +627,7 @@ package code {
 		} // ends spawnSmokeParticles
 
 		private function spawnEnemy(spawnCount: int): void {
-			// spawn enemies:
+			// spawn snow:
 			spawnCount += spawnIncrement;
 			enemyNum = spawnCount;
 			if (enemyCounter < spawnCount && waveStart == true) {
@@ -612,7 +655,61 @@ package code {
 
 		}
 
+		private function spawnFlyingEnemy(spawnCount: int, enemyType: int = 0): void {
+			// spawn snow:
+			spawnCount += spawnIncrement;
+			enemyNum = spawnCount;
+			if (enemyCounter < spawnCount && waveStart == true) {
+				for (var i: int = 0; i < spawnCount; i++) {
+					delaySpawn -= Time.dtScaled;
+					if (delaySpawn <= 0) {
+						var e: EnemyFlyer = new EnemyFlyer();
+						level.addChild(e);
+						ScenePlay.flyingEnemies.push(e);
+						enemyCounter++;
+						delaySpawn = (int)(Math.random() * spawnRate + spawnRateMin);
+					}
+				}
+			}
 
+			if (enemyCounter == spawnCount) {
+				waveStart = false;
+				waveEnd = true;
+				enemyCounter = 0;
+				spawnIncrement += 5;
+				spawnRate -= spawnDecrement;
+				spawnRateMin -= spawnDecrement;
+			}
+
+		}
+
+		private function spawnToughEnemy(spawnCount: int, enemyType: int = 0): void {
+			// spawn snow:
+			spawnCount += spawnIncrement;
+			enemyNum = spawnCount;
+			if (enemyCounter < spawnCount && waveStart == true) {
+				for (var i: int = 0; i < spawnCount; i++) {
+					delaySpawn -= Time.dtScaled;
+					if (delaySpawn <= 0) {
+						var e: EnemyTough = new EnemyTough();
+						level.addChild(e);
+						ScenePlay.toughEnemies.push(e);
+						enemyCounter++;
+						delaySpawn = (int)(Math.random() * spawnRate + spawnRateMin);
+					}
+				}
+			}
+
+			if (enemyCounter == spawnCount) {
+				waveStart = false;
+				waveEnd = true;
+				enemyCounter = 0;
+				spawnIncrement += 5;
+				spawnRate -= spawnDecrement;
+				spawnRateMin -= spawnDecrement;
+			}
+
+		}
 		/**
 		 * Function handling the spawning of towers.
 		 */
@@ -847,19 +944,217 @@ package code {
 		private function castleBulletBadCollision(): void {
 			for (var i: int = 0; i < bulletsBad.length; i++) {
 				if (castle.colliderCenter.checkOverlap(bulletsBad[i].collider)) {
-					damageCastle();
+					damageCastle(5);
 					explodeEnemyBullet(i);
 				}
 				if (castle.colliderRight.checkOverlap(bulletsBad[i].collider)) {
-					damageCastle();
+					damageCastle(5);
 					explodeEnemyBullet(i);
 				}
 				if (castle.colliderLeft.checkOverlap(bulletsBad[i].collider)) {
-					damageCastle();
+					damageCastle(5);
 					explodeEnemyBullet(i);
 				}
 			}
 		}
+
+		/**
+		 * Handles collision between the castle and flying enemies.
+		 * When a flying enemy collides with the castle, they explode and damage the castle.
+		 */
+		private function castleFlyingEnemyCollision(): void {
+			for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+				if (castle.colliderCenter.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+					damageCastle(10);
+					killEnemy(i, 2);
+				}
+				if (castle.colliderRight.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+					damageCastle(10);
+					killEnemy(i, 2);
+				}
+				if (castle.colliderLeft.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+					damageCastle(10);
+					killEnemy(i, 2);
+				}
+
+				//updateEnemies();
+			}
+		} // ends castleFlyingEnemyCollision
+
+		/**
+		 * Handles collision between the castle and flying enemies.
+		 * When a flying enemy collides with the castle, they explode and damage the castle.
+		 */
+		private function castleToughEnemyCollision(): void {
+			for (var i: int = 0; i < ScenePlay.toughEnemies.length; i++) {
+				ScenePlay.toughEnemies[i].collider.calcEdges(ScenePlay.toughEnemies[i].x, ScenePlay.toughEnemies[i].y);
+				if (castle.colliderCenter.checkOverlap(ScenePlay.toughEnemies[i].collider)) {
+					damageCastle(1);
+				}
+				if (castle.colliderRight.checkOverlap(ScenePlay.toughEnemies[i].collider)) {
+					damageCastle(1);
+				}
+				if (castle.colliderLeft.checkOverlap(ScenePlay.toughEnemies[i].collider)) {
+					damageCastle(1);
+				}
+
+				//updateEnemies();
+			}
+		} // ends castleFlyingEnemyCollision
+
+		/**
+		 * Handles collision detection between the player and flying enemies.
+		 * Flying enemies explode on contact with the player, and damages them.
+		 */
+		private function playerFlyingEnemyCollision(): void {
+			for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+				if (player.collider.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+					damagePlayer();
+					killEnemy(i, 2);
+				}
+
+				//updateEnemies();
+			}
+		} // ends playerFlyingEnemyCollision
+
+		/**
+		 * Handles collision between flying enemies and the tower spire.
+		 * Damages the tower and explodes the enemy.
+		 */
+		private function flyingEnemyTowerSpireCollision(): void {
+			for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
+					if (ScenePlay.towers[j].colliderSpire.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						killEnemy(i, 2);
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var k: int = ScenePlay.towers.length - 1; k >= 0; k--) {
+									if (ScenePlay.towers[k].isDead) {
+										if (ScenePlay.towers[k].x <= level.buildSpot1.x + 50) {
+											level.buildSpot1.alpha = 1;
+											level.buildSpot1.used = false;
+										}
+										if (ScenePlay.towers[k].x <= level.buildSpot2.x + 50) {
+											level.buildSpot2.alpha = 1;
+											level.buildSpot2.used = false;
+										}
+										level.removeChild(ScenePlay.towers[k]);
+										ScenePlay.towers.splice(k, 1);
+
+										level.removeChild(turrets[k]);
+										turrets.splice(k, 1);
+
+
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} // ends flyingEnemyTowerSpireCollision
+
+		/**
+		 * Handles collision between flying enemies and the tower base.
+		 * The tower gets damaged and the flying enemy explodes.
+		 */
+		private function flyingEnemyTowerBaseCollision(): void {
+			for (var i: int = 0; i < ScenePlay.flyingEnemies.length; i++) {
+				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
+					if (ScenePlay.towers[j].colliderBase.checkOverlap(ScenePlay.flyingEnemies[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						killEnemy(i, 2);
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var m: int = ScenePlay.towers.length - 1; m >= 0; m--) {
+									if (ScenePlay.towers[m].isDead) {
+										level.removeChild(ScenePlay.towers[m]);
+										ScenePlay.towers.splice(m, 1);
+
+										level.removeChild(turrets[m]);
+										turrets.splice(m, 1);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} // ends flyingEnemyTowerBaseCollision
+
+		/**
+		 * Handles collision between flying enemies and the tower spire.
+		 * Damages the tower and explodes the enemy.
+		 */
+		private function toughEnemyTowerSpireCollision(): void {
+			for (var i: int = 0; i < ScenePlay.toughEnemies.length; i++) {
+				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
+					ScenePlay.toughEnemies[i].collider.calcEdges(ScenePlay.toughEnemies[i].x, ScenePlay.toughEnemies[i].y);
+					if (ScenePlay.towers[j].colliderSpire.checkOverlap(ScenePlay.toughEnemies[i].collider)) {
+						ScenePlay.towers[j].health -= 1;
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var k: int = ScenePlay.towers.length - 1; k >= 0; k--) {
+									if (ScenePlay.towers[k].isDead) {
+										if (ScenePlay.towers[k].x <= level.buildSpot1.x + 50) {
+											level.buildSpot1.alpha = 1;
+											level.buildSpot1.used = false;
+										}
+										if (ScenePlay.towers[k].x <= level.buildSpot2.x + 50) {
+											level.buildSpot2.alpha = 1;
+											level.buildSpot2.used = false;
+										}
+										level.removeChild(ScenePlay.towers[k]);
+										ScenePlay.towers.splice(k, 1);
+
+										level.removeChild(turrets[k]);
+										turrets.splice(k, 1);
+
+
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} // ends flyingEnemyTowerSpireCollision
+
+		/**
+		 * Handles collision between flying enemies and the tower base.
+		 * The tower gets damaged and the flying enemy explodes.
+		 */
+		private function toughEnemyTowerBaseCollision(): void {
+			for (var i: int = 0; i < ScenePlay.toughEnemies.length; i++) {
+				for (var j: int = 0; j < ScenePlay.towers.length; j++) {
+					if (ScenePlay.towers[j].colliderBase.checkOverlap(ScenePlay.toughEnemies[i].collider)) {
+						ScenePlay.towers[j].health -= 10;
+						if (ScenePlay.towers[j].health <= 0) {
+							ScenePlay.towers[j].health = 0;
+							ScenePlay.towers[j].isDead = true;
+							if (ScenePlay.towers.length > 0) {
+								for (var m: int = ScenePlay.towers.length - 1; m >= 0; m--) {
+									if (ScenePlay.towers[m].isDead) {
+										level.removeChild(ScenePlay.towers[m]);
+										ScenePlay.towers.splice(m, 1);
+
+										level.removeChild(turrets[m]);
+										turrets.splice(m, 1);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		} // ends flyingEnemyTowerBaseCollision
 
 		/**
 		 *
@@ -873,7 +1168,27 @@ package code {
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
-							updateTowers();
+							if (ScenePlay.towers.length > 0) {
+								for (var k: int = ScenePlay.towers.length - 1; k >= 0; i--) {
+									if (ScenePlay.towers[k].isDead) {
+										if (ScenePlay.towers[k].x <= level.buildSpot1.x + 50) {
+											level.buildSpot1.alpha = 1;
+											level.buildSpot1.used = false;
+										}
+										if (ScenePlay.towers[k].x <= level.buildSpot2.x + 50) {
+											level.buildSpot2.alpha = 1;
+											level.buildSpot2.used = false;
+										}
+										level.removeChild(ScenePlay.towers[k]);
+										ScenePlay.towers.splice(k, 1);
+
+										level.removeChild(turrets[k]);
+										turrets.splice(k, 1);
+
+
+									}
+								}
+							}
 						}
 					}
 					if (ScenePlay.towers[j].colliderBase.checkOverlap(bulletsBad[i].collider)) {
@@ -882,7 +1197,17 @@ package code {
 						if (ScenePlay.towers[j].health <= 0) {
 							ScenePlay.towers[j].health = 0;
 							ScenePlay.towers[j].isDead = true;
-							updateTowers();
+							if (ScenePlay.towers.length > 0) {
+								for (var k: int = ScenePlay.towers.length - 1;k >= 0; i--) {
+									if (ScenePlay.towers[k].isDead) {
+										level.removeChild(ScenePlay.towers[k]);
+										ScenePlay.towers.splice(k, 1);
+
+										level.removeChild(turrets[k]);
+										turrets.splice(k, 1);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -984,6 +1309,13 @@ package code {
 				if (ScenePlay.enemies[k].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
 					var enemyFix: Point = ScenePlay.enemies[k].collider.findOverlapFix(ScenePlay.platforms[i].collider);
 					ScenePlay.enemies[k].applyFix(enemyFix);
+
+				}
+			}
+			for (var n: int = 0; n < ScenePlay.toughEnemies.length; n++) {
+				if (ScenePlay.toughEnemies[n].collider.checkOverlap(ScenePlay.platforms[i].collider)) {
+					var enemyFix2: Point = ScenePlay.toughEnemies[n].collider.findOverlapFix(ScenePlay.platforms[i].collider);
+					ScenePlay.toughEnemies[n].applyFix(enemyFix2);
 
 				}
 			}
@@ -1113,13 +1445,37 @@ package code {
 		 */
 		private function bulletEnemyCollision(): void {
 			for (var i: int = 0; i < bullets.length; i++) {
+				//trace("Enemies Array Length: " + ScenePlay.enemies.length);
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
 					if (bullets[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
-						killEnemy(j);
+						killEnemy(j, 1);
 						explodePlayerBullet(i);
 						explodePlayerBullet(i);
 						spawnCoin(3, ScenePlay.enemies[j].x, ScenePlay.enemies[j].y);
 						updateEnemies();
+					}
+				} // ends for
+				//trace("Flyers Array Length: " + ScenePlay.flyingEnemies.length);
+				for (var k: int = 0; k < ScenePlay.flyingEnemies.length; k++) {
+					if (bullets[i].collider.checkOverlap(ScenePlay.flyingEnemies[k].collider)) {
+						killEnemy(k, 2);
+						explodePlayerBullet(i);
+						explodePlayerBullet(i);
+						spawnCoin(1, ScenePlay.flyingEnemies[k].x, ScenePlay.flyingEnemies[k].y);
+						updateEnemies();
+					}
+				} // ends for
+				//trace("Toughies Array Length: " + ScenePlay.toughEnemies.length);
+				for (var m: int = 0; m < ScenePlay.toughEnemies.length; m++) {
+					if (bullets[i].collider.checkOverlap(ScenePlay.toughEnemies[m].collider)) {
+						ScenePlay.toughEnemies[m].takeDamage(1);
+						explodePlayerBullet(i);
+						explodePlayerBullet(i);
+						if (ScenePlay.toughEnemies[m].isDead) {
+							killEnemy(m, 3);
+							spawnCoin(5, ScenePlay.toughEnemies[m].x, ScenePlay.toughEnemies[m].y);
+							updateEnemies();
+						}
 					}
 				} // ends for
 			} // ends for
@@ -1203,20 +1559,41 @@ package code {
 			coinCount++;
 		} // ends collectCoin
 
-		/**
-		 * Handles killing an enemy whenever the player kills them.
-		 * @param index The current index of the enemy in the enemies array.
-		 */
 		private function killEnemy(index: int): void {
 			enemyDieSound.play();
-			ScenePlay.enemies[index].isDead = true;
+			switch (array) {
+				case 1:
+					ScenePlay.enemies[index].isDead = true;
+					for (var i: int = 0; i < 10; i++) {
+						var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
+						level.addChild(p);
+						particles.push(p);
+					}
+					break;
+				case 2:
+					ScenePlay.flyingEnemies[index].isDead = true;
+					for (var j: int = 0; j < 10; j++) {
+						var p1: Particle = new ParticleBlood(ScenePlay.flyingEnemies[index].x, ScenePlay.flyingEnemies[index].y);
+						level.addChild(p1);
+						particles.push(p1);
+					}
+					break;
+				case 3:
+					ScenePlay.toughEnemies[index].isDead = true;
+					for (var k: int = 0; k < 10; k++) {
+						var p2: Particle = new ParticleBlood(ScenePlay.toughEnemies[index].x, ScenePlay.toughEnemies[index].y);
+						level.addChild(p2);
+						particles.push(p2);
+					}
+					break;
+			}
 
 			for (var i: int = 0; i < 10; i++) {
 				var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
 				level.addChild(p);
 				particles.push(p);
 			}
-		} // ends killEnemy
+		}
 
 		/**
 		 * Decrements the coin counter whenever the player buys a tower.
@@ -1274,3 +1651,25 @@ package code {
 		} // ends changeSellText
 	} // ends class
 } // ends package
+		/** The sound played when the player doesn't have enough money to purchase a tower. */
+		private var notEnoughSound: NotEnoughSound = new NotEnoughSound();
+		public var coinCount: int = 20;
+
+			// Collision for floating platforms.
+			floatingPlatformCollision();
+
+		private function spawnEnemy(spawnCount: int, enemyType: int = 0): void {
+			// spawn snow:
+							updateTowers();
+							updateTowers();
+		/**
+		 * Handles killing an enemy whenever the player kills them.
+		 * @param index The current index of the enemy in the enemies array.
+		 */
+		private function killEnemy(index: int): void {
+			for (var i: int = 0; i < 10; i++) {
+				var p: Particle = new ParticleBlood(ScenePlay.enemies[index].x, ScenePlay.enemies[index].y);
+				level.addChild(p);
+				particles.push(p);
+			}
+		} // ends killEnemy
