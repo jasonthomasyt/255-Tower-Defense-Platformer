@@ -977,10 +977,12 @@ package code {
 			for(var i: int = 0; i < bombs.length; i++){
 				for (var j: int = 0; j < ScenePlay.enemies.length; j++) {
 					if (bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)) {
-						trace("boom");
-						bombs[i].handleExplosions();
+						bombs[i].collider.calcEdges(x * 1.2, y * 1.2);
+						if(bombs[i].collider.checkOverlap(ScenePlay.enemies[j].collider)){
+							killEnemy(j);
+							trace("bewm");
+						}
 						explodeBombs(i);
-						
 					}
 				}
 			}
